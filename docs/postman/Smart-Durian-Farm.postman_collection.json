@@ -2,13 +2,21 @@
   "info": {
     "_postman_id": "b54dcfe3-9d0c-4ed5-830f-c69479bb59db",
     "name": "Smart Durian Farm API",
-    "description": "Import the Local environment. This collection contains only implemented endpoints; health reports API liveness, not database readiness.",
+    "description": "Import the Local environment. Health checks liveness; readiness checks both databases. Start local Compose before running the readiness request.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
       "name": "Foundation",
       "item": [
+        {
+          "name": "Database readiness",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/health/ready" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Both databases ready (start Compose first)', () => pm.response.to.have.status(200));",
+            "pm.test('Database probes are up', () => pm.expect(pm.response.json()).to.eql({status: 'ok', databases: {postgres: 'up', mongodb: 'up'}}));"
+          ] } }]
+        },
         {
           "name": "API health",
           "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/health" },
