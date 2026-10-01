@@ -1,0 +1,14 @@
+{
+  "name": "smart-durian-farm",
+  "private": true,
+  "workspaces": ["apps/api"],
+  "scripts": {
+    "dev:api": "npm run start:dev --workspace @smart-durian/api",
+    "build": "npm run build --workspace @smart-durian/api",
+    "lint": "npm run lint --workspace @smart-durian/api",
+    "typecheck": "npm run typecheck --workspace @smart-durian/api",
+    "test": "npm run test --workspace @smart-durian/api"
+  },
+  "engines": { "node": ">=20.19.0" },
+  "overrides": { "@nestjs/swagger": { "js-yaml": "5.4.2" } }
+}
