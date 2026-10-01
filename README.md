@@ -9,18 +9,33 @@ Requires Node.js 20.19+ and npm. Run from the repository root:
 ```powershell
 npm install
 Copy-Item .env.example .env
+docker compose up -d
 npm run dev:api
 ```
 
 Health: http://localhost:3000/api/health (API liveness only).
 Swagger: http://localhost:3000/api/docs.
 OpenAPI JSON: http://localhost:3000/api/docs-json.
+Readiness: http://localhost:3000/api/health/ready (200 when both databases respond; 503 otherwise).
+
+Start Docker Desktop before running Compose. PostgreSQL and MongoDB are bound to localhost. Compose initializes MongoDB as a single-node replica set for later transactions. The API runs on the host; its MongoDB URI uses directConnection=true. This Compose setup is for local development only; MongoDB is not authenticated.
+
+If .env already exists, add DATABASE_URL, MONGODB_URI and DB_TIMEOUT_MS from .env.example instead of overwriting your configuration. PostgreSQL Compose also requires POSTGRES_USER, POSTGRES_PASSWORD and POSTGRES_DB. Changing credentials does not modify an existing PostgreSQL volume.
+
+```powershell
+docker compose ps -a
+docker compose logs mongo-init
+docker compose stop
+```
+
+Stopping containers preserves their database volumes.
 
 ```powershell
 npm run lint
 npm run typecheck
 npm run build
 npm test
+npm run test:integration --workspace @smart-durian/api
 npm run start --workspace @smart-durian/api
 ```
 
@@ -34,4 +49,4 @@ Import the collection and Local environment from docs/postman into Postman, sele
 - ai: future AI/RAG work.
 - docs: specifications, ERD, implementation plan and Postman files.
 
-Database connections, migrations, authentication and business modules are not implemented in this foundation batch. The ERD remains the schema authority.
+Database connection providers and readiness checks are implemented. Migrations, seed, authentication and business modules remain outstanding. Connectivity readiness does not verify schema or seed. The ERD remains the schema authority.

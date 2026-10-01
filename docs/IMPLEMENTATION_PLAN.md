@@ -16,7 +16,7 @@ Environment now: PORT, CORS_ORIGINS, NODE_ENV. Later: PostgreSQL/MongoDB connect
 
 ## Next batches
 
-1. Resolve schema ambiguities; add PostgreSQL and MongoDB connections, migrations, seed and readiness checks. MongoDB replica set is required for planned locking transactions.
+1. PostgreSQL/MongoDB connections, local Compose and readiness are implemented on feat/database-connections. Next resolve remaining schema decisions and add migrations and seed. MongoDB replica set is required for planned locking transactions.
 2. Auth, Users, Cooperatives, Farms, Zones/Assignments and Trees, one module at a time with Postman updates and focused checks.
 3. IoT metadata, telemetry, control and hardware confirmation.
 4. Cultivation locking, correction and hash chain with automated business-rule tests.

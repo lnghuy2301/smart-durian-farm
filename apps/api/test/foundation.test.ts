@@ -4,17 +4,24 @@ import { test } from 'node:test';
 import { createApplication } from '../src/application';
 import { readEnvironment } from '../src/config/environment';
 
+const databaseEnv = {
+  DATABASE_URL: 'postgresql://test:test@127.0.0.1:5432/test',
+  MONGODB_URI: 'mongodb://127.0.0.1:27017/test',
+};
+
 test('rejects invalid ports and unsafe CORS configuration', () => {
   for (const PORT of ['0', '65536', '3000.5', 'abc', '']) {
-    assert.throws(() => readEnvironment({ PORT }));
+    assert.throws(() => readEnvironment({ ...databaseEnv, PORT }));
   }
-  assert.throws(() => readEnvironment({ CORS_ORIGINS: '*' }));
-  assert.throws(() => readEnvironment({ CORS_ORIGINS: 'http://localhost:5173/path' }));
-  assert.deepEqual(readEnvironment({}), { port: 3000, corsOrigins: ['http://localhost:5173'] });
+  assert.throws(() => readEnvironment({ ...databaseEnv, CORS_ORIGINS: '*' }));
+  assert.throws(() => readEnvironment({ ...databaseEnv, CORS_ORIGINS: 'http://localhost:5173/path' }));
+  assert.throws(() => readEnvironment({}));
+  assert.throws(() => readEnvironment({ ...databaseEnv, DB_TIMEOUT_MS: '0' }));
+  assert.equal(readEnvironment(databaseEnv).port, 3000);
 });
 
 test('serves health and OpenAPI over HTTP, restricts CORS and returns 404 for unknown routes', async () => {
-  const app = await createApplication(readEnvironment({}), false);
+  const app = await createApplication(readEnvironment(databaseEnv), false);
   try {
     await app.listen(0, '127.0.0.1');
     const base = await app.getUrl();
