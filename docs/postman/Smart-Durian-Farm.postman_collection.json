@@ -1,0 +1,38 @@
+{
+  "info": {
+    "_postman_id": "b54dcfe3-9d0c-4ed5-830f-c69479bb59db",
+    "name": "Smart Durian Farm API",
+    "description": "Import the Local environment. This collection contains only implemented endpoints; health reports API liveness, not database readiness.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Foundation",
+      "item": [
+        {
+          "name": "API health",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/health" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+            "pm.test('API is live', () => pm.expect(pm.response.json()).to.eql({status: 'ok', service: 'smart-durian-api'}));"
+          ] } }]
+        },
+        {
+          "name": "OpenAPI document",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/docs-json" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+            "pm.test('Health endpoint documented', () => pm.expect(pm.response.json().paths).to.have.property('/api/health'));"
+          ] } }]
+        },
+        {
+          "name": "Unknown endpoint returns 404",
+          "request": { "method": "GET", "header": [], "url": "{{base_url}}/api/not-found" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
+          ] } }]
+        }
+      ]
+    }
+  ]
+}
