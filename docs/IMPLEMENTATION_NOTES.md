@@ -1,5 +1,7 @@
 # Implementation notes
 
+- Farming Standards implemented on feat/farming-standards, based on Materials. Read STANDARDS_IMPLEMENTATION.md and MODULE_HANDOFF.md. CatalogListDto moved to src/catalog for shared bounded queries; no duplicate Auth/users stores. Current validation: 34 tests + lint/typecheck/build. Standards code/name uniqueness is not invented; use UUID references and confirm DB constraints later.
+
 - Read MODULE_HANDOFF.md first for the latest branch chain and current validation. Material catalog now runs on feat/agricultural-materials, based on USERS, using shared Auth and in-memory storage. Details: MATERIALS_IMPLEMENTATION.md. User requested simple modules first, each with its own branch/docs/Postman; stop at missing critical rules. Main fetched at 7594c9d only includes initial Auth; do not silently drop Twilio/USERS.
 
 - User authorizes incremental backend branches, commits and pushes, with a Postman JSON collection updated per module.

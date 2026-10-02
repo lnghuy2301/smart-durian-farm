@@ -78,3 +78,7 @@ Import **docs/postman/Users-Local-Test.postman_collection.json**, open **Smart D
 ## Agricultural materials catalog
 
 Admin can create/update/deactivate materials; Active users can read and search with pagination. Data stays in memory, without inventory management. See [docs/MATERIALS_IMPLEMENTATION.md](docs/MATERIALS_IMPLEMENTATION.md). Import docs/postman/Materials-Local-Test.postman_collection.json; edit literal JSON and paste the login JWT into Authorization. No new dependencies; current batch has 32 passing tests.
+
+## Farming standards catalog
+
+The same Admin-write/Active-user-read rules apply to standards. See [docs/STANDARDS_IMPLEMENTATION.md](docs/STANDARDS_IMPLEMENTATION.md) and import docs/postman/Standards-Local-Test.postman_collection.json. Standards will attach to Zones when that module is implemented. Latest suite: 34 passing tests; no new dependency or database write.

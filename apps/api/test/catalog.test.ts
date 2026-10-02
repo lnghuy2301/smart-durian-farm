@@ -8,6 +8,7 @@ import { readEnvironment } from '../src/config/environment';
 import { MockUserStore } from '../src/auth/mock-user.store';
 import { UsersService } from '../src/users/users.service';
 import { MaterialsService } from '../src/materials/materials.service';
+import { StandardsService } from '../src/standards/standards.service';
 
 const env = {
   DATABASE_URL: 'postgresql://test:test@127.0.0.1:1/test', MONGODB_URI: 'mongodb://127.0.0.1:1/test',
@@ -19,6 +20,7 @@ const material = {
   name: 'Vật tư demo', material_type: 'Fertilizer' as const, default_dosage: 'Thông tin mẫu',
   unit: 'kg', quarantine_days: 0,
 };
+const standard = { code: 'DEMO', name: 'Tiêu chuẩn demo', description: '', certifying_body: 'Tổ chức demo' };
 
 async function setup() {
   const app = await createApplication(readEnvironment(env), false);
@@ -35,6 +37,60 @@ async function setup() {
   };
   return { app, request, login };
 }
+
+test('Standards Admin lifecycle preserves fields and status; Active Farmer can only read', async () => {
+  const { app, request, login } = await setup();
+  try {
+    assert.equal((await request('standards')).status, 401);
+    const admin = await login(env.AUTH_TEST_ADMIN_PHONE, env.AUTH_TEST_ADMIN_PASSWORD);
+    const farmer = await login(env.AUTH_TEST_PHONE, env.AUTH_TEST_PASSWORD);
+    assert.equal((await request('standards', 'POST', standard, farmer)).status, 403);
+    const created = await request('standards', 'POST', standard, admin);
+    assert.equal(created.status, 201);
+    const record = await created.json() as { id: string; status: string; description: string };
+    assert.equal(record.status, 'Active');
+    assert.equal(record.description, '');
+    assert.equal((await request(`standards/${record.id}`, 'GET', undefined, farmer)).status, 200);
+    assert.equal((await request(`standards/${record.id}`, 'PATCH', { status: 'Inactive' }, farmer)).status, 403);
+    assert.equal((await request(`standards/${record.id}`, 'PATCH', { status: 'Inactive' }, admin)).status, 200);
+    assert.equal((await request(`standards/${record.id}`, 'PATCH', { description: 'Mô tả mới' }, admin)).status, 200);
+    assert.equal(app.get(StandardsService).get(record.id).status, 'Inactive');
+    for (const invalid of [{}, { status: null }, { code: null }, { farm_id: randomUUID() }]) {
+      assert.equal((await request(`standards/${record.id}`, 'PATCH', invalid, admin)).status, 400);
+    }
+    assert.equal((await request(`standards/${record.id}`, 'DELETE', undefined, admin)).status, 404);
+  } finally { await app.close(); }
+});
+
+test('Standards validate ERD fields and bounded description; search handles both code/name and pagination', async () => {
+  const { app, request, login } = await setup();
+  try {
+    const admin = await login(env.AUTH_TEST_ADMIN_PHONE, env.AUTH_TEST_ADMIN_PASSWORD);
+    for (const invalid of [{ code: ' ' }, { code: 'x'.repeat(41) }, { name: 'x'.repeat(101) }, { description: null },
+      { description: 'x'.repeat(10001) }, { certifying_body: 'x'.repeat(121) }, { status: 'Removed' }, { zone_id: randomUUID() }]) {
+      assert.equal((await request('standards', 'POST', { ...standard, ...invalid }, admin)).status, 400);
+    }
+    const service = app.get(StandardsService);
+    const first = service.create({ ...standard, code: 'DEMO-1' });
+    service.create({ ...standard, code: 'DEMO-2', status: 'Inactive' });
+    service.create({ ...standard, code: 'OTHER', name: 'Khác' });
+    const list = await request('standards?q=demo&limit=1&offset=1', 'GET', undefined, admin);
+    const body = await list.json() as { total: number; items: { code: string }[] };
+    assert.equal(body.total, 2);
+    assert.equal(body.items[0].code, 'DEMO-2');
+    const active = await request('standards?status=Active', 'GET', undefined, admin);
+    assert.equal((await active.json() as { total: number }).total, 2);
+    first.code = 'Changed outside store';
+    const copy = service.get(first.id);
+    copy.description = 'Changed copy';
+    assert.equal(service.get(first.id).code, 'DEMO-1');
+    assert.equal(service.get(first.id).description, '');
+    for (const query of ['limit=0', 'offset=-1', 'status=bad', 'q[]=array', 'extra=1']) {
+      assert.equal((await request(`standards?${query}`, 'GET', undefined, admin)).status, 400);
+    }
+    assert.equal((await request(`standards/${randomUUID()}`, 'GET', undefined, admin)).status, 404);
+  } finally { await app.close(); }
+});
 
 test('Materials uses shared Auth; Admin writes, Active users read, Pending/Locked cannot access', async () => {
   const { app, request, login } = await setup();

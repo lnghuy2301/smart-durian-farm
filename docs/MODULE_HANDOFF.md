@@ -12,8 +12,9 @@ Tất cả nghiệp vụ hiện lưu trong bộ nhớ. Chưa tạo bảng/seed/c
 |---|---|---|---|
 | USERS | feat/users-registration-approval ← feat/twilio-verify | USERS_IMPLEMENTATION.md | Users-Local-Test |
 | Vật tư | feat/agricultural-materials ← USERS | MATERIALS_IMPLEMENTATION.md | Materials-Local-Test |
+| Tiêu chuẩn | feat/farming-standards ← Vật tư | STANDARDS_IMPLEMENTATION.md | Standards-Local-Test |
 
-Vật tư đã triển khai Admin tạo/sửa/Inactive, user Active đọc, filter/search/pagination. Không kho/tồn hàng. 32/32 tests + lint/typecheck/build. Tiếp theo: Farming Standards → Standard Materials, mỗi module một nhánh riêng, cùng cơ chế danh mục Admin quản lý.
+Vật tư và Tiêu chuẩn đã triển khai Admin tạo/sửa/Inactive, user Active đọc, filter/search/pagination. Không kho/tồn hàng. Tiêu chuẩn gắn Zone ở module Zone sau, không gắn Farm. **34/34 tests + lint/typecheck/build**. Tiếp theo Standard Materials, nhánh riêng, cùng cơ chế danh mục Admin quản lý. Hai danh mục không hard-delete và không tự tạo UNIQUE tên/code ngoài ERD.
 
 ## Tái lập ở session khác
 

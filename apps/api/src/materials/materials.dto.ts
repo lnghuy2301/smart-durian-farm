@@ -1,11 +1,11 @@
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsIn, IsInt, IsString, Max, MaxLength, Min, MinLength, ValidateIf } from 'class-validator';
+import { CatalogListDto, CATALOG_STATUSES, CatalogStatus } from '../catalog/catalog.dto';
+export { CatalogStatus } from '../catalog/catalog.dto';
 
 export const MATERIAL_TYPES = ['Fertilizer', 'Pesticide', 'Biological'] as const;
-export const CATALOG_STATUSES = ['Active', 'Inactive'] as const;
 export type MaterialType = typeof MATERIAL_TYPES[number];
-export type CatalogStatus = typeof CATALOG_STATUSES[number];
 
 const trimText = ({ value }: { value: unknown }) => typeof value === 'string' ? value.trim() : value;
 
@@ -41,29 +41,6 @@ export class CreateMaterialDto {
 
 // PATCH bỏ qua field không gửi, nhưng null không được dùng để xóa dữ liệu bắt buộc.
 export class UpdateMaterialDto extends PartialType(CreateMaterialDto, { skipNullProperties: false }) {}
-
-export class CatalogListDto {
-  @ApiPropertyOptional({ default: 20, minimum: 1, maximum: 100 })
-  @Type(() => Number)
-  @IsInt() @Min(1) @Max(100)
-  limit = 20;
-
-  @ApiPropertyOptional({ default: 0, minimum: 0, maximum: 100000 })
-  @Type(() => Number)
-  @IsInt() @Min(0) @Max(100000)
-  offset = 0;
-
-  @ApiPropertyOptional({ enum: CATALOG_STATUSES })
-  @ValidateIf((_object, value) => value !== undefined)
-  @IsIn(CATALOG_STATUSES)
-  status?: CatalogStatus;
-
-  @ApiPropertyOptional({ maxLength: 100 })
-  @Transform(trimText)
-  @ValidateIf((_object, value) => value !== undefined)
-  @IsString() @MaxLength(100)
-  q?: string;
-}
 
 export class MaterialListDto extends CatalogListDto {
   @ApiPropertyOptional({ enum: MATERIAL_TYPES })
