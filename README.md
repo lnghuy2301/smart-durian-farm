@@ -53,7 +53,7 @@ Database connection providers and readiness checks are implemented. Auth is avai
 
 ## Auth local test
 
-Set AUTH_MODE=mock, NODE_ENV=development and AUTH_TEST_PHONE, AUTH_TEST_PASSWORD, JWT_SECRET in .env using .env.example. Restart the API after changing config. Mock mode binds to 127.0.0.1 and cannot run in production.
+Set AUTH_MODE=mock, SMS_PROVIDER=mock, NODE_ENV=development and AUTH_TEST_PHONE, AUTH_TEST_PASSWORD, JWT_SECRET in .env using .env.example. Restart the API after changing config. Mock account mode binds to 127.0.0.1 and cannot run in production.
 
 Import docs/postman/Auth-Local-Test.postman_collection.json and the Local environment. Run requests 01 through 11 in order. The SMS outbox is simulated; no real SMS is sent and no database tables or real account records are created. Restart the API before each full run to restore the original test password.
 
@@ -61,6 +61,6 @@ See docs/AUTH_IMPLEMENTATION.md for endpoint contracts, OTP limits and session c
 
 ## Real SMS demo
 
-Read docs/SPEEDSMS_INTEGRATION.md. Keep AUTH_MODE=mock for in-memory accounts; configure SMS_PROVIDER=speedsms, a local access token, the approved SMS type/sender, SMS_ALLOWED_PHONE matching AUTH_TEST_PHONE, and LIVE_SMS_ENABLED=true. Mock defaults do not send paid SMS.
+The selected provider is **Twilio Verify**. Read [docs/TWILIO_VERIFY_INTEGRATION.md](docs/TWILIO_VERIFY_INTEGRATION.md). Keep AUTH_MODE=mock for in-memory accounts; set SMS_PROVIDER=twilio, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_VERIFY_SERVICE_SID, SMS_ALLOWED_PHONE matching AUTH_TEST_PHONE, and LIVE_SMS_ENABLED=true in your local .env. Set the Verify Service code length to 6. Never commit credentials. Mock defaults do not send paid SMS.
 
-Import the separate SpeedSMS-Demo collection/environment in docs/postman and run manually. Read the OTP from your phone and fill the environment variable otp. The mock SMS outbox returns 404 in real-provider mode. No new npm dependency, table or database write is required.
+Import Twilio-Verify-Demo.postman_collection.json and Twilio-Verify-Demo.postman_environment.json in docs/postman and run requests 01–09 manually. Fill test_phone/test_password to match .env. After request 02, read the OTP from your phone and fill the environment variable otp before reset. Twilio generates/checks the code; the mock SMS outbox returns 404. No new npm dependency, table or database write is required. SpeedSMS artifacts are retained as legacy references.

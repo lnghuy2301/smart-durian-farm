@@ -1,9 +1,8 @@
 {
   "info": {
-    "_postman_id": "9e12e60a-8db3-4383-a68a-efb303780445",
-    "name": "Smart Durian Farm - Auth Local Test",
+    "name": "Smart Durian Farm - Twilio Verify Demo",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "MOCK SMS ONLY: set SMS_PROVIDER=mock and restart API. Use Local environment and match test_phone/test_password to .env. Automatic mock outbox read is unavailable with Twilio. Current real SMS demo uses Twilio-Verify-Demo files. AUTH_MODE=mock only. No database writes or actual SMS. Restart API before each full collection run to restore initial test password and clear rate limits. Run requests in order. Local environment passwords are fake examples."
+    "description": "Twilio Verify demo with in-memory account. Read docs/TWILIO_VERIFY_INTEGRATION.md. Run manually 01-09; request 02 uses trial quota or charges credit. Fill environment test_phone/test_password to match .env; after 02 enter the SMS code into otp. Do not use an old Console code. No Twilio credentials belong in Postman."
   },
   "item": [
     {
@@ -34,77 +33,14 @@
             "type": "text/javascript",
             "exec": [
               "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
-              "if (pm.response.code === 200) { pm.environment.set('access_token', pm.response.json().access_token); }",
-              "pm.test('No password returned', () => pm.expect(pm.response.json().user).not.to.have.property('password'));"
+              "if (pm.response.code === 200) { pm.environment.set('access_token', pm.response.json().access_token); }"
             ]
           }
         }
       ]
     },
     {
-      "name": "02 Current user",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": "{{base_url}}/api/auth/me",
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "03 Wrong password",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/auth/login",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\",\n  \"password\": \"WrongPassword123!\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "04 Forgot password",
+      "name": "02 Send real OTP - CHARGES CREDIT",
       "request": {
         "method": "POST",
         "header": [
@@ -122,23 +58,32 @@
               "language": "json"
             }
           }
-        }
+        },
+        "description": "May use trial quota or incur costs. 202 is generic and not proof of SMS delivery. Do not send repeatedly during the 60-second cooldown."
       },
       "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.unset('otp');"
+            ]
+          }
+        },
         {
           "listen": "test",
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('HTTP 202', () => pm.response.to.have.status(202));",
-              "pm.test('OTP is not in this response', () => pm.expect(pm.response.json()).not.to.have.property('otp'));"
+              "pm.test('HTTP 202', () => pm.response.to.have.status(202));"
             ]
           }
         }
       ]
     },
     {
-      "name": "05 Read mock SMS",
+      "name": "03 Mock SMS unavailable",
       "request": {
         "method": "GET",
         "header": [],
@@ -150,16 +95,14 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
-              "pm.test('Six digit OTP exists', () => pm.expect(pm.response.json().messages[0].otp).to.match(/^\\d{6}$/));",
-              "if (pm.response.code === 200 && pm.response.json().messages.length) { pm.environment.set('otp', pm.response.json().messages[0].otp); }"
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
             ]
           }
         }
       ]
     },
     {
-      "name": "06 Reset password",
+      "name": "04 Reset - enter phone SMS code into otp first",
       "request": {
         "method": "POST",
         "header": [
@@ -192,7 +135,7 @@
       ]
     },
     {
-      "name": "07 Old token rejected",
+      "name": "05 Old JWT rejected",
       "request": {
         "method": "GET",
         "header": [],
@@ -221,7 +164,7 @@
       ]
     },
     {
-      "name": "08 Reused OTP rejected",
+      "name": "06 Reused OTP rejected",
       "request": {
         "method": "POST",
         "header": [
@@ -254,7 +197,7 @@
       ]
     },
     {
-      "name": "09 Old password rejected",
+      "name": "07 Old password rejected",
       "request": {
         "method": "POST",
         "header": [
@@ -287,7 +230,7 @@
       ]
     },
     {
-      "name": "10 Login with new password",
+      "name": "08 Login with new password",
       "request": {
         "method": "POST",
         "header": [
@@ -321,7 +264,7 @@
       ]
     },
     {
-      "name": "11 Current user after reset",
+      "name": "09 Current user",
       "request": {
         "method": "GET",
         "header": [],
@@ -348,6 +291,18 @@
           }
         }
       ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!/^\\+?\\d{9,13}$/.test(pm.environment.get('test_phone') || '')) { throw new Error('Fill environment test_phone to match AUTH_TEST_PHONE'); }",
+          "if (pm.info.requestName.startsWith('04') && !/^\\d{6}$/.test(pm.environment.get('otp') || '')) { throw new Error('Enter the six-digit SMS code into environment otp first'); }"
+        ]
+      }
     }
   ]
 }

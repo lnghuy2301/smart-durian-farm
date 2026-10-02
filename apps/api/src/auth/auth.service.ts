@@ -1,26 +1,26 @@
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { createHash, randomInt, timingSafeEqual } from 'node:crypto';
 import { MockUserStore } from './mock-user.store';
 import { hashPassword, verifyPassword } from './password';
-import { SmsGateway } from './sms/sms.gateway';
+import { OtpProof, OtpProvider } from './sms/otp.provider';
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 const RESEND_DELAY_MS = 60 * 1000;
 const MAX_OTP_ATTEMPTS = 5;
 const TOKEN_TTL_SECONDS = 15 * 60;
 
-interface OtpChallenge { digest: Buffer; expiresAt: number; attempts: number; consumed: boolean }
+interface OtpChallenge { proof: OtpProof; expiresAt: number; attempts: number; consumed: boolean }
 
 @Injectable()
 export class AuthService {
   private challenge?: OtpChallenge;
   private nextSendAt = 0;
+  private otpBusy = false;
   private readonly rateLimits = new Map<string, { startedAt: number; count: number }>();
 
   constructor(@Inject(MockUserStore) private readonly store: MockUserStore,
     @Inject(JwtService) private readonly jwt: JwtService,
-    @Inject(SmsGateway) private readonly smsGateway: SmsGateway) {}
+    @Inject(OtpProvider) private readonly otpProvider: OtpProvider) {}
 
   private rateLimit(action: 'login' | 'forgot', max: number): void {
     // Chế độ test chỉ có một tài khoản; bucket cố định tránh tạo Map vô hạn theo số điện thoại lạ.
@@ -47,34 +47,50 @@ export class AuthService {
   async forgotPassword(phoneNumber: string) {
     this.rateLimit('forgot', 5);
     const now = Date.now();
-    if (phoneNumber === this.store.user.phone_number && this.store.user.status === 'Active' && now >= this.nextSendAt) {
-      const otp = randomInt(0, 1000000).toString().padStart(6, '0');
+    if (!this.otpBusy && phoneNumber === this.store.user.phone_number && this.store.user.status === 'Active' && now >= this.nextSendAt) {
       // Giữ cooldown trước await để request đồng thời không gửi hai SMS bị tính phí.
       this.nextSendAt = now + RESEND_DELAY_MS;
       this.challenge = undefined;
-      this.smsGateway.clear();
-      await this.smsGateway.send({ phone_number: phoneNumber, otp, expires_at: new Date(now + OTP_TTL_MS).toISOString() });
-      // Chỉ kích hoạt OTP sau khi provider xác nhận nhận yêu cầu; không khẳng định điện thoại đã nhận SMS.
-      this.challenge = { digest: this.otpDigest(otp), expiresAt: now + OTP_TTL_MS, attempts: 0, consumed: false };
+      this.otpProvider.clear();
+      this.otpBusy = true;
+      try {
+        const proof = await this.otpProvider.issue(phoneNumber, now + OTP_TTL_MS);
+        // Chỉ kích hoạt OTP sau khi provider nhận yêu cầu; không khẳng định điện thoại đã nhận SMS.
+        this.challenge = { proof, expiresAt: now + OTP_TTL_MS, attempts: 0, consumed: false };
+      } finally { this.otpBusy = false; }
     }
-    // Cùng response cho tài khoản có/không tồn tại. OTP chỉ ở hộp thư SMS giả lập local, không trong response này.
+    // Cùng response cho tài khoản có/không tồn tại; không trả OTP hoặc SID ra client.
     return { message: 'Nếu tài khoản hợp lệ, mã OTP đã được gửi', expires_in: OTP_TTL_MS / 1000 };
   }
 
   async resetPassword(phoneNumber: string, otp: string, newPassword: string) {
     const challenge = this.challenge;
-    if (!challenge || challenge.consumed || Date.now() >= challenge.expiresAt || challenge.attempts >= MAX_OTP_ATTEMPTS ||
+    if (this.otpBusy || !challenge || challenge.consumed || Date.now() >= challenge.expiresAt || challenge.attempts >= MAX_OTP_ATTEMPTS ||
         phoneNumber !== this.store.user.phone_number || this.store.user.status !== 'Active') {
       throw new BadRequestException('OTP không hợp lệ hoặc đã hết hạn');
     }
     challenge.attempts++;
-    if (!timingSafeEqual(challenge.digest, this.otpDigest(otp))) { throw new BadRequestException('OTP không hợp lệ hoặc đã hết hạn'); }
-    // Đánh dấu dùng ngay trước await: hai request song song không thể dùng cùng OTP để đổi hai mật khẩu.
-    challenge.consumed = true;
-    this.smsGateway.clear();
-    this.store.user.password = await hashPassword(newPassword);
-    this.store.version++; // Thu hồi token cũ sau khi đổi mật khẩu; version chỉ nằm trong bộ nhớ test.
-    return { message: 'Đã đặt lại mật khẩu. Vui lòng đăng nhập lại' };
+    // Khóa cả gửi lại và reset trong lúc chờ Verify/hash; không để hai request cùng đổi mật khẩu.
+    this.otpBusy = true;
+    try {
+      let matches: boolean;
+      try { matches = await this.otpProvider.verify(challenge.proof, otp); }
+      catch (error) {
+        // Timeout có thể xảy ra sau khi Twilio đã dùng mã. Hủy challenge để không tái sử dụng mơ hồ.
+        challenge.consumed = true;
+        this.otpProvider.clear();
+        throw error;
+      }
+      if (!matches || Date.now() >= challenge.expiresAt || this.store.user.status !== 'Active') {
+        throw new BadRequestException('OTP không hợp lệ hoặc đã hết hạn');
+      }
+      // Đánh dấu dùng trước await hash: mã đã được xác minh không thể dùng thêm lần nữa.
+      challenge.consumed = true;
+      this.otpProvider.clear();
+      this.store.user.password = await hashPassword(newPassword);
+      this.store.version++; // Thu hồi token cũ; version chỉ nằm trong bộ nhớ test.
+      return { message: 'Đã đặt lại mật khẩu. Vui lòng đăng nhập lại' };
+    } finally { this.otpBusy = false; }
   }
 
   async authenticate(token: string) {
@@ -88,11 +104,7 @@ export class AuthService {
   }
 
   testSms(phoneNumber: string) {
-    if (this.smsGateway.mode !== 'mock') { throw new NotFoundException(); }
-    return { mode: 'mock', messages: this.smsGateway.messages(phoneNumber) };
-  }
-
-  private otpDigest(otp: string): Buffer {
-    return createHash('sha256').update(`${this.store.user.id}:${otp}`).digest();
+    if (this.otpProvider.mode !== 'mock') { throw new NotFoundException(); }
+    return { mode: 'mock', messages: this.otpProvider.messages(phoneNumber) };
   }
 }

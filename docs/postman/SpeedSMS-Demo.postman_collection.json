@@ -2,7 +2,7 @@
   "info": {
     "name": "Smart Durian Farm - SpeedSMS Demo",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "REAL SMS: request 02 can charge SpeedSMS credit. Run manually, not as a collection runner. SMS type 4/Verify must be enabled on your provider account. Fill test_phone only in your local Postman environment. After 02, copy OTP from your phone into otp; no mock outbox. Account stays in memory."
+    "description": "LEGACY SpeedSMS adapter. Selected provider is Twilio Verify: import Twilio-Verify-Demo files instead. REAL SMS: request 02 can charge SpeedSMS credit. Run manually, not as a collection runner. SMS type 4/Verify must be enabled on your provider account. Fill test_phone only in your local Postman environment. After 02, copy OTP from your phone into otp; no mock outbox. Account stays in memory."
   },
   "item": [
     {

@@ -7,6 +7,8 @@ import { AuthGuard } from './auth.guard';
 import { MockUserStore } from './mock-user.store';
 import { MockSmsGateway, SmsGateway } from './sms/sms.gateway';
 import { SpeedSmsGateway } from './sms/speedsms.gateway';
+import { LocalOtpProvider, OtpProvider } from './sms/otp.provider';
+import { TwilioVerifyGateway } from './sms/twilio-verify.gateway';
 
 @Module({})
 export class AuthModule {
@@ -21,7 +23,9 @@ export class AuthModule {
       controllers: [AuthController],
       providers: [
         { provide: MockUserStore, useFactory: () => MockUserStore.create(config) },
-        { provide: SmsGateway, useFactory: () => config.sms.provider === 'mock' ? new MockSmsGateway() : new SpeedSmsGateway(config.sms) },
+        { provide: SmsGateway, useFactory: () => config.sms.provider === 'speedsms' ? new SpeedSmsGateway(config.sms) : new MockSmsGateway() },
+        { provide: OtpProvider, inject: [SmsGateway], useFactory: (sms: SmsGateway) =>
+          config.sms.provider === 'twilio' ? new TwilioVerifyGateway(config.sms) : new LocalOtpProvider(sms) },
         AuthService, AuthGuard,
       ],
     };

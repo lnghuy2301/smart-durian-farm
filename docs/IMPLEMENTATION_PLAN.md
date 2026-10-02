@@ -24,10 +24,10 @@ Environment now: PORT, CORS_ORIGINS, NODE_ENV. Later: PostgreSQL/MongoDB connect
 6. Web, then Android mobile.
 7. AI diagnosis and later RAG after source PDFs exist.
 
-This batch does not complete the full Phase 1 milestone: database connections, migrations, seed and auth remain outstanding. See IMPLEMENTATION_NOTES.md before schema implementation.
+The foundation batch alone did not complete Phase 1. Database connections/readiness are now implemented; migrations, seed and database-backed Auth remain outstanding. See IMPLEMENTATION_NOTES.md before schema implementation.
 
 ## Current scope update — 2026-10-02
 
-Database connections/readiness are complete and merged. User requests Auth testing without tables or real records: implement an in-memory login fixture, JWT, six-digit password-reset OTP and local mock SMS outbox on feat/auth. No migrations/seed or real SMS in this batch. See AUTH_IMPLEMENTATION.md and docs/postman/Auth-Local-Test.postman_collection.json.
+Database connections/readiness are complete and merged. Auth has an in-memory login fixture, JWT and six-digit password-reset OTP. User selected Twilio Verify after receiving an SMS from Try out Verify. Current branch feat/twilio-verify builds on feat/speedsms-integration; accounts remain in memory, without migrations/seed or ERD changes. Mock SMS remains available for tests. See AUTH_IMPLEMENTATION.md, TWILIO_VERIFY_INTEGRATION.md and docs/postman/Twilio-Verify-Demo.postman_collection.json.
 
 Real database-backed Auth and migrations/seed remain future work requiring schema/provider decisions. Review module changes and merge before creating the next module branch from main.

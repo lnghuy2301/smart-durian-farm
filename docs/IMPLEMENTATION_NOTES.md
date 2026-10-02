@@ -31,8 +31,10 @@
 
 ## Auth batch in progress
 
-- SpeedSMS integration branch feat/speedsms-integration builds on feat/auth. Account persistence is still mock; SMS provider can be real. Read SPEEDSMS_INTEGRATION.md for configuration, test results and continuation instructions. Never commit the user's real recipient or API token.
+- Current branch feat/twilio-verify builds on feat/speedsms-integration (which builds on feat/auth). User confirmed SMS receipt from Twilio Try out Verify and selected Twilio. Read TWILIO_VERIFY_INTEGRATION.md and AUTH_IMPLEMENTATION.md for code, configuration, Postman and continuation. SpeedSMS is legacy; do not assume any pending Auth/provider branches have merged into main.
+- Account persistence is still in memory, independent of SMS_PROVIDER. Twilio Verify creates/checks codes; do not send locally generated codes through Twilio Messaging or use SpeedSMS credentials. Verify Service Code length must be 6; backend checks the service before sending. Never commit real recipients, credentials or tokens.
+- Local deadline is 5 minutes per accepted send; Twilio may reuse a code during its own validity period. OTP state, session version and rate limits are per process only. Serialize send/check/reset; invalidate uncertain failed checks. No schema/ERD change is authorized by this integration.
 
 - Branch feat/auth starts from updated main. Read AUTH_IMPLEMENTATION.md for current scope, pending decisions and continuation instructions.
 - User requires documentation during development and Vietnamese comments for difficult logic, including existing files. Ask before major schema/security/business-rule changes.
-- User clarified Auth scope: phone_number/password login and password reset with six-digit SMS OTP; test only, no database tables or real data. Implement in-memory fixture and local SMS outbox, not a USERS migration/seed.
+- User clarified Auth scope: phone_number/password login and password reset with six-digit SMS OTP; test account only, no database tables or real records. Use the in-memory fixture with Twilio Verify for the live demo or mock SMS for automated tests, not a USERS migration/seed.

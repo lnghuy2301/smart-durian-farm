@@ -1,5 +1,7 @@
 # SpeedSMS — SMS thật cho demo local
 
+> Tài liệu lịch sử. Từ 2026-10-02 người dùng chọn **Twilio Verify**, xem [TWILIO_VERIFY_INTEGRATION.md](TWILIO_VERIFY_INTEGRATION.md). SpeedSMS vẫn báo sender not found cả trên Console; tạo 2FA App không giải quyết quyền sender. Không dùng hướng dẫn dưới đây để cấu hình demo hiện tại; giữ để tra cứu adapter cũ.
+
 ## Phạm vi và nhánh
 
 feat/speedsms-integration từ feat/auth. Auth chưa được xác nhận merge: PR so sánh với feat/auth trước, đổi base về main sau khi Auth merge.
@@ -54,3 +56,10 @@ Request đồng thời chỉ gửi một lần; chỉ số allowlist nhận đư
 Lint, typecheck, build và 13 tests đạt với provider giả lập. Bao phủ Basic auth/payload/chuẩn hóa số, giới hạn số nhận, live switch, provider/HTTP/JSON/timeout lỗi, OTP không active sau gửi lỗi, chặn gửi song song, thành công sau cooldown và reset/login. Không gọi SpeedSMS thật, chưa kiểm chứng quyền tài khoản hay delivery trên điện thoại. Đọc tài liệu này, AUTH_IMPLEMENTATION.md và IMPLEMENTATION_NOTES.md khi tiếp tục. Không stage ERD/MQTT của người dùng. Persistence/production hoặc chuyển sang API 2FA là thay đổi khác cần hỏi trước.
 
 Tài liệu API: https://speedsms.vn/sms-api-service/ và mẫu NodeJS do người dùng cung cấp.
+
+### Chẩn đoán 503 khi demo
+Gateway ghi HTTP status và provider code đã lọc vào terminal khi phản hồi không được chấp nhận. Không ghi raw body, token, OTP hay số nhận. Dùng mã này đối chiếu tài liệu SpeedSMS và báo cáo gửi; không tự đổi sender hoặc chuyển sang API 2FA. Nếu lỗi mạng/timeout/JSON không hợp lệ, client vẫn nhận 503 chung. Không gửi lại tự động.
+
+Nếu provider code unknown: chưa thể kết luận token/quyền/số dư sai. Log response shape chỉ chứa kiểu dữ liệu, status success/error và các cờ kiểm tra, không chứa giá trị message hay danh sách số nhận. Đối chiếu cấu trúc trước khi thay đổi điều kiện chấp nhận; không tự coi HTTP 200 là gửi thành công.
+
+Một số phản hồi lỗi chỉ có status=error và message, thiếu code. Gateway bổ sung provider message giới hạn 300 ký tự, che access token, Basic credentials, OTP, số nhận và chuỗi số dài; không log toàn bộ response. Chỉ dùng để chẩn đoán local. Cần đọc thông báo thực tế trước khi đổi cấu hình sender hoặc API.

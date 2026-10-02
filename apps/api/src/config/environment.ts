@@ -1,11 +1,12 @@
 import { normalizeVietnamPhone, SpeedSmsConfig } from '../auth/sms/speedsms.gateway';
+import { normalizeTwilioPhone, TwilioVerifyConfig } from '../auth/sms/twilio-verify.gateway';
 
 export interface MockAuthConfig {
   mode: 'mock';
   phoneNumber: string;
   password: string;
   jwtSecret: string;
-  sms: { provider: 'mock' } | SpeedSmsConfig;
+  sms: { provider: 'mock' } | SpeedSmsConfig | TwilioVerifyConfig;
 }
 
 export interface Environment {
@@ -57,7 +58,22 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
     if (Buffer.byteLength(jwtSecret) < 32) { throw new Error('JWT_SECRET must contain at least 32 bytes'); }
     const smsProvider = env.SMS_PROVIDER ?? 'mock';
     let sms: MockAuthConfig['sms'] = { provider: 'mock' };
-    if (!['mock', 'speedsms'].includes(smsProvider)) { throw new Error('SMS_PROVIDER must be mock or speedsms'); }
+    if (!['mock', 'speedsms', 'twilio'].includes(smsProvider)) { throw new Error('SMS_PROVIDER must be mock, speedsms or twilio'); }
+    if (smsProvider === 'twilio') {
+      const accountSid = env.TWILIO_ACCOUNT_SID?.trim() ?? '';
+      const authToken = env.TWILIO_AUTH_TOKEN?.trim() ?? '';
+      const serviceSid = env.TWILIO_VERIFY_SERVICE_SID?.trim() ?? '';
+      const allowedPhone = env.SMS_ALLOWED_PHONE ?? '';
+      if (!/^AC[0-9a-fA-F]{32}$/.test(accountSid)) { throw new Error('TWILIO_ACCOUNT_SID must be an AC SID'); }
+      if (!/^[0-9a-fA-F]{32}$/.test(authToken)) { throw new Error('TWILIO_AUTH_TOKEN must contain 32 hexadecimal characters'); }
+      if (!/^VA[0-9a-fA-F]{32}$/.test(serviceSid)) { throw new Error('TWILIO_VERIFY_SERVICE_SID must be a VA SID'); }
+      if (normalizeTwilioPhone(allowedPhone) !== normalizeTwilioPhone(phoneNumber)) { throw new Error('SMS_ALLOWED_PHONE must match AUTH_TEST_PHONE'); }
+      const rawSmsTimeout = env.SMS_TIMEOUT_MS ?? '10000';
+      const timeoutMs = Number(rawSmsTimeout);
+      if (!/^\d+$/.test(rawSmsTimeout) || timeoutMs < 100 || timeoutMs > 30000) { throw new Error('SMS_TIMEOUT_MS must be between 100 and 30000'); }
+      if (!['true', 'false'].includes(env.LIVE_SMS_ENABLED ?? 'false')) { throw new Error('LIVE_SMS_ENABLED must be true or false'); }
+      sms = { provider: 'twilio', accountSid, authToken, serviceSid, allowedPhone, timeoutMs, liveEnabled: env.LIVE_SMS_ENABLED === 'true' };
+    }
     if (smsProvider === 'speedsms') {
       const accessToken = env.SPEEDSMS_ACCESS_TOKEN?.trim() ?? '';
       const allowedPhone = env.SMS_ALLOWED_PHONE ?? '';
