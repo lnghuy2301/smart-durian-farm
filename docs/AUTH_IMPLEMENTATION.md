@@ -8,7 +8,7 @@ Cập nhật 2026-10-02: provider SMS được chọn là **Twilio Verify**, sau
 
 Đăng ký, xác minh email thật qua SMTP, Manager Pending và Admin duyệt kèm HTX đã triển khai: xem [USERS_IMPLEMENTATION.md](USERS_IMPLEMENTATION.md). Phân quyền Farm và luồng duyệt được triển khai trong [FARMS_IMPLEMENTATION.md](FARMS_IMPLEMENTATION.md), dùng đúng Auth/user store chung. Không tạo bảng, migration/seed, ghi PostgreSQL/MongoDB hoặc thay ERD. Chưa refresh token, Auth production hoặc phân quyền Zone. Reset không mở khóa Locked và không kích hoạt Pending/Reject; email dự phòng reset sẽ làm sau.
 
-Nhánh Auth ban đầu: feat/auth từ main; SpeedSMS kế thừa Auth; Twilio kế thừa SpeedSMS; hiện tại feat/users-registration-approval kế thừa feat/twilio-verify. Không giả định các nhánh đã merge nếu chưa kiểm tra GitHub.
+Nhánh Auth ban đầu: feat/auth từ main; SpeedSMS kế thừa Auth; Twilio kế thừa SpeedSMS; USERS kế thừa Twilio. Nhánh tích hợp hiện tại là feat/farm-approval-workflow, gồm cả catalogs và Farm. Đọc [MODULE_HANDOFF.md](MODULE_HANDOFF.md) để biết thứ tự nhánh và trạng thái mới nhất; không giả định các nhánh đã merge nếu chưa kiểm tra remote.
 
 ## Cấu hình
 

@@ -2,6 +2,8 @@
 
 Nhánh `feat/agricultural-materials` kế thừa `feat/users-registration-approval` chưa merge. Đã fetch: origin/main hiện ở 7594c9d, mới có Auth ban đầu; không bỏ code USERS/Twilio khi tạo nhánh. Không tự merge. ERD XML/JSON đã đọc và khớp field AGRICULTURAL_MATERIALS.
 
+Thông tin nhánh/remote trên ghi nhận tại đợt Materials. Standards, Bridge và Farm đã triển khai sau đó; nhánh tích hợp hiện tại là feat/farm-approval-workflow, đạt 44/44 tests. Đọc MODULE_HANDOFF.md trước khi tiếp tục session; số 32/32 bên dưới là kết quả riêng của đợt Materials.
+
 Phạm vi: danh mục vật tư trong bộ nhớ, Admin tạo/sửa/ngừng dùng, mọi user Active đọc; không kho/tồn hàng, không tự đưa ra liều dùng hoặc dữ liệu canh tác thật. Chưa tạo bảng hoặc sửa ERD. Mỗi module tiếp theo có nhánh riêng kế thừa module trước.
 
 ## API và validation

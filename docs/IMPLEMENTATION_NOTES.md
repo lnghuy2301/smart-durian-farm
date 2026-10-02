@@ -39,7 +39,7 @@
 
 ## Auth and USERS — current state
 
-- Current branch feat/users-registration-approval builds on feat/twilio-verify. Read USERS_IMPLEMENTATION.md first for lifecycle, SMTP setup, API contracts and continuation. User confirmed backend Twilio SMS/password reset; preserve the four-request Twilio JSON file unchanged.
+- The USERS batch branch feat/users-registration-approval builds on feat/twilio-verify; the latest integrated branch is recorded at the top of this file and in MODULE_HANDOFF.md. Read USERS_IMPLEMENTATION.md for lifecycle, SMTP setup and API contracts. User confirmed backend Twilio SMS/password reset; preserve the four-request Twilio JSON file unchanged.
 - Updated ERD XML/JSON add USERS.gmail and gmail_verify. User accepts any valid email domain, one email per account. gmail_verify is proof of ownership set by backend, never a frontend boolean. Do not change edge attachment rows; user confirmed table-level relationships are intended.
 - Public Farmer registration is Active immediately; email optional. Manager verifies email through SMTP OTP, then registers Pending. Admin cannot register publicly and approves only Managers with Cooperative creation/assignment. Pending/Reject cannot log in or use protected APIs. Configure local Admin via AUTH_TEST_ADMIN_PHONE/PASSWORD; no database seed.
 - Nodemailer sends through configured mailbox SMTP credentials; Gmail requires an App Password/two-step verification. EMAIL_PROVIDER defaults to disabled until credentials are filled. No external email OTP API is required. SMTP acceptance is not inbox receipt; live email still needs user testing.

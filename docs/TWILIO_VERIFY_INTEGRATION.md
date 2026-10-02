@@ -6,6 +6,8 @@ Ngày 2026-10-02: người dùng xác nhận nhận SMS từ **Try out Verify** 
 
 Module USERS kế tiếp trên feat/users-registration-approval hỗ trợ nhiều tài khoản trong bộ nhớ (AUTH_MODE=mock), đăng ký và duyệt Manager với email/HTX: xem [USERS_IMPLEMENTATION.md](USERS_IMPLEMENTATION.md). Không migration, seed, ghi database hoặc sửa ERD. Restart xóa tài khoản đăng ký/HTX, khôi phục fixture mật khẩu cấu hình, xóa challenge và thu hồi session cũ. Chưa triển khai Auth production.
 
+Nhánh tích hợp mới nhất là feat/farm-approval-workflow, gồm USERS/catalogs/Farm; đọc [MODULE_HANDOFF.md](MODULE_HANDOFF.md). Farm có duyệt đối ứng, gia nhập thêm Manager chấp thuận và rời thông báo Manager qua API. Restart cũng xóa Farm/yêu cầu/thông báo trong bộ nhớ. Tích hợp này không thay đổi cấu hình hoặc bốn request Twilio.
+
 ## Các chỗ cần điền
 
 Sửa **.env tại root dự án**, không phải trong apps/api. Các khóa Twilio đã được thêm; điền credentials local rồi bật gửi thật:

@@ -2,7 +2,7 @@
 
 Nhánh `feat/farming-standards` kế thừa `feat/agricultural-materials`. Đã đọc ERD XML/JSON: FARMING_STANDARDS có id UUID, code varchar(40), name varchar(100), description text, certifying_body varchar(120), status Active/Inactive. Không tự thêm field/bảng hoặc gắn tiêu chuẩn ở cấp Farm; tiêu chuẩn sẽ gắn Zone ở module Zone sau.
 
-Phạm vi: danh mục tiêu chuẩn bộ nhớ, Admin tạo/sửa/Inactive, mọi user Active đọc. Bridge STANDARD_MATERIALS là module/branch kế tiếp; chưa làm ở nhánh này.
+Phạm vi của nhánh này: danh mục tiêu chuẩn bộ nhớ, Admin tạo/sửa/Inactive, mọi user Active đọc. Bridge STANDARD_MATERIALS và Farm đã được triển khai ở các nhánh kế tiếp. Đọc MODULE_HANDOFF.md để lấy nhánh tích hợp mới nhất; hiện là feat/farm-approval-workflow, đạt 44/44 tests. Kết quả kiểm thử bên dưới là của riêng đợt Standards.
 
 ## API
 
