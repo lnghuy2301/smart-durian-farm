@@ -58,3 +58,9 @@ Set AUTH_MODE=mock, NODE_ENV=development and AUTH_TEST_PHONE, AUTH_TEST_PASSWORD
 Import docs/postman/Auth-Local-Test.postman_collection.json and the Local environment. Run requests 01 through 11 in order. The SMS outbox is simulated; no real SMS is sent and no database tables or real account records are created. Restart the API before each full run to restore the original test password.
 
 See docs/AUTH_IMPLEMENTATION.md for endpoint contracts, OTP limits and session continuation notes.
+
+## Real SMS demo
+
+Read docs/SPEEDSMS_INTEGRATION.md. Keep AUTH_MODE=mock for in-memory accounts; configure SMS_PROVIDER=speedsms, a local access token, the approved SMS type/sender, SMS_ALLOWED_PHONE matching AUTH_TEST_PHONE, and LIVE_SMS_ENABLED=true. Mock defaults do not send paid SMS.
+
+Import the separate SpeedSMS-Demo collection/environment in docs/postman and run manually. Read the OTP from your phone and fill the environment variable otp. The mock SMS outbox returns 404 in real-provider mode. No new npm dependency, table or database write is required.

@@ -31,6 +31,8 @@
 
 ## Auth batch in progress
 
+- SpeedSMS integration branch feat/speedsms-integration builds on feat/auth. Account persistence is still mock; SMS provider can be real. Read SPEEDSMS_INTEGRATION.md for configuration, test results and continuation instructions. Never commit the user's real recipient or API token.
+
 - Branch feat/auth starts from updated main. Read AUTH_IMPLEMENTATION.md for current scope, pending decisions and continuation instructions.
 - User requires documentation during development and Vietnamese comments for difficult logic, including existing files. Ask before major schema/security/business-rule changes.
 - User clarified Auth scope: phone_number/password login and password reset with six-digit SMS OTP; test only, no database tables or real data. Implement in-memory fixture and local SMS outbox, not a USERS migration/seed.

@@ -1,5 +1,7 @@
 # Auth — đăng nhập và OTP ở chế độ test
 
+Update: feat/speedsms-integration adds optional SMS_PROVIDER=speedsms while keeping the account in memory. Read SPEEDSMS_INTEGRATION.md for real SMS setup; the mock-only descriptions below apply to SMS_PROVIDER=mock.
+
 ## Phạm vi
 
 Nhánh feat/auth tạo từ main sau hai PR foundation/database. Người dùng chốt phone_number/password và quên mật khẩu bằng OTP 6 chữ số; chỉ test, chưa tạo bảng/dữ liệu thật.
