@@ -11,10 +11,10 @@ import { UsersService } from './users.service';
 
 @Module({})
 export class UsersModule {
-  static forMock(config: MockAuthConfig): DynamicModule {
+  static forMock(config: MockAuthConfig, authModule: DynamicModule = AuthModule.forMock(config)): DynamicModule {
     return {
       module: UsersModule,
-      imports: [AuthModule.forMock(config)],
+      imports: [authModule],
       controllers: [RegistrationController, UsersController],
       providers: [
         UsersService, MockCooperativeStore, EmailVerificationService, AdminGuard,

@@ -1,5 +1,7 @@
 # Implementation plan
 
+Latest incremental progress is tracked in MODULE_HANDOFF.md. User now prioritizes low-dependency catalogs: Agricultural Materials → Farming Standards → Standard Materials before farm/IoT workflows with unresolved rules. Each is a separate branch with docs and manual JSON Postman. Continue in memory; stop and ask before missing critical rules or database/schema changes.
+
 ## Backend foundation batch
 
 Branch: feat/backend-foundation, based on main. Initialize only the NestJS API, configuration validation, liveness endpoint, Swagger and Postman collection. Implement business modules incrementally on separate branches after review.

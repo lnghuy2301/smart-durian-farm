@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Materials - Nhap JSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Nhập JSON trực tiếp. Login Admin, copy JWT vào Authorization các request. Sửa UUID bằng id response. Không scripts/environment. Dữ liệu ví dụ chỉ phục vụ test danh mục."
+  },
+  "item": [
+    {
+      "name": "01 Login Admin",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Khớp AUTH_TEST_ADMIN_PHONE/PASSWORD. Copy access_token vào Headers các request sau."
+      },
+      "response": []
+    },
+    {
+      "name": "02 Create material",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/materials",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Vat tu demo\",\n  \"material_type\": \"Fertilizer\",\n  \"default_dosage\": \"Thong tin mau\",\n  \"unit\": \"kg\",\n  \"quarantine_days\": 0,\n  \"status\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Admin. Copy id từ response 201."
+      },
+      "response": []
+    },
+    {
+      "name": "03 List materials",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/materials?limit=20&offset=0",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "description": "Mọi user Active; có thể thêm status=Active, material_type=Fertilizer, q."
+      },
+      "response": []
+    },
+    {
+      "name": "04 Material details",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/materials/11111111-1111-4111-8111-111111111111",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "description": "Thay UUID trên URL bằng material id từ 02."
+      },
+      "response": []
+    },
+    {
+      "name": "05 Update material",
+      "request": {
+        "method": "PATCH",
+        "url": "http://localhost:3000/api/materials/11111111-1111-4111-8111-111111111111",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Vat tu demo da sua\",\n  \"quarantine_days\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Admin; chỉ gửi field cần sửa."
+      },
+      "response": []
+    },
+    {
+      "name": "06 Deactivate material",
+      "request": {
+        "method": "PATCH",
+        "url": "http://localhost:3000/api/materials/11111111-1111-4111-8111-111111111111",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Admin. Giữ dữ liệu để không mất liên kết/lịch sử; không hard-delete."
+      },
+      "response": []
+    }
+  ]
+}

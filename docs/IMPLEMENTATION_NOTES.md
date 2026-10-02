@@ -1,5 +1,7 @@
 # Implementation notes
 
+- Read MODULE_HANDOFF.md first for the latest branch chain and current validation. Material catalog now runs on feat/agricultural-materials, based on USERS, using shared Auth and in-memory storage. Details: MATERIALS_IMPLEMENTATION.md. User requested simple modules first, each with its own branch/docs/Postman; stop at missing critical rules. Main fetched at 7594c9d only includes initial Auth; do not silently drop Twilio/USERS.
+
 - User authorizes incremental backend branches, commits and pushes, with a Postman JSON collection updated per module.
 - Keep the user's pending ERD and MQTT document edits outside backend commits.
 - Latest ERD uses COOPERATIVES.manager_id and ACTUATOR_TASKS. Manager reads Farms in the assigned Cooperative; backend checks the referenced user's Manager role.
