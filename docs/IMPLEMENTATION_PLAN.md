@@ -1,6 +1,6 @@
 # Implementation plan
 
-Latest incremental progress is tracked in MODULE_HANDOFF.md. User now prioritizes low-dependency catalogs: Agricultural Materials → Farming Standards → Standard Materials before farm/IoT workflows with unresolved rules. Each is a separate branch with docs and manual JSON Postman. Continue in memory; stop and ask before missing critical rules or database/schema changes.
+Latest progress is tracked in MODULE_HANDOFF.md. Agricultural Materials → Farming Standards → Standard Materials are implemented on three separate branches with docs/manual JSON Postman; 36 tests + lint/typecheck/build. Continue in memory. Before Farms/Cooperatives CRUD, stop to confirm owner/write permissions, HTX membership/join approval and Manager cardinality; later IoT/Cultivation has unresolved rules listed in notes. No database/schema changes without confirmation.
 
 ## Backend foundation batch
 

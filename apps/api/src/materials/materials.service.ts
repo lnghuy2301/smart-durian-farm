@@ -25,9 +25,10 @@ export class MaterialsService {
     return { ...material };
   }
 
-  list(query: MaterialListDto) {
+  list(query: MaterialListDto, allowedIds?: ReadonlySet<string>) {
     const search = query.q?.toLocaleLowerCase('vi') ?? '';
     const matches = [...this.materials.values()].filter((material) =>
+      (!allowedIds || allowedIds.has(material.id)) &&
       (!query.status || material.status === query.status) &&
       (!query.material_type || material.material_type === query.material_type) &&
       material.name.toLocaleLowerCase('vi').includes(search));

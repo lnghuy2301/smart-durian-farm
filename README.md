@@ -73,12 +73,16 @@ Read [docs/USERS_IMPLEMENTATION.md](docs/USERS_IMPLEMENTATION.md). Farmer regist
 
 Nodemailer has been added for real verification email. Configure SMTP_USER/PASSWORD/FROM and EMAIL_PROVIDER=smtp in the root .env; Gmail sending requires an App Password. Recipient email can use any valid domain. Configure AUTH_TEST_ADMIN_PHONE/PASSWORD for the local Admin fixture. Preserve existing Twilio credentials. Profile email preferences and password-reset email fallback are future work.
 
-Import **docs/postman/Users-Local-Test.postman_collection.json**, open **Smart Durian Farm - Users - Nhap JSON**, and edit JSON directly. Copy verification_id, the emailed OTP, verification token, Manager id and Admin JWT manually as instructed in each request. No scripts or environment variables are required. The four-request Twilio collection is unchanged. Run lint/typecheck/build/tests as above; current automated suite has 29 passing tests using fake transports, without sending real email/SMS.
+Import **docs/postman/Users-Local-Test.postman_collection.json**, open **Smart Durian Farm - Users - Nhap JSON**, and edit JSON directly. Copy verification_id, the emailed OTP, verification token, Manager id and Admin JWT manually as instructed in each request. No scripts or environment variables are required. The four-request Twilio collection is unchanged. USERS originally passed 29 automated tests; see MODULE_HANDOFF.md for the latest full-suite result, using fake transports without sending real email/SMS.
 
 ## Agricultural materials catalog
 
-Admin can create/update/deactivate materials; Active users can read and search with pagination. Data stays in memory, without inventory management. See [docs/MATERIALS_IMPLEMENTATION.md](docs/MATERIALS_IMPLEMENTATION.md). Import docs/postman/Materials-Local-Test.postman_collection.json; edit literal JSON and paste the login JWT into Authorization. No new dependencies; current batch has 32 passing tests.
+Admin can create/update/deactivate materials; Active users can read and search with pagination. Data stays in memory, without inventory management. See [docs/MATERIALS_IMPLEMENTATION.md](docs/MATERIALS_IMPLEMENTATION.md). Import docs/postman/Materials-Local-Test.postman_collection.json; edit literal JSON and paste the login JWT into Authorization. No new dependencies.
 
 ## Farming standards catalog
 
-The same Admin-write/Active-user-read rules apply to standards. See [docs/STANDARDS_IMPLEMENTATION.md](docs/STANDARDS_IMPLEMENTATION.md) and import docs/postman/Standards-Local-Test.postman_collection.json. Standards will attach to Zones when that module is implemented. Latest suite: 34 passing tests; no new dependency or database write.
+The same Admin-write/Active-user-read rules apply to standards. See [docs/STANDARDS_IMPLEMENTATION.md](docs/STANDARDS_IMPLEMENTATION.md) and import docs/postman/Standards-Local-Test.postman_collection.json. Standards will attach to Zones when that module is implemented; no new dependency or database write.
+
+## Standard-material links
+
+Admin can add/remove mappings between existing standards and materials; Active users can read a standard's materials. Both catalogs use shared stores and stay intact when a link is removed. Read [docs/STANDARD_MATERIALS_IMPLEMENTATION.md](docs/STANDARD_MATERIALS_IMPLEMENTATION.md), import docs/postman/Standard-Materials-Local-Test.postman_collection.json and follow its six JSON requests. Checkout feat/standard-materials for all modules. Latest validation: lint/typecheck/build and **36 passing tests**; fake providers send no mail/SMS. Farm ownership/Cooperative membership rules require user confirmation before the next business modules.

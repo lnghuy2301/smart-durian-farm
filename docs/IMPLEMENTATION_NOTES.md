@@ -1,5 +1,7 @@
 # Implementation notes
 
+- Standard Materials complete on feat/standard-materials, based on Farming Standards. Latest validation 36 tests + lint/typecheck/build; STANDARD_MATERIALS_IMPLEMENTATION.md and MODULE_HANDOFF.md document shared catalog instances, FK/duplicate checks and manual Postman. Status changes preserve mappings; catalog configuration is separate from future cultivation eligibility. Stop before Farms/new Cooperatives workflows until ownership/write permissions, mandatory HTX membership, join/leave approval and Manager cardinality are confirmed.
+
 - Farming Standards implemented on feat/farming-standards, based on Materials. Read STANDARDS_IMPLEMENTATION.md and MODULE_HANDOFF.md. CatalogListDto moved to src/catalog for shared bounded queries; no duplicate Auth/users stores. Current validation: 34 tests + lint/typecheck/build. Standards code/name uniqueness is not invented; use UUID references and confirm DB constraints later.
 
 - Read MODULE_HANDOFF.md first for the latest branch chain and current validation. Material catalog now runs on feat/agricultural-materials, based on USERS, using shared Auth and in-memory storage. Details: MATERIALS_IMPLEMENTATION.md. User requested simple modules first, each with its own branch/docs/Postman; stop at missing critical rules. Main fetched at 7594c9d only includes initial Auth; do not silently drop Twilio/USERS.

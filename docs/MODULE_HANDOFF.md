@@ -13,8 +13,11 @@ Tất cả nghiệp vụ hiện lưu trong bộ nhớ. Chưa tạo bảng/seed/c
 | USERS | feat/users-registration-approval ← feat/twilio-verify | USERS_IMPLEMENTATION.md | Users-Local-Test |
 | Vật tư | feat/agricultural-materials ← USERS | MATERIALS_IMPLEMENTATION.md | Materials-Local-Test |
 | Tiêu chuẩn | feat/farming-standards ← Vật tư | STANDARDS_IMPLEMENTATION.md | Standards-Local-Test |
+| Liên kết tiêu chuẩn–vật tư | feat/standard-materials ← Tiêu chuẩn | STANDARD_MATERIALS_IMPLEMENTATION.md | Standard-Materials-Local-Test |
 
-Vật tư và Tiêu chuẩn đã triển khai Admin tạo/sửa/Inactive, user Active đọc, filter/search/pagination. Không kho/tồn hàng. Tiêu chuẩn gắn Zone ở module Zone sau, không gắn Farm. **34/34 tests + lint/typecheck/build**. Tiếp theo Standard Materials, nhánh riêng, cùng cơ chế danh mục Admin quản lý. Hai danh mục không hard-delete và không tự tạo UNIQUE tên/code ngoài ERD.
+Vật tư/Tiêu chuẩn có Admin tạo/sửa/Inactive và user Active đọc/search/pagination. Bridge có Admin gắn/bỏ gắn, user Active đọc theo tiêu chuẩn; kiểm tra FK/cặp duy nhất và dùng đúng cùng store catalogs. Không kho/tồn hàng. Tiêu chuẩn gắn Zone sau, không gắn Farm. **36/36 tests + lint/typecheck/build**. Hai catalog không hard-delete, không tự tạo UNIQUE tên/code ngoài ERD. Module Standard Materials hoàn tất; dừng trước Farms/Cooperatives mới để hỏi quyền/quy trình HTX chưa rõ.
+
+Checkout feat/standard-materials để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
 
 ## Tái lập ở session khác
 

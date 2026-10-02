@@ -38,6 +38,76 @@ async function setup() {
   return { app, request, login };
 }
 
+test('Standard Materials shares live catalogs, validates FK/pair uniqueness and scopes reads', async () => {
+  const { app, request, login } = await setup();
+  try {
+    const admin = await login(env.AUTH_TEST_ADMIN_PHONE, env.AUTH_TEST_ADMIN_PASSWORD);
+    const farmer = await login(env.AUTH_TEST_PHONE, env.AUTH_TEST_PASSWORD);
+    const standardResponse = await request('standards', 'POST', standard, admin);
+    const standardId = (await standardResponse.json() as { id: string }).id;
+    const materialResponse = await request('materials', 'POST', material, admin);
+    const materialId = (await materialResponse.json() as { id: string }).id;
+    const otherStandard = app.get(StandardsService).create({ ...standard, code: 'OTHER' });
+    app.get(MaterialsService).create({ ...material, name: 'Unlinked material' });
+    const path = `standards/${standardId}/materials`;
+    assert.equal((await request(path)).status, 401);
+    assert.equal((await request(path, 'POST', { material_id: materialId }, farmer)).status, 403);
+    for (const invalid of [{ material_id: 'bad' }, { material_id: materialId, default_dosage: 'extra' }, {}]) {
+      assert.equal((await request(path, 'POST', invalid, admin)).status, 400);
+    }
+    assert.equal((await request(path, 'POST', { material_id: randomUUID() }, admin)).status, 404);
+    assert.equal((await request(`standards/${randomUUID()}/materials`, 'POST', { material_id: materialId }, admin)).status, 404);
+    const competing = await Promise.all([
+      request(path, 'POST', { material_id: materialId }, admin),
+      request(path, 'POST', { material_id: materialId }, admin),
+    ]);
+    assert.deepEqual(competing.map((result) => result.status).sort(), [201, 409]);
+    const list = await request(path, 'GET', undefined, farmer);
+    const body = await list.json() as { standard_id: string; total: number; items: { id: string }[] };
+    assert.equal(body.standard_id, standardId);
+    assert.equal(body.total, 1);
+    assert.equal(body.items[0].id, materialId);
+    const otherList = await request(`standards/${otherStandard.id}/materials`, 'GET', undefined, farmer);
+    assert.equal((await otherList.json() as { total: number }).total, 0);
+    assert.equal((await request(`standards/${otherStandard.id}/materials`, 'POST', { material_id: materialId }, admin)).status, 201, 'N:N allows same material in another standard');
+  } finally { await app.close(); }
+});
+
+test('Bridge filter/status keep stored relationships; deleting link preserves both catalogs', async () => {
+  const { app, request, login } = await setup();
+  try {
+    const admin = await login(env.AUTH_TEST_ADMIN_PHONE, env.AUTH_TEST_ADMIN_PASSWORD);
+    const farmer = await login(env.AUTH_TEST_PHONE, env.AUTH_TEST_PASSWORD);
+    const standards = app.get(StandardsService);
+    const materials = app.get(MaterialsService);
+    const currentStandard = standards.create(standard);
+    const first = materials.create(material);
+    const second = materials.create({ ...material, name: 'Sinh học', material_type: 'Biological' });
+    const path = `standards/${currentStandard.id}/materials`;
+    assert.equal((await request(path, 'POST', { material_id: first.id }, admin)).status, 201);
+    assert.equal((await request(path, 'POST', { material_id: second.id }, admin)).status, 201);
+    materials.update(first.id, { status: 'Inactive', name: 'Đã sửa' });
+    standards.update(currentStandard.id, { status: 'Inactive' });
+    const filtered = await request(`${path}?status=Inactive&limit=1&offset=0`, 'GET', undefined, farmer);
+    const body = await filtered.json() as { total: number; items: { name: string }[] };
+    assert.equal(body.total, 1);
+    assert.equal(body.items[0].name, 'Đã sửa');
+    const all = await request(path, 'GET', undefined, farmer);
+    assert.equal((await all.json() as { total: number }).total, 2);
+    assert.equal((await request(`${path}?material_type=Biological`, 'GET', undefined, farmer)).status, 200);
+    assert.equal((await request(`${path}?limit=101`, 'GET', undefined, farmer)).status, 400);
+    assert.equal((await request(`${path}/${first.id}`, 'DELETE', undefined, farmer)).status, 403);
+    const removed = await request(`${path}/${first.id}`, 'DELETE', undefined, admin);
+    assert.equal(removed.status, 204);
+    assert.equal(await removed.text(), '');
+    assert.equal((await request(`${path}/${first.id}`, 'DELETE', undefined, admin)).status, 404);
+    assert.equal(materials.get(first.id).status, 'Inactive');
+    assert.equal(standards.get(currentStandard.id).status, 'Inactive');
+    const remaining = await request(path, 'GET', undefined, farmer);
+    assert.equal((await remaining.json() as { total: number }).total, 1);
+  } finally { await app.close(); }
+});
+
 test('Standards Admin lifecycle preserves fields and status; Active Farmer can only read', async () => {
   const { app, request, login } = await setup();
   try {
