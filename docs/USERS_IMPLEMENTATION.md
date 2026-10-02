@@ -20,7 +20,7 @@ Không tạo bảng, migration/seed DB hoặc sửa ERD. ERD XML/JSON đều đ�
 - Manager phải xác minh email trước khi tạo; khi đăng ký là Pending, gmail_verify=true. Pending/Reject không được cấp JWT hoặc truy cập API yêu cầu đăng nhập. Admin không đăng ký công khai.
 - Admin approve phải tạo/gắn HTX ngay; chỉ duyệt Manager Pending đã xác minh email. Reject giữ email/phone trong store; chưa có luồng nộp lại hoặc chuyển Manager giữa HTX.
 - Restart xóa tài khoản đăng ký, HTX, challenge/proof; khôi phục Farmer/Admin fixture và mật khẩu từ .env. UUID mới làm JWT trước restart hết hiệu lực.
-- Profile Farmer, tùy chọn nhận OTP email và email dự phòng reset làm sau. Email OTP hiện chỉ xác minh email đăng ký; quên mật khẩu vẫn dùng Twilio/mock SMS. Phạm vi Manager chỉ xem Farm trong HTX sẽ được áp dụng khi triển khai module Farm.
+- Profile Farmer, tùy chọn nhận OTP email và email dự phòng reset làm sau. Email OTP hiện chỉ xác minh email đăng ký; quên mật khẩu vẫn dùng Twilio/mock SMS. Phạm vi Manager đọc Farm trong HTX mình và xét gia nhập đã được áp dụng trong module Farm; xem FARMS_IMPLEMENTATION.md. is_owner chỉ thành true khi Farm được chấp nhận, không do client đặt.
 
 ## Cấu hình email thật
 
@@ -137,7 +137,7 @@ Hoặc gắn HTX chưa có Manager bằng `{"cooperative_id":"<UUID HTX>"}`, kh�
 - users/email/email.sender.ts: SMTP/TLS, timeout, làm gọn lỗi và không log credentials/OTP/recipient. SMTP accepted chỉ nghĩa là server gửi chấp nhận, chưa bảo đảm inbox nhận; nhập đúng OTP mới chứng minh sở hữu email.
 - users/email/email-verification.service.ts: OTP crypto 6 số, chỉ lưu hash có salt; gắn phone/email/verification_id, hạn 10 phút từ lúc yêu cầu gửi, tối đa 5 lần nhập sai, cooldown 60 giây. Token xác minh ngẫu nhiên, lưu hash, dùng một lần trong thời hạn còn lại. Gửi lại thay challenge/token trước đó.
 - users/users.service.ts: kiểm tra lại uniqueness/proof sau await hash; ghi account và consume proof đồng bộ, tránh đăng ký đồng thời. Approve tạo/gắn HTX trước khi đổi status; cả khối không có await nên lỗi giữ Pending. Chưa phải transaction DB.
-- users/mock-cooperative.store.ts: không ghi đè Manager hiện tại, không trùng số chứng nhận để tránh tạo lại cùng HTX trong demo. Đây là quy tắc store, chưa thêm UNIQUE database. Tên/giám đốc tối đa 40, chứng nhận 24, địa chỉ 255; yêu cầu đủ thông tin khi Admin tạo HTX.
+- users/mock-cooperative.store.ts: không ghi đè Manager hiện tại, một Manager chỉ quản lý một HTX; không trùng số chứng nhận để tránh tạo lại cùng HTX trong demo. Store trả bản sao để không sửa manager_id từ object trả về. Đây là quy tắc store, chưa thêm UNIQUE database. Tên/giám đốc tối đa 40, chứng nhận 24, địa chỉ 255; yêu cầu đủ thông tin khi Admin tạo HTX. USERS và Farms dùng cùng store HTX.
 - users/admin.guard.ts và service kiểm tra Admin Active. DTO/ValidationPipe từ chối field ngoài contract, Admin role công khai, email/OTP/UUID sai hoặc HTX thiếu thông tin. Swagger ở /api/docs.
 
 Giới hạn mỗi process: 20 login/phút, 5 forgot/phút, 5 register/phút, 5 gửi email/phút, 20 verify email/phút; tối đa 100 users, 100 HTX, 100 email challenges chưa hết hạn. Đây là giới hạn test để chặn gửi lặp và giữ bộ nhớ hữu hạn. HTTP 429: đợi cửa sổ tiếp theo. Không tự retry SMTP/SMS.

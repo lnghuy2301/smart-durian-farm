@@ -1,6 +1,6 @@
 # Implementation plan
 
-Latest progress is tracked in MODULE_HANDOFF.md. Agricultural Materials → Farming Standards → Standard Materials are implemented on three separate branches with docs/manual JSON Postman; 36 tests + lint/typecheck/build. Continue in memory. Before Farms/Cooperatives CRUD, stop to confirm owner/write permissions, HTX membership/join approval and Manager cardinality; later IoT/Cultivation has unresolved rules listed in notes. No database/schema changes without confirmation.
+Latest progress is tracked in MODULE_HANDOFF.md. Agricultural Materials → Farming Standards → Standard Materials → Farms are implemented on separate branches with docs/manual JSON Postman; 44 tests + lint/typecheck/build. Continue in memory. Farm changes use reciprocal Admin/owner approval; joining additionally needs Manager approval, leaving records a Manager notification. One Manager manages one Cooperative; membership is optional. Before Zones/USERS_ZONES, clarify write/assignment permissions and whether those changes need reciprocal approval. Later IoT/Cultivation has unresolved rules in notes. No database/schema changes without confirmation.
 
 ## Backend foundation batch
 

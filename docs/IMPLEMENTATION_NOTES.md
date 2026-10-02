@@ -1,6 +1,8 @@
 # Implementation notes
 
-- Standard Materials complete on feat/standard-materials, based on Farming Standards. Latest validation 36 tests + lint/typecheck/build; STANDARD_MATERIALS_IMPLEMENTATION.md and MODULE_HANDOFF.md document shared catalog instances, FK/duplicate checks and manual Postman. Status changes preserve mappings; catalog configuration is separate from future cultivation eligibility. Stop before Farms/new Cooperatives workflows until ownership/write permissions, mandatory HTX membership, join/leave approval and Manager cardinality are confirmed.
+- Farms complete on feat/farm-approval-workflow from feat/standard-materials (113da8f): reciprocal Admin/owner-Farmer creation/update approval; joining additionally requires the target Cooperative Manager; leaving requires only the counterpart, then records a Manager notification. User confirmed optional membership, one Manager per Cooperative and separate in-memory requests; is_owner changes only after accepted creation. 44/44 tests + lint/typecheck/build pass, no real messages/DB writes. Read FARMS_IMPLEMENTATION.md, FARMS_WORKFLOW_DESIGN.md and the 18-request manual JSON Postman collection. Shared HTX store now enforces Manager cardinality and returns copies; USERS test reads current store after assignment. Metadata does not authorize new database tables. Stop to clarify Zone/assignment permissions before the next dependent module.
+
+- Earlier Standard Materials batch on feat/standard-materials, based on Farming Standards, passed 36 tests + lint/typecheck/build; STANDARD_MATERIALS_IMPLEMENTATION.md documents shared catalog instances and FK/duplicate checks. Status changes preserve mappings; catalog configuration is separate from future cultivation eligibility. Its Farm questions were subsequently answered and implemented in the latest batch above.
 
 - Farming Standards implemented on feat/farming-standards, based on Materials. Read STANDARDS_IMPLEMENTATION.md and MODULE_HANDOFF.md. CatalogListDto moved to src/catalog for shared bounded queries; no duplicate Auth/users stores. Current validation: 34 tests + lint/typecheck/build. Standards code/name uniqueness is not invented; use UUID references and confirm DB constraints later.
 
@@ -8,7 +10,7 @@
 
 - User authorizes incremental backend branches, commits and pushes, with a Postman JSON collection updated per module.
 - Keep the user's pending ERD and MQTT document edits outside backend commits.
-- Latest ERD uses COOPERATIVES.manager_id and ACTUATOR_TASKS. Manager reads Farms in the assigned Cooperative; backend checks the referenced user's Manager role.
+- Latest ERD uses COOPERATIVES.manager_id and ACTUATOR_TASKS. Manager reads Farms in the assigned Cooperative and additionally approves joining that Cooperative; backend checks the referenced user's Manager role. Admin is the counterpart for owner-Farmer creation/update/membership proposals. Leaving notifies Manager without asking their approval.
 - ACTUATORS.status means operational availability, not relay on/off.
 - Farmer controls watering/spraying and records/edits harvests within assigned Zones; only the original author can correct a cultivation event.
 - Assignment intervals use [start_date, end_date); backend and PostgreSQL constraints prevent overlapping assignments to a Zone.
@@ -24,7 +26,7 @@
 - Latest ERD review confirms the cultivation deadline label is now lock_at; the earlier spelling issue is resolved.
 - ERD uses AI_DISEASE_DIAGNOSTICS rather than the spec's AI_LEAF_DIAGNOSIS; use ERD naming when AI is implemented.
 - Preserve enum capitalization from ERD. Resolve command_id generation, timeout representation, late/duplicate short ACKs and physical-button echo with firmware before IoT.
-- Confirm Manager relationship cardinality, nullability, uniqueness and deletion rules before migrations.
+- Manager cardinality confirmed on 2026-10-02 and enforced in the shared Cooperative store: one Manager manages one Cooperative. Verify nullability, uniqueness and deletion rules before migrations, including the storage of Farm approval requests/notifications approved only for in-memory testing so far.
 - Clarify author corrections after assignment ends and historical Tree/Device/Standard movement before relevant business modules.
 
 ## Database connection batch

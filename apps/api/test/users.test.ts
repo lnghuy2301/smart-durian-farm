@@ -208,11 +208,12 @@ test('Approval failures leave Manager Pending; existing HTX assignment cannot re
     assert.equal(store.findById(first.id)!.status, 'Pending');
     assert.equal(existing.manager_id, null);
     users.approve(admin.id, first.id, { cooperative_id: existing.id });
-    assert.equal(existing.manager_id, first.id);
+    // Store trả bản sao; đọc lại dữ liệu chính thức để kiểm tra việc gắn Manager.
+    assert.equal(cooperatives.get(existing.id).manager_id, first.id);
     const second = await createManager('0900000003', 'second@example.net');
     assert.throws(() => users.approve(admin.id, second.id, { cooperative_id: existing.id }));
     assert.equal(store.findById(second.id)!.status, 'Pending');
-    assert.equal(existing.manager_id, first.id);
+    assert.equal(cooperatives.get(existing.id).manager_id, first.id);
     admin.status = 'Locked';
     assert.throws(() => users.reject(admin.id, second.id));
   } finally { await app.close(); }

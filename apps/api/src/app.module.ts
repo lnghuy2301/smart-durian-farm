@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { MaterialsModule } from './materials/materials.module';
 import { StandardsModule } from './standards/standards.module';
 import { StandardMaterialsModule } from './standard-materials/standard-materials.module';
+import { FarmsModule } from './farms/farms.module';
 
 @Module({})
 export class AppModule {
@@ -15,13 +16,15 @@ export class AppModule {
       // Dùng cùng instance dynamic module để JWT và user đăng ký được thấy ở mọi module.
       // Tạo AuthModule.forMock nhiều lần sẽ tạo các store bộ nhớ độc lập trong Nest 11.
       const authModule = AuthModule.forMock(config.auth);
+      const usersModule = UsersModule.forMock(config.auth, authModule);
       const materialsModule = MaterialsModule.forMock(authModule);
       const standardsModule = StandardsModule.forMock(authModule);
       imports.push(
-        UsersModule.forMock(config.auth, authModule),
+        usersModule,
         materialsModule,
         standardsModule,
         StandardMaterialsModule.forMock(authModule, materialsModule, standardsModule),
+        FarmsModule.forMock(authModule, usersModule),
       );
     }
     return { module: AppModule, imports };

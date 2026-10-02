@@ -19,7 +19,7 @@ export function configureApplication(app: INestApplication, config: Environment)
   app.enableShutdownHooks();
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Smart Durian Farm API')
-    .setDescription('Health checks API/database connectivity. Local Auth/Users supports phone login, SMS reset, SMTP email verification and Admin approval of Managers with Cooperatives; accounts remain in memory.')
+    .setDescription('Local in-memory Auth/Users, catalogs and Farms. Farm changes require Admin–owner approval; joining a Cooperative additionally requires its Manager. Leaving notifies the Manager. Database readiness checks connectivity only.')
     .setVersion('0.1.0')
     .addBearerAuth()
     .build();

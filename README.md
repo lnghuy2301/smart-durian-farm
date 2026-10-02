@@ -85,4 +85,12 @@ The same Admin-write/Active-user-read rules apply to standards. See [docs/STANDA
 
 ## Standard-material links
 
-Admin can add/remove mappings between existing standards and materials; Active users can read a standard's materials. Both catalogs use shared stores and stay intact when a link is removed. Read [docs/STANDARD_MATERIALS_IMPLEMENTATION.md](docs/STANDARD_MATERIALS_IMPLEMENTATION.md), import docs/postman/Standard-Materials-Local-Test.postman_collection.json and follow its six JSON requests. Checkout feat/standard-materials for all modules. Latest validation: lint/typecheck/build and **36 passing tests**; fake providers send no mail/SMS. Farm ownership/Cooperative membership rules require user confirmation before the next business modules.
+Admin can add/remove mappings between existing standards and materials; Active users can read a standard's materials. Both catalogs use shared stores and stay intact when a link is removed. Read [docs/STANDARD_MATERIALS_IMPLEMENTATION.md](docs/STANDARD_MATERIALS_IMPLEMENTATION.md), import docs/postman/Standard-Materials-Local-Test.postman_collection.json and follow its six JSON requests.
+
+## Farms and Cooperative membership
+
+Farm creation/updates require reciprocal Admin–owner-Farmer approval. Joining also requires the target Cooperative Manager; leaving only notifies that Manager after counterpart approval. Changes stay separate from official Farms until accepted. A Manager manages one Cooperative and reads only its member Farms; a Farmer reads owned Farms. Data, pending requests and Manager notifications remain in memory without schema changes.
+
+Read [docs/FARMS_IMPLEMENTATION.md](docs/FARMS_IMPLEMENTATION.md) and import **docs/postman/Farms-Local-Test.postman_collection.json**. Its 18 requests use literal URLs/JSON and manually pasted JWT/UUID values; no scripts/environment are needed. Creation/update tests need Farmer/Admin only; membership tests need a Manager previously email-verified and approved through USERS. Manager notifications are read through `/api/farm-notifications`. No additional npm install is required.
+
+Checkout feat/farm-approval-workflow for the integrated modules. Latest validation: lint/typecheck/build and **44 passing tests**, using fake transports without sending mail/SMS or writing database records. Before the next Zone/assignment module, confirm write/assignment permissions; persistent approval/notification storage needs an ERD decision.

@@ -173,6 +173,14 @@ vào Zone liên quan.
 
 Manager/Admin chỉ đọc cultivation logs.
 
+### Quyết định Farm/HTX cập nhật ngày 2026-10-02
+
+- Admin tạo/sửa Farm phải được chủ Farmer chấp nhận; chủ Farmer tạo/sửa phải được Admin duyệt. is_owner chỉ thành true khi Farm được chấp nhận, không nhận từ frontend.
+- Farm có thể chưa thuộc HTX. Gia nhập cần duyệt đối ứng như trên **và** Manager HTX chấp thuận; rời giữ duyệt đối ứng, chỉ thông báo Manager sau khi hoàn tất, không cần Manager duyệt.
+- Một Manager quản lý một HTX. Manager đọc Farm thuộc HTX mình và xét gia nhập; không tạo/sửa Farm.
+- Yêu cầu duyệt và thông báo hiện lưu riêng trong bộ nhớ, chỉ áp dụng Farm sau khi đủ duyệt. Thiết kế nơi lưu lâu dài phải chốt ERD trước khi tạo bảng. Xem FARMS_IMPLEMENTATION.md và MODULE_HANDOFF.md.
+- Quyền tạo/sửa Zone và phân công Farmer chưa chốt; không tự suy từ quyền thay đổi Farm.
+
 ------------------------------------------------------------------------
 
 ## 6. Zone assignment

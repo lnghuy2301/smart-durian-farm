@@ -6,7 +6,7 @@ Cập nhật 2026-10-02: provider SMS được chọn là **Twilio Verify**, sau
 
 Đăng nhập bằng phone_number/password, quên mật khẩu qua OTP 6 chữ số. Nhiều tài khoản ở bộ nhớ: Farmer fixture từ .env, Admin fixture nếu cấu hình, và Farmer/Manager đăng ký qua API. AUTH_MODE=mock chỉ chạy development/test và bind 127.0.0.1. Restart xóa tài khoản đăng ký/HTX, khôi phục fixture password, xóa state/challenge và làm token cũ mất hiệu lực. SMS có thể thật khi SMS_PROVIDER=twilio nhưng **tài khoản vẫn mock**.
 
-Đăng ký, xác minh email thật qua SMTP, Manager Pending và Admin duyệt kèm HTX đã triển khai: xem [USERS_IMPLEMENTATION.md](USERS_IMPLEMENTATION.md). Không tạo bảng, migration/seed, ghi PostgreSQL/MongoDB hoặc thay ERD. Chưa refresh token, Auth production hoặc phân quyền Farm/Zone. Reset không mở khóa Locked và không kích hoạt Pending/Reject; email dự phòng reset sẽ làm sau.
+Đăng ký, xác minh email thật qua SMTP, Manager Pending và Admin duyệt kèm HTX đã triển khai: xem [USERS_IMPLEMENTATION.md](USERS_IMPLEMENTATION.md). Phân quyền Farm và luồng duyệt được triển khai trong [FARMS_IMPLEMENTATION.md](FARMS_IMPLEMENTATION.md), dùng đúng Auth/user store chung. Không tạo bảng, migration/seed, ghi PostgreSQL/MongoDB hoặc thay ERD. Chưa refresh token, Auth production hoặc phân quyền Zone. Reset không mở khóa Locked và không kích hoạt Pending/Reject; email dự phòng reset sẽ làm sau.
 
 Nhánh Auth ban đầu: feat/auth từ main; SpeedSMS kế thừa Auth; Twilio kế thừa SpeedSMS; hiện tại feat/users-registration-approval kế thừa feat/twilio-verify. Không giả định các nhánh đã merge nếu chưa kiểm tra GitHub.
 
