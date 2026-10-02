@@ -49,19 +49,21 @@ Không cần thêm thư viện/npm install cho thay đổi này: adapter dùng H
 
 ## Cách test Postman
 
-1. Import docs/postman/**Twilio-Verify-Demo.postman_collection.json** và **Twilio-Verify-Demo.postman_environment.json**.
-2. Chọn environment **Smart Durian Farm - Twilio Verify Demo**. Điền test_phone bằng AUTH_TEST_PHONE, test_password bằng AUTH_TEST_PASSWORD, reset_password là mật khẩu mới. base_url mặc định http://localhost:3000. Login tự lưu access_token.
-3. Gửi **01 Login**, mong đợi 200. Chưa login được thì chưa gửi OTP; kiểm tra phone/password và restart API.
-4. Gửi **02 Send real OTP**, mong đợi 202. Có thể dùng quota trial hoặc phát sinh phí. Chạy từng request bằng Send; không dùng Runner để tự động gửi SMS.
-5. **03 Mock SMS unavailable** phải trả 404. Nhận OTP từ điện thoại, điền 6 chữ số vào biến otp trong environment; giữ số 0 đầu.
-6. Gửi **04 Reset**, mong đợi 200. Chỉ dùng mã gửi bởi request 02 của API này; mã từ Try out Verify trước đó không tự tạo challenge trong backend.
-7. Chạy 05→09: JWT cũ bị từ chối → OTP dùng lại bị từ chối → password cũ bị từ chối → login password mới → me.
+Import duy nhất **docs/postman/Twilio-Verify-Demo.postman_collection.json**. Mở collection tên **Smart Durian Farm - Twilio Verify - Nhap JSON** để tránh nhầm bản cũ. Không cần import/chọn Environment. Collection có URL localhost trực tiếp, không Scripts, biến hoặc tự động lưu token.
 
-phone_number nằm ở **Body → raw → JSON**. Có thể dùng {{test_phone}} từ environment hoặc nhập trực tiếp chuỗi số điện thoại; password/otp cũng có thể nhập trực tiếp. Collection không bắt buộc biến test_phone/otp nếu Body đã có dữ liệu. Nếu dùng placeholder thì phải điền biến tương ứng. Backend kiểm tra Body bằng DTO. Không điền phone_number ở Params của POST. Sau reset muốn chạy lại từ đầu: restart API và xóa biến otp trước khi gửi mới.
+Mỗi request: chọn **Body → raw → JSON**, nhập dữ liệu rồi Send. Thay số ví dụ 0900000000 bằng đúng AUTH_TEST_PHONE trong .env.
 
-Nếu đã import phiên bản cũ và thấy lỗi pre-request "Fill environment test_phone…": chọn collection **Smart Durian Farm - Twilio Verify Demo** → Scripts → Pre-request, xóa script kiểm tra phone/otp ở cấp collection và Save; hoặc import lại collection đã cập nhật. Sửa file JSON trong dự án không tự cập nhật bản đã import trong Postman.
+1. **01 Dang nhap**: nhập phone_number và password hiện tại (AUTH_TEST_PASSWORD khi vừa restart); mong đợi 200.
+2. **02 Gui OTP qua SMS**: nhập phone_number rồi Send; mong đợi 202. Chỉ gửi khi cần mã, không chạy Runner; request này dùng quota/chi phí SMS.
+3. **03 Nhap OTP va doi mat khau**: nhập phone_number, otp nhận trên điện thoại và new_password; mong đợi 200. OTP để trong dấu ngoặc kép, đủ 6 chữ số; thay mã mẫu 000000. Không dùng mã từ Try out Verify trước đó.
+4. **04 Dang nhap bang mat khau moi**: nhập phone_number và password vừa đặt ở bước 03; mong đợi 200. Giá trị mẫu của mật khẩu mới ở hai request giống nhau; nếu đổi, tự nhập lại ở bước 04.
 
-Để test không tốn SMS: đổi SMS_PROVIDER=mock, restart API, dùng Auth-Local-Test collection + Local environment (đồng bộ phone/password). Không chạy collection mock khi backend dùng Twilio.
+Sau khi reset thành công, password cũ không còn dùng được; restart API sẽ khôi phục AUTH_TEST_PASSWORD. OTP có deadline 5 phút, gửi lại cách nhau ít nhất 60 giây. Không restart API giữa gửi mã và reset vì challenge ở bộ nhớ.
+
+Nếu bản đã import còn báo lỗi pre-request, đó là collection cũ. Import file mới và dùng collection **Nhap JSON**; thay đổi file trong dự án không tự cập nhật bản đã import.
+
+File Twilio-Verify-Demo.postman_environment.json cũ không cần cho luồng này. Auth-Local-Test + Local environment là bộ kiểm thử mock tự động riêng; chỉ dùng khi SMS_PROVIDER=mock.
+
 
 ## Luồng và giới hạn
 

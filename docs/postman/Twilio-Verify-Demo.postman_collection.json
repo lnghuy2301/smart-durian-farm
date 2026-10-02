@@ -1,12 +1,12 @@
 {
   "info": {
-    "name": "Smart Durian Farm - Twilio Verify Demo",
+    "name": "Smart Durian Farm - Twilio Verify - Nhap JSON",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Twilio Verify demo with in-memory account. Read docs/TWILIO_VERIFY_INTEGRATION.md. Run manually 01-09; request 02 uses trial quota or charges credit. Fill environment test_phone/test_password to match .env; after 02 enter the SMS code into otp. Do not use an old Console code. No Twilio credentials belong in Postman."
+    "description": "Nhập trực tiếp Body → raw → JSON rồi Send. Không có Scripts, biến hay Environment bắt buộc. Thay số ví dụ bằng AUTH_TEST_PHONE. Request 02 gửi SMS thật; sau khi nhận mã, nhập vào otp của request 03. API vẫn dùng tài khoản trong bộ nhớ."
   },
   "item": [
     {
-      "name": "01 Login",
+      "name": "01 Dang nhap",
       "request": {
         "method": "POST",
         "header": [
@@ -15,32 +15,20 @@
             "value": "application/json"
           }
         ],
-        "url": "{{base_url}}/api/auth/login",
+        "url": "http://localhost:3000/api/auth/login",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\",\n  \"password\": \"{{test_password}}\"\n}",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
-              "if (pm.response.code === 200) { pm.environment.set('access_token', pm.response.json().access_token); }"
-            ]
-          }
-        }
-      ]
+      }
     },
     {
-      "name": "02 Send real OTP - CHARGES CREDIT",
+      "name": "02 Gui OTP qua SMS",
       "request": {
         "method": "POST",
         "header": [
@@ -49,60 +37,20 @@
             "value": "application/json"
           }
         ],
-        "url": "{{base_url}}/api/auth/forgot-password",
+        "url": "http://localhost:3000/api/auth/forgot-password",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\"\n}",
+          "raw": "{\n  \"phone_number\": \"0900000000\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
-        },
-        "description": "May use trial quota or incur costs. 202 is generic and not proof of SMS delivery. Do not send repeatedly during the 60-second cooldown."
-      },
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.environment.unset('otp');"
-            ]
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 202', () => pm.response.to.have.status(202));"
-            ]
-          }
         }
-      ]
+      }
     },
     {
-      "name": "03 Mock SMS unavailable",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": "{{base_url}}/api/auth/test/sms?phone_number={{test_phone}}"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 404', () => pm.response.to.have.status(404));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "04 Reset - enter phone SMS code into otp first",
+      "name": "03 Nhap OTP va doi mat khau",
       "request": {
         "method": "POST",
         "header": [
@@ -111,60 +59,20 @@
             "value": "application/json"
           }
         ],
-        "url": "{{base_url}}/api/auth/reset-password",
+        "url": "http://localhost:3000/api/auth/reset-password",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\",\n  \"otp\": \"{{otp}}\",\n  \"new_password\": \"{{reset_password}}\"\n}",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"otp\": \"000000\",\n  \"new_password\": \"ChangedLocalTest123!\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
-            ]
-          }
-        }
-      ]
+      }
     },
     {
-      "name": "05 Old JWT rejected",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": "{{base_url}}/api/auth/me",
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "06 Reused OTP rejected",
+      "name": "04 Dang nhap bang mat khau moi",
       "request": {
         "method": "POST",
         "header": [
@@ -173,124 +81,17 @@
             "value": "application/json"
           }
         ],
-        "url": "{{base_url}}/api/auth/reset-password",
+        "url": "http://localhost:3000/api/auth/login",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\",\n  \"otp\": \"{{otp}}\",\n  \"new_password\": \"{{reset_password}}\"\n}",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"ChangedLocalTest123!\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 400', () => pm.response.to.have.status(400));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "07 Old password rejected",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/auth/login",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\",\n  \"password\": \"{{test_password}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "08 Login with new password",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/auth/login",
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"phone_number\": \"{{test_phone}}\",\n  \"password\": \"{{reset_password}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
-              "if (pm.response.code === 200) { pm.environment.set('access_token', pm.response.json().access_token); }"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "09 Current user",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": "{{base_url}}/api/auth/me",
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{access_token}}",
-              "type": "string"
-            }
-          ]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
-            ]
-          }
-        }
-      ]
+      }
     }
   ]
 }

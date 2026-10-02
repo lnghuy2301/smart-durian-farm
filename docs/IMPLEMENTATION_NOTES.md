@@ -31,6 +31,8 @@
 
 ## Auth batch in progress
 
+- User wants simple manual Postman testing: Twilio demo now has four POST requests with literal localhost URLs and editable JSON bodies, without scripts/variables/environment. Open the collection named "Smart Durian Farm - Twilio Verify - Nhap JSON" after importing the updated JSON. Advanced security cases remain automated backend tests. The old Twilio environment file is not required.
+
 - Current branch feat/twilio-verify builds on feat/speedsms-integration (which builds on feat/auth). User confirmed SMS receipt from Twilio Try out Verify and selected Twilio. Read TWILIO_VERIFY_INTEGRATION.md and AUTH_IMPLEMENTATION.md for code, configuration, Postman and continuation. SpeedSMS is legacy; do not assume any pending Auth/provider branches have merged into main.
 - Account persistence is still in memory, independent of SMS_PROVIDER. Twilio Verify creates/checks codes; do not send locally generated codes through Twilio Messaging or use SpeedSMS credentials. Verify Service Code length must be 6; backend checks the service before sending. Never commit real recipients, credentials or tokens.
 - Local deadline is 5 minutes per accepted send; Twilio may reuse a code during its own validity period. OTP state, session version and rate limits are per process only. Serialize send/check/reset; invalidate uncertain failed checks. No schema/ERD change is authorized by this integration.

@@ -43,7 +43,7 @@ Twilio có thời hạn và quy tắc resend riêng; có thể gửi lại cùng
 
 ## Postman
 
-SMS thật: import **Twilio-Verify-Demo.postman_collection.json** + **Twilio-Verify-Demo.postman_environment.json** trong docs/postman. Điền test_phone/test_password, gửi từng request; sau request 02 lấy OTP từ điện thoại điền biến otp rồi reset. Không đưa Twilio credentials vào Postman. Luồng 01→09 kiểm tra login → send → outbox 404 → reset → token cũ/OTP dùng lại/password cũ bị từ chối → login mới → me.
+SMS thật: import duy nhất **Twilio-Verify-Demo.postman_collection.json** trong docs/postman, mở collection **Smart Durian Farm - Twilio Verify - Nhap JSON**. Không cần Environment hoặc Scripts. Nhập trực tiếp Body → raw → JSON: 01 login → 02 gửi OTP → 03 nhập mã SMS và mật khẩu mới → 04 login mật khẩu mới. Thay số ví dụ bằng AUTH_TEST_PHONE. Không đưa Twilio credentials vào Postman. Kiểm tra token cũ/OTP dùng lại và các lỗi bảo mật nằm trong tests backend, không bắt buộc người dùng chạy thủ công.
 
 Mock: SMS_PROVIDER=mock rồi restart, import Auth-Local-Test.postman_collection.json + Local.postman_environment.json; đồng bộ test_phone/test_password với .env. Luồng 01→11 tự đọc OTP mock. Restart trước mỗi lượt chạy toàn bộ để phục hồi password gốc.
 
