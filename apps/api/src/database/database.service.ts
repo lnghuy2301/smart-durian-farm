@@ -15,6 +15,7 @@ export class DatabaseService implements OnApplicationShutdown {
   private readonly timeoutMs: number;
 
   constructor(config: Environment['database']) {
+    // Dùng chung pool cho các request; giới hạn timeout để mất DB không treo API vô hạn.
     this.timeoutMs = config.timeoutMs;
     this.postgres = new Pool({
       connectionString: config.postgresUrl,
@@ -35,6 +36,7 @@ export class DatabaseService implements OnApplicationShutdown {
   }
 
   async readiness(): Promise<Readiness> {
+    // Kiểm tra cả hai DB độc lập; một DB lỗi vẫn phải thu được trạng thái của DB còn lại.
     const [postgres, mongodb] = await Promise.allSettled([
       this.postgres.query('SELECT 1'),
       this.mongo.db().command({ ping: 1 }, { timeoutMS: this.timeoutMs }),
@@ -50,6 +52,7 @@ export class DatabaseService implements OnApplicationShutdown {
   }
 
   async onApplicationShutdown(): Promise<void> {
+    // Một client đóng lỗi không được ngăn client còn lại giải phóng kết nối.
     await Promise.allSettled([this.postgres.end(), this.mongo.close()]);
   }
 }

@@ -1,7 +1,15 @@
+export interface MockAuthConfig {
+  mode: 'mock';
+  phoneNumber: string;
+  password: string;
+  jwtSecret: string;
+}
+
 export interface Environment {
   port: number;
   corsOrigins: string[];
   database: { postgresUrl: string; mongoUri: string; timeoutMs: number };
+  auth?: MockAuthConfig;
 }
 
 export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
@@ -31,5 +39,20 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
   if (!/^\d+$/.test(rawTimeout) || timeoutMs < 100 || timeoutMs > 30000) {
     throw new Error('DB_TIMEOUT_MS must be between 100 and 30000');
   }
-  return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs } };
+  let auth: MockAuthConfig | undefined;
+  const mode = env.AUTH_MODE ?? 'disabled';
+  if (!['disabled', 'mock'].includes(mode)) { throw new Error('AUTH_MODE must be disabled or mock'); }
+  if (mode === 'mock') {
+    if (!['development', 'test'].includes(env.NODE_ENV ?? '')) {
+      throw new Error('Mock Auth is allowed only in development or test');
+    }
+    const phoneNumber = env.AUTH_TEST_PHONE ?? '';
+    const password = env.AUTH_TEST_PASSWORD ?? '';
+    const jwtSecret = env.JWT_SECRET ?? '';
+    if (!/^\+?\d{9,13}$/.test(phoneNumber) || phoneNumber.length > 13) { throw new Error('Invalid AUTH_TEST_PHONE'); }
+    if (password.length < 8 || password.length > 128) { throw new Error('AUTH_TEST_PASSWORD must have 8 to 128 characters'); }
+    if (Buffer.byteLength(jwtSecret) < 32) { throw new Error('JWT_SECRET must contain at least 32 bytes'); }
+    auth = { mode: 'mock', phoneNumber, password, jwtSecret };
+  }
+  return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth };
 }

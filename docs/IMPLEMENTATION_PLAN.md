@@ -25,3 +25,9 @@ Environment now: PORT, CORS_ORIGINS, NODE_ENV. Later: PostgreSQL/MongoDB connect
 7. AI diagnosis and later RAG after source PDFs exist.
 
 This batch does not complete the full Phase 1 milestone: database connections, migrations, seed and auth remain outstanding. See IMPLEMENTATION_NOTES.md before schema implementation.
+
+## Current scope update — 2026-10-02
+
+Database connections/readiness are complete and merged. User requests Auth testing without tables or real records: implement an in-memory login fixture, JWT, six-digit password-reset OTP and local mock SMS outbox on feat/auth. No migrations/seed or real SMS in this batch. See AUTH_IMPLEMENTATION.md and docs/postman/Auth-Local-Test.postman_collection.json.
+
+Real database-backed Auth and migrations/seed remain future work requiring schema/provider decisions. Review module changes and merge before creating the next module branch from main.

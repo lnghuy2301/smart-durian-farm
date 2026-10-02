@@ -23,8 +23,14 @@
 
 ## Database connection batch
 
-- feat/database-connections builds on feat/backend-foundation, which has not been merged into main. Keep the PR based on the foundation branch until that merge.
+- Both backend branches have been merged into main and fetched locally on 2026-10-02. New modules start from updated main.
 - Use pg Pool and MongoClient as shared providers; lazy connections permit liveness during a database outage, while readiness reports the outage explicitly. Close both clients on shutdown and bound probe timeouts.
 - DATABASE_URL and MONGODB_URI are required. Environment configuration errors fail startup without logging connection strings.
 - Compose is local development only: bind database ports to loopback; MongoDB runs a single-node rs0 replica set without authentication. Use directConnection=true for the host API because the replica member advertises the Compose hostname. PostgreSQL example credentials are local placeholders.
 - This batch creates no tables, collections, migrations or seed; it does not alter the ERD.
+
+## Auth batch in progress
+
+- Branch feat/auth starts from updated main. Read AUTH_IMPLEMENTATION.md for current scope, pending decisions and continuation instructions.
+- User requires documentation during development and Vietnamese comments for difficult logic, including existing files. Ask before major schema/security/business-rule changes.
+- User clarified Auth scope: phone_number/password login and password reset with six-digit SMS OTP; test only, no database tables or real data. Implement in-memory fixture and local SMS outbox, not a USERS migration/seed.

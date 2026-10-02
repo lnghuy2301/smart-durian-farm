@@ -49,4 +49,12 @@ Import the collection and Local environment from docs/postman into Postman, sele
 - ai: future AI/RAG work.
 - docs: specifications, ERD, implementation plan and Postman files.
 
-Database connection providers and readiness checks are implemented. Migrations, seed, authentication and business modules remain outstanding. Connectivity readiness does not verify schema or seed. The ERD remains the schema authority.
+Database connection providers and readiness checks are implemented. Auth is available only as a local in-memory test module; migrations, seed and real authentication persistence remain outstanding. Connectivity readiness does not verify schema or seed. The ERD remains the schema authority.
+
+## Auth local test
+
+Set AUTH_MODE=mock, NODE_ENV=development and AUTH_TEST_PHONE, AUTH_TEST_PASSWORD, JWT_SECRET in .env using .env.example. Restart the API after changing config. Mock mode binds to 127.0.0.1 and cannot run in production.
+
+Import docs/postman/Auth-Local-Test.postman_collection.json and the Local environment. Run requests 01 through 11 in order. The SMS outbox is simulated; no real SMS is sent and no database tables or real account records are created. Restart the API before each full run to restore the original test password.
+
+See docs/AUTH_IMPLEMENTATION.md for endpoint contracts, OTP limits and session continuation notes.
