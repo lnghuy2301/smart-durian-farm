@@ -292,17 +292,5 @@
         }
       ]
     }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "if (!/^\\+?\\d{9,13}$/.test(pm.environment.get('test_phone') || '')) { throw new Error('Fill environment test_phone to match AUTH_TEST_PHONE'); }",
-          "if (pm.info.requestName.startsWith('04') && !/^\\d{6}$/.test(pm.environment.get('otp') || '')) { throw new Error('Enter the six-digit SMS code into environment otp first'); }"
-        ]
-      }
-    }
   ]
 }

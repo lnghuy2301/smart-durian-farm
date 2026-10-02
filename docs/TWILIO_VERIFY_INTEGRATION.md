@@ -57,7 +57,9 @@ Không cần thêm thư viện/npm install cho thay đổi này: adapter dùng H
 6. Gửi **04 Reset**, mong đợi 200. Chỉ dùng mã gửi bởi request 02 của API này; mã từ Try out Verify trước đó không tự tạo challenge trong backend.
 7. Chạy 05→09: JWT cũ bị từ chối → OTP dùng lại bị từ chối → password cũ bị từ chối → login password mới → me.
 
-phone_number nằm ở **Body → raw → JSON**, dùng {{test_phone}}; không điền ở Params của POST. Sau reset muốn chạy lại từ đầu: restart API và xóa biến otp trước khi gửi mới.
+phone_number nằm ở **Body → raw → JSON**. Có thể dùng {{test_phone}} từ environment hoặc nhập trực tiếp chuỗi số điện thoại; password/otp cũng có thể nhập trực tiếp. Collection không bắt buộc biến test_phone/otp nếu Body đã có dữ liệu. Nếu dùng placeholder thì phải điền biến tương ứng. Backend kiểm tra Body bằng DTO. Không điền phone_number ở Params của POST. Sau reset muốn chạy lại từ đầu: restart API và xóa biến otp trước khi gửi mới.
+
+Nếu đã import phiên bản cũ và thấy lỗi pre-request "Fill environment test_phone…": chọn collection **Smart Durian Farm - Twilio Verify Demo** → Scripts → Pre-request, xóa script kiểm tra phone/otp ở cấp collection và Save; hoặc import lại collection đã cập nhật. Sửa file JSON trong dự án không tự cập nhật bản đã import trong Postman.
 
 Để test không tốn SMS: đổi SMS_PROVIDER=mock, restart API, dùng Auth-Local-Test collection + Local environment (đồng bộ phone/password). Không chạy collection mock khi backend dùng Twilio.
 
@@ -87,7 +89,7 @@ pending/202 không chứng minh điện thoại đã nhận SMS. Terminal không
 
 ## Kiểm tra và bàn giao
 
-Kết quả 2026-10-02: lint, typecheck và build đạt; npm test đạt **20/20 tests**. Cả 7 file JSON Postman đọc được và 33 script qua kiểm tra cú pháp. Backend chưa gửi thử bằng credentials thật; .env local có placeholder TWILIO_* và LIVE_SMS_ENABLED=false, cần điền đủ rồi bật true/restart để test thủ công.
+Kết quả tích hợp 2026-10-02: lint, typecheck và build đạt; npm test đạt **20/20 tests**. Khi tích hợp, cả 7 file JSON Postman đọc được và 33 script qua kiểm tra cú pháp. Bản sửa sau đó bỏ script pre-request cấp collection vốn chặn nhập Body trực tiếp; không thay code backend. Backend chưa gửi thử bằng credentials thật; .env local có placeholder TWILIO_* và LIVE_SMS_ENABLED=false lúc bàn giao, cần điền đủ rồi bật true/restart để test thủ công.
 
 Tests tự động dùng fetch provider giả, không đọc credentials .env và không gửi Verify/SMS thật. Bao phủ cấu hình, E.164, form/Basic auth, Code length, SID/identity binding, mã sai/hết hạn/dùng lại, timeout/HTTP errors, giới hạn thử, race gửi/reset và thu hồi JWT. User xác nhận gửi từ Console thành công; luồng backend thật cần test thủ công bằng Postman.
 
