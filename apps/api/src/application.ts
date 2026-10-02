@@ -12,6 +12,7 @@ export async function createApplication(config: Environment, logger: false | und
 }
 
 export function configureApplication(app: INestApplication, config: Environment): void {
+  // Từ chối field ngoài DTO để client không tự truyền các thuộc tính nhạy cảm vào nghiệp vụ.
   app.setGlobalPrefix('api');
   app.enableCors({ origin: config.corsOrigins });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));

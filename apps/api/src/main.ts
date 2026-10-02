@@ -8,7 +8,8 @@ async function bootstrap() {
   config({ path: resolve(__dirname, '../../../.env') });
   const environment = readEnvironment(process.env);
   const app = await createApplication(environment);
-  await app.listen(environment.port);
+  // Hộp thư OTP giả lập không được mở ra mạng LAN; chế độ mock chỉ bind loopback.
+  await app.listen(environment.port, environment.auth ? '127.0.0.1' : '0.0.0.0');
 }
 
 void bootstrap().catch(() => {

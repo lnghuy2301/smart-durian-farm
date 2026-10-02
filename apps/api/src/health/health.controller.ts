@@ -18,6 +18,7 @@ export class HealthController {
   @ApiResponse({ status: 200, description: 'Both databases respond' })
   @ApiResponse({ status: 503, description: 'At least one database is unavailable; no credentials or raw errors returned' })
   async getReadiness(): Promise<Readiness> {
+    // Chỉ trả trạng thái tổng hợp, không đưa URL kết nối hoặc lỗi driver ra response.
     const readiness = await this.database.readiness();
     if (readiness.status !== 'ok') { throw new ServiceUnavailableException(readiness); }
     return readiness;
