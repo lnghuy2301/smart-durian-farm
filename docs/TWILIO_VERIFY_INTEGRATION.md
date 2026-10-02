@@ -4,7 +4,7 @@
 
 Ngày 2026-10-02: người dùng xác nhận nhận SMS từ **Try out Verify** và chọn Twilio. Nhánh feat/twilio-verify tạo từ feat/speedsms-integration, kế thừa Auth; chưa tự merge vào main. SpeedSMS được giữ cho tương thích, không phải hướng demo hiện tại.
 
-Tài khoản vẫn là một Farmer trong bộ nhớ (AUTH_MODE=mock). Không migration, seed, ghi database hoặc sửa ERD. Restart API khôi phục mật khẩu cấu hình, xóa challenge và thu hồi session cũ. Chưa triển khai Auth production.
+Module USERS kế tiếp trên feat/users-registration-approval hỗ trợ nhiều tài khoản trong bộ nhớ (AUTH_MODE=mock), đăng ký và duyệt Manager với email/HTX: xem [USERS_IMPLEMENTATION.md](USERS_IMPLEMENTATION.md). Không migration, seed, ghi database hoặc sửa ERD. Restart xóa tài khoản đăng ký/HTX, khôi phục fixture mật khẩu cấu hình, xóa challenge và thu hồi session cũ. Chưa triển khai Auth production.
 
 ## Các chỗ cần điền
 
@@ -31,11 +31,11 @@ Số trên là ví dụ. Giữ số thật của bạn trong AUTH_TEST_PHONE và
 |---|---|
 | TWILIO_ACCOUNT_SID | Twilio Console → Account Info, dạng AC + 32 ký tự hex |
 | TWILIO_AUTH_TOKEN | Auth Token của cùng tài khoản; không dùng token SpeedSMS hoặc JWT của API |
-| TWILIO_VERIFY_SERVICE_SID | Identity → Verify → Services → service đã gửi thành công, dạng VA + 32 ký tự hex |
+| TWILIO_VERIFY_SERVICE_SID | Trial: Identity → Verify → Overview → Try out Verify → khung REQUEST/API, copy VA trong URL `/Services/VA.../Verifications`. Có quyền quản lý: Verify → Services → service đã gửi thành công |
 | SMS_ALLOWED_PHONE | Số nhận được phép dùng trong demo, cùng số AUTH_TEST_PHONE |
 | LIVE_SMS_ENABLED | true để gọi Verify; .env.example mặc định false |
 
-Trong Verify Service, đặt **Code length = 6**. Backend đọc Service trước mỗi lần gửi và từ chối gửi nếu cấu hình khác 6. Không cần Twilio From number, Messaging Service SID, brandname hay SpeedSMS App ID cho adapter này. Giữ kênh SMS/quyền gửi đến Việt Nam đã test thành công trong Console. Với trial, số nhận phải được xác minh trong tài khoản. [Verification API](https://www.twilio.com/docs/verify/api/verification), [cấu hình Service](https://www.twilio.com/docs/verify/api/service).
+Service phải có **Code length = 6**; backend kiểm tra trước gửi. Trial Try out Verify dùng mã 6 số và có API gửi/check; trang Services có thể chỉ hiện Upgrade nên không bắt buộc lấy VA tại đó. Khi có quyền quản lý Service, đặt Code length=6. Không cần Twilio From number hoặc Messaging Service SID cho adapter Verify. Giữ kênh SMS/quyền gửi đã test thành công; trial giới hạn số nhận/quota theo tài khoản. [Try out Verify](https://www.twilio.com/docs/usage/trials/try-out-verify), [cấu hình Service](https://www.twilio.com/docs/verify/api/service).
 
 Không đưa Auth Token vào chat, Postman hoặc Git. API credentials chỉ nằm ở backend.
 
@@ -91,8 +91,8 @@ pending/202 không chứng minh điện thoại đã nhận SMS. Terminal không
 
 ## Kiểm tra và bàn giao
 
-Kết quả tích hợp 2026-10-02: lint, typecheck và build đạt; npm test đạt **20/20 tests**. Khi tích hợp, cả 7 file JSON Postman đọc được và 33 script qua kiểm tra cú pháp. Bản sửa sau đó bỏ script pre-request cấp collection vốn chặn nhập Body trực tiếp; không thay code backend. Backend chưa gửi thử bằng credentials thật; .env local có placeholder TWILIO_* và LIVE_SMS_ENABLED=false lúc bàn giao, cần điền đủ rồi bật true/restart để test thủ công.
+Tích hợp Twilio ban đầu đạt lint/typecheck/build và 20/20 tests. Sau đó người dùng xác nhận **nhận OTP và đổi mật khẩu thành công qua backend/Postman**. Collection đã rút còn đúng 4 request nhập JSON trực tiếp. Module USERS giữ nguyên file Twilio này; tổng hiện tại 29/29 tests, xem USERS_IMPLEMENTATION.md.
 
-Tests tự động dùng fetch provider giả, không đọc credentials .env và không gửi Verify/SMS thật. Bao phủ cấu hình, E.164, form/Basic auth, Code length, SID/identity binding, mã sai/hết hạn/dùng lại, timeout/HTTP errors, giới hạn thử, race gửi/reset và thu hồi JWT. User xác nhận gửi từ Console thành công; luồng backend thật cần test thủ công bằng Postman.
+Tests tự động dùng fetch provider giả, không đọc credentials .env và không gửi Verify/SMS thật. Bao phủ cấu hình, E.164, form/Basic auth, Code length, SID/identity binding, mã sai/hết hạn/dùng lại, timeout/HTTP errors, giới hạn thử, race gửi/reset và thu hồi JWT. Sau mở rộng USERS, JWT/OTP riêng từng user; allowlist SMS thật vẫn giữ số fixture, không mở gửi cho số mới đăng ký.
 
-Session sau: đọc AUTH_IMPLEMENTATION.md, file này và IMPLEMENTATION_NOTES.md; kiểm tra git status. Giữ thay đổi MQTT/ERD của người dùng ngoài commit. Review/merge chuỗi Auth → SpeedSMS → Twilio hoặc chọn base phù hợp trên GitHub; không tự merge. Trước Auth DB, hỏi lại schema/persistence/rate limit/session và quy trình tài khoản; không tự thêm field/bảng ERD.
+Session sau: đọc AUTH_IMPLEMENTATION.md, USERS_IMPLEMENTATION.md, file này và IMPLEMENTATION_NOTES.md; kiểm tra git status. Giữ thay đổi MQTT/ERD của người dùng ngoài commit. Review/merge chuỗi Auth → SpeedSMS → Twilio → USERS hoặc chọn base phù hợp trên GitHub; không tự merge. Chỉ sau khi USERS hoàn tất mới bàn bảng/schema/persistence/rate limit/session; không tự thêm field/bảng ERD.

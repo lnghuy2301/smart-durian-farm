@@ -1,5 +1,7 @@
 import { normalizeVietnamPhone, SpeedSmsConfig } from '../auth/sms/speedsms.gateway';
 import { normalizeTwilioPhone, TwilioVerifyConfig } from '../auth/sms/twilio-verify.gateway';
+import { isEmail } from 'class-validator';
+import { SmtpConfig } from '../users/email/email.sender';
 
 export interface MockAuthConfig {
   mode: 'mock';
@@ -7,6 +9,8 @@ export interface MockAuthConfig {
   password: string;
   jwtSecret: string;
   sms: { provider: 'mock' } | SpeedSmsConfig | TwilioVerifyConfig;
+  admin?: { phoneNumber: string; password: string };
+  email?: SmtpConfig;
 }
 
 export interface Environment {
@@ -91,7 +95,38 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
       sms = { provider: 'speedsms', accessToken, allowedPhone, smsType: Number(rawType) as 2 | 4, sender,
         liveEnabled: env.LIVE_SMS_ENABLED === 'true', timeoutMs };
     }
-    auth = { mode: 'mock', phoneNumber, password, jwtSecret, sms };
+    const adminPhone = env.AUTH_TEST_ADMIN_PHONE ?? '';
+    const adminPassword = env.AUTH_TEST_ADMIN_PASSWORD ?? '';
+    let admin: MockAuthConfig['admin'];
+    if (adminPhone || adminPassword) {
+      if (!/^\+?\d{9,13}$/.test(adminPhone) || adminPhone.length > 13 || adminPassword.length < 8 || adminPassword.length > 128) {
+        throw new Error('Configure both valid AUTH_TEST_ADMIN_PHONE and AUTH_TEST_ADMIN_PASSWORD');
+      }
+      const phoneKey = (phone: string) => phone.replace(/^\+/, '').replace(/^0(?=\d{9}$)/, '84');
+      if (phoneKey(adminPhone) === phoneKey(phoneNumber)) { throw new Error('Test Admin and Farmer must have different phone numbers'); }
+      admin = { phoneNumber: adminPhone, password: adminPassword };
+    }
+    const emailProvider = env.EMAIL_PROVIDER ?? 'disabled';
+    if (!['disabled', 'smtp'].includes(emailProvider)) { throw new Error('EMAIL_PROVIDER must be disabled or smtp'); }
+    let email: SmtpConfig | undefined;
+    if (emailProvider === 'smtp') {
+      const host = env.SMTP_HOST?.trim() ?? '';
+      const user = env.SMTP_USER?.trim() ?? '';
+      const smtpPassword = env.SMTP_PASSWORD ?? '';
+      const from = env.SMTP_FROM?.trim() ?? '';
+      const rawSmtpPort = env.SMTP_PORT ?? '465';
+      const smtpPort = Number(rawSmtpPort);
+      const rawSecure = env.SMTP_SECURE ?? 'true';
+      const rawSmtpTimeout = env.SMTP_TIMEOUT_MS ?? '10000';
+      const smtpTimeout = Number(rawSmtpTimeout);
+      if (!host || !/^[a-zA-Z0-9.-]+$/.test(host) || !user || !smtpPassword || !isEmail(from) || from.length > 255) { throw new Error('SMTP_HOST, SMTP_USER, SMTP_PASSWORD and valid SMTP_FROM are required'); }
+      if (!/^\d+$/.test(rawSmtpPort) || smtpPort < 1 || smtpPort > 65535) { throw new Error('Invalid SMTP_PORT'); }
+      if (!['true', 'false'].includes(rawSecure)) { throw new Error('SMTP_SECURE must be true or false'); }
+      if (smtpPort === 465 && rawSecure !== 'true' || smtpPort === 587 && rawSecure !== 'false') { throw new Error('Use secure=true for SMTP 465 or secure=false (STARTTLS) for 587'); }
+      if (!/^\d+$/.test(rawSmtpTimeout) || smtpTimeout < 100 || smtpTimeout > 30000) { throw new Error('SMTP_TIMEOUT_MS must be between 100 and 30000'); }
+      email = { provider: 'smtp', host, port: smtpPort, secure: rawSecure === 'true', user, password: smtpPassword, from, timeoutMs: smtpTimeout };
+    }
+    auth = { mode: 'mock', phoneNumber, password, jwtSecret, sms, admin, email };
   }
   return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth };
 }

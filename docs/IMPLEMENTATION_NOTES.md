@@ -29,14 +29,24 @@
 - Compose is local development only: bind database ports to loopback; MongoDB runs a single-node rs0 replica set without authentication. Use directConnection=true for the host API because the replica member advertises the Compose hostname. PostgreSQL example credentials are local placeholders.
 - This batch creates no tables, collections, migrations or seed; it does not alter the ERD.
 
-## Auth batch in progress
+## Auth and USERS — current state
+
+- Current branch feat/users-registration-approval builds on feat/twilio-verify. Read USERS_IMPLEMENTATION.md first for lifecycle, SMTP setup, API contracts and continuation. User confirmed backend Twilio SMS/password reset; preserve the four-request Twilio JSON file unchanged.
+- Updated ERD XML/JSON add USERS.gmail and gmail_verify. User accepts any valid email domain, one email per account. gmail_verify is proof of ownership set by backend, never a frontend boolean. Do not change edge attachment rows; user confirmed table-level relationships are intended.
+- Public Farmer registration is Active immediately; email optional. Manager verifies email through SMTP OTP, then registers Pending. Admin cannot register publicly and approves only Managers with Cooperative creation/assignment. Pending/Reject cannot log in or use protected APIs. Configure local Admin via AUTH_TEST_ADMIN_PHONE/PASSWORD; no database seed.
+- Nodemailer sends through configured mailbox SMTP credentials; Gmail requires an App Password/two-step verification. EMAIL_PROVIDER defaults to disabled until credentials are filled. No external email OTP API is required. SMTP acceptance is not inbox receipt; live email still needs user testing.
+- Accounts, Cooperatives, OTP state and JWT versions stay in memory. SMS reset is per user; live SMS allowlist is unchanged. Email proof is single-use and bound to phone/email with expiry/cooldown/attempt limits. Approval cannot overwrite another Manager or activate the account when HTX creation/assignment fails.
+- Users-Local-Test.postman_collection.json uses literal URLs/JSON, no scripts/environment. Copy OTP/ids/proof/Admin JWT manually. Profile Farmer, email OTP preferences and reset email fallback are future work. Create tables only after USERS completion/schema review.
+- Validation: lint, typecheck, build and 29/29 tests pass with fake providers, without real mail/SMS/database writes. Preserve user ERD/MQTT edits and deleted legacy SpeedSMS Postman files outside this commit.
+
+### Earlier Auth integration decisions
 
 - User wants simple manual Postman testing: Twilio demo now has four POST requests with literal localhost URLs and editable JSON bodies, without scripts/variables/environment. Open the collection named "Smart Durian Farm - Twilio Verify - Nhap JSON" after importing the updated JSON. Advanced security cases remain automated backend tests. The old Twilio environment file is not required.
 
-- Current branch feat/twilio-verify builds on feat/speedsms-integration (which builds on feat/auth). User confirmed SMS receipt from Twilio Try out Verify and selected Twilio. Read TWILIO_VERIFY_INTEGRATION.md and AUTH_IMPLEMENTATION.md for code, configuration, Postman and continuation. SpeedSMS is legacy; do not assume any pending Auth/provider branches have merged into main.
+- Twilio branch feat/twilio-verify builds on feat/speedsms-integration (which builds on feat/auth). User confirmed SMS receipt from Twilio Try out Verify and selected Twilio. Read TWILIO_VERIFY_INTEGRATION.md and AUTH_IMPLEMENTATION.md for provider configuration. SpeedSMS is legacy; do not assume pending branches have merged into main.
 - Account persistence is still in memory, independent of SMS_PROVIDER. Twilio Verify creates/checks codes; do not send locally generated codes through Twilio Messaging or use SpeedSMS credentials. Verify Service Code length must be 6; backend checks the service before sending. Never commit real recipients, credentials or tokens.
 - Local deadline is 5 minutes per accepted send; Twilio may reuse a code during its own validity period. OTP state, session version and rate limits are per process only. Serialize send/check/reset; invalidate uncertain failed checks. No schema/ERD change is authorized by this integration.
 
 - Branch feat/auth starts from updated main. Read AUTH_IMPLEMENTATION.md for current scope, pending decisions and continuation instructions.
 - User requires documentation during development and Vietnamese comments for difficult logic, including existing files. Ask before major schema/security/business-rule changes.
-- User clarified Auth scope: phone_number/password login and password reset with six-digit SMS OTP; test account only, no database tables or real records. Use the in-memory fixture with Twilio Verify for the live demo or mock SMS for automated tests, not a USERS migration/seed.
+- Initial Auth scope was phone/password login and SMS reset on one fixture. The USERS batch extends this to multiple in-memory accounts; no database tables/records. Use Twilio Verify for the live SMS fixture demo and mock SMS for automated multi-user tests, not a USERS migration/seed.

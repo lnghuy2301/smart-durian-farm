@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Monorepo for a NestJS backend, React web and React Native Android application. The current batch initializes the API only.
+Monorepo for a NestJS backend, React web and React Native Android application. The API currently includes database connectivity and local in-memory Auth/Users modules; clients follow later.
 
 ## Local API setup
 
@@ -64,3 +64,11 @@ See docs/AUTH_IMPLEMENTATION.md for endpoint contracts, OTP limits and session c
 The selected provider is **Twilio Verify**. Read [docs/TWILIO_VERIFY_INTEGRATION.md](docs/TWILIO_VERIFY_INTEGRATION.md). Keep AUTH_MODE=mock for in-memory accounts; set SMS_PROVIDER=twilio, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_VERIFY_SERVICE_SID, SMS_ALLOWED_PHONE matching AUTH_TEST_PHONE, and LIVE_SMS_ENABLED=true in your local .env. Set the Verify Service code length to 6. Never commit credentials. Mock defaults do not send paid SMS.
 
 Import only docs/postman/Twilio-Verify-Demo.postman_collection.json and open **Smart Durian Farm - Twilio Verify - Nhap JSON**. No environment, variables or scripts are needed. Enter JSON directly in Body: 01 login, 02 request SMS OTP, 03 enter the received code and new password, 04 login with the new password. Replace the sample phone with AUTH_TEST_PHONE. Twilio generates/checks the code. No new npm dependency, table or database write is required.
+
+## Users registration and Manager approval
+
+Read [docs/USERS_IMPLEMENTATION.md](docs/USERS_IMPLEMENTATION.md). Farmer registration becomes Active immediately; Manager verifies an email address through SMTP, registers Pending and becomes Active only when Admin approves and creates/assigns a Cooperative. Public Admin registration is rejected. Accounts and Cooperatives remain in memory; restarting clears registrations and restores configured fixtures.
+
+Nodemailer has been added for real verification email. Configure SMTP_USER/PASSWORD/FROM and EMAIL_PROVIDER=smtp in the root .env; Gmail sending requires an App Password. Recipient email can use any valid domain. Configure AUTH_TEST_ADMIN_PHONE/PASSWORD for the local Admin fixture. Preserve existing Twilio credentials. Profile email preferences and password-reset email fallback are future work.
+
+Import **docs/postman/Users-Local-Test.postman_collection.json**, open **Smart Durian Farm - Users - Nhap JSON**, and edit JSON directly. Copy verification_id, the emailed OTP, verification token, Manager id and Admin JWT manually as instructed in each request. No scripts or environment variables are required. The four-request Twilio collection is unchanged. Run lint/typecheck/build/tests as above; current automated suite has 29 passing tests using fake transports, without sending real email/SMS.

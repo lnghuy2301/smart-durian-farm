@@ -16,7 +16,7 @@ Environment now: PORT, CORS_ORIGINS, NODE_ENV. Later: PostgreSQL/MongoDB connect
 
 ## Next batches
 
-1. PostgreSQL/MongoDB connections, local Compose and readiness are implemented on feat/database-connections. Next resolve remaining schema decisions and add migrations and seed. MongoDB replica set is required for planned locking transactions.
+1. PostgreSQL/MongoDB connections, local Compose and readiness are implemented and merged. Complete in-memory USERS before schema review/migrations/seed, as requested. MongoDB replica set is required for planned locking transactions.
 2. Auth, Users, Cooperatives, Farms, Zones/Assignments and Trees, one module at a time with Postman updates and focused checks.
 3. IoT metadata, telemetry, control and hardware confirmation.
 4. Cultivation locking, correction and hash chain with automated business-rule tests.
@@ -28,6 +28,8 @@ The foundation batch alone did not complete Phase 1. Database connections/readin
 
 ## Current scope update — 2026-10-02
 
-Database connections/readiness are complete and merged. Auth has an in-memory login fixture, JWT and six-digit password-reset OTP. User selected Twilio Verify after receiving an SMS from Try out Verify. Current branch feat/twilio-verify builds on feat/speedsms-integration; accounts remain in memory, without migrations/seed or ERD changes. Mock SMS remains available for tests. See AUTH_IMPLEMENTATION.md, TWILIO_VERIFY_INTEGRATION.md and docs/postman/Twilio-Verify-Demo.postman_collection.json.
+Database connections/readiness are complete and merged. Auth includes phone/password login, per-user JWT and six-digit SMS reset. User confirmed Twilio Verify SMS/password reset through backend. Current branch feat/users-registration-approval builds on feat/twilio-verify and adds Farmer registration, SMTP email verification, Manager Pending and Admin approval with Cooperative creation/assignment. Accounts and Cooperatives remain in memory without migrations/seed or ERD changes. Updated XML/JSON ERD remains the schema authority.
 
-Real database-backed Auth and migrations/seed remain future work requiring schema/provider decisions. Review module changes and merge before creating the next module branch from main.
+See USERS_IMPLEMENTATION.md, AUTH_IMPLEMENTATION.md and TWILIO_VERIFY_INTEGRATION.md. Users Postman collection uses literal JSON; manually copy email OTP/proof/Admin JWT. Existing four-request Twilio collection is unchanged. Validation: lint/typecheck/build and 29/29 tests pass with fake transports. Configure sending mailbox in .env to test live email.
+
+Next finish USERS profile/email preferences and password-reset email fallback when authorized. Only after USERS completion, review schema decisions and add persistence/migrations. Review changes and merge dependencies before creating the next module branch from updated main; do not merge automatically.

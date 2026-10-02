@@ -21,6 +21,7 @@ export class AuthModule {
         verifyOptions: { algorithms: ['HS256'], issuer: 'smart-durian-local-test', audience: 'smart-durian-client' },
       })],
       controllers: [AuthController],
+      exports: [MockUserStore, AuthGuard, AuthService],
       providers: [
         { provide: MockUserStore, useFactory: () => MockUserStore.create(config) },
         { provide: SmsGateway, useFactory: () => config.sms.provider === 'speedsms' ? new SpeedSmsGateway(config.sms) : new MockSmsGateway() },
