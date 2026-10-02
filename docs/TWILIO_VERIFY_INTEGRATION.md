@@ -53,10 +53,10 @@ Import duy nhất **docs/postman/Twilio-Verify-Demo.postman_collection.json**. M
 
 Mỗi request: chọn **Body → raw → JSON**, nhập dữ liệu rồi Send. Thay số ví dụ 0900000000 bằng đúng AUTH_TEST_PHONE trong .env.
 
-1. **01 Dang nhap**: nhập phone_number và password hiện tại (AUTH_TEST_PASSWORD khi vừa restart); mong đợi 200.
-2. **02 Gui OTP qua SMS**: nhập phone_number rồi Send; mong đợi 202. Chỉ gửi khi cần mã, không chạy Runner; request này dùng quota/chi phí SMS.
-3. **03 Nhap OTP va doi mat khau**: nhập phone_number, otp nhận trên điện thoại và new_password; mong đợi 200. OTP để trong dấu ngoặc kép, đủ 6 chữ số; thay mã mẫu 000000. Không dùng mã từ Try out Verify trước đó.
-4. **04 Dang nhap bang mat khau moi**: nhập phone_number và password vừa đặt ở bước 03; mong đợi 200. Giá trị mẫu của mật khẩu mới ở hai request giống nhau; nếu đổi, tự nhập lại ở bước 04.
+1. **01 Login**: nhập phone_number và password hiện tại (AUTH_TEST_PASSWORD khi vừa restart); mong đợi 200.
+2. **02 Forgot password**: nhập phone_number rồi Send; mong đợi 202. Chỉ gửi khi cần mã, không chạy Runner; request này dùng quota/chi phí SMS.
+3. **03 Reset password**: nhập phone_number, otp nhận trên điện thoại và new_password; mong đợi 200. OTP để trong dấu ngoặc kép, đủ 6 chữ số; thay mã mẫu 000000. Không dùng mã từ Try out Verify trước đó.
+4. **04 Login with new password**: nhập phone_number và password vừa đặt ở bước 03; mong đợi 200. Giá trị mẫu của mật khẩu mới ở hai request giống nhau; nếu đổi, tự nhập lại ở bước 04.
 
 Sau khi reset thành công, password cũ không còn dùng được; restart API sẽ khôi phục AUTH_TEST_PASSWORD. OTP có deadline 5 phút, gửi lại cách nhau ít nhất 60 giây. Không restart API giữa gửi mã và reset vì challenge ở bộ nhớ.
 

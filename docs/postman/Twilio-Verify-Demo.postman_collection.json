@@ -6,7 +6,7 @@
   },
   "item": [
     {
-      "name": "01 Dang nhap",
+      "name": "01 Login",
       "request": {
         "method": "POST",
         "header": [
@@ -28,7 +28,7 @@
       }
     },
     {
-      "name": "02 Gui OTP qua SMS",
+      "name": "02 Forgot password",
       "request": {
         "method": "POST",
         "header": [
@@ -50,7 +50,7 @@
       }
     },
     {
-      "name": "03 Nhap OTP va doi mat khau",
+      "name": "03 Reset password",
       "request": {
         "method": "POST",
         "header": [
@@ -72,7 +72,7 @@
       }
     },
     {
-      "name": "04 Dang nhap bang mat khau moi",
+      "name": "04 Login with new password",
       "request": {
         "method": "POST",
         "header": [
