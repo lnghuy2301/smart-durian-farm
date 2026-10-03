@@ -163,7 +163,7 @@ Import **docs/postman/Users-Local-Test.postman_collection.json**, mở **Smart D
 
 Đạt npm run lint, npm run typecheck, npm run build, npm test: **29/29 tests**, gồm 9 test mới USERS/SMTP và 20 hồi quy. Tests dùng transport giả, không đọc .env hoặc gửi thư/SMS thật. Bao phủ quyền/DTO, email mọi domain, unique/race, proof identity/hạn dùng/số lần thử, Pending/Reject, Admin approve/reject, HTX không ghi nửa chừng, JWT/OTP từng user và SMTP TLS/lỗi không lộ dữ liệu.
 
-Người dùng đã xác nhận **Twilio SMS qua backend và đổi mật khẩu thành công** trước module này. Email SMTP live chưa test vì credentials hộp thư gửi còn trống; cấu hình local rồi chạy Postman 02→03. .env không commit.
+Người dùng đã xác nhận **Twilio SMS qua backend và đổi mật khẩu thành công**, sau đó **email SMTP thật, đăng ký Manager và Admin duyệt HTX đều thành công**. .env không commit. Các nhánh Zones/USERS_ZONES kế thừa dùng cùng store; đọc MODULE_HANDOFF.md để lấy nhánh tích hợp và kết quả kiểm thử mới nhất. Không cần gửi SMS cho số Farmer mẫu khi test phân công.
 
 Session sau đọc file này, AUTH_IMPLEMENTATION.md, IMPLEMENTATION_NOTES.md, spec và ERD mới. Kiểm tra branch/status và phụ thuộc trước PR/merge; không stage thay đổi MQTT/ERD hoặc file SpeedSMS người dùng xóa vào commit backend. Không tự merge.
 

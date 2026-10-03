@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API currently includes database connectivity and local in-memory Auth/Users modules; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Farm approvals, Zones and Farmer assignments; clients follow later.
 
 ## Local API setup
 
@@ -81,7 +81,7 @@ Admin can create/update/deactivate materials; Active users can read and search w
 
 ## Farming standards catalog
 
-The same Admin-write/Active-user-read rules apply to standards. See [docs/STANDARDS_IMPLEMENTATION.md](docs/STANDARDS_IMPLEMENTATION.md) and import docs/postman/Standards-Local-Test.postman_collection.json. Standards will attach to Zones when that module is implemented; no new dependency or database write.
+The same Admin-write/Active-user-read rules apply to standards. See [docs/STANDARDS_IMPLEMENTATION.md](docs/STANDARDS_IMPLEMENTATION.md) and import docs/postman/Standards-Local-Test.postman_collection.json. Standards now attach to Zones; new links require Active, and existing links remain when a standard is deactivated. No database write.
 
 ## Standard-material links
 
@@ -97,4 +97,8 @@ See MODULE_HANDOFF.md for the latest integrated branch and validation; persisten
 
 ## Zones
 
-Owner Farmers create/update Zones directly. Admin proposes changes for owner approval; Managers read only current member-Farm Zones. New standard links require Active; existing Inactive links remain. Total Zone area cannot exceed Farm area, including when accepting a Farm shrink. Read [docs/ZONES_IMPLEMENTATION.md](docs/ZONES_IMPLEMENTATION.md), import docs/postman/Zones-Local-Test.postman_collection.json and enter JSON/JWT/UUID directly. No new dependencies or .env values; all data stays in memory. Current branch: feat/zones-management.
+Owner Farmers create/update Zones directly. Admin proposes changes for owner approval; Managers read only current member-Farm Zones. New standard links require Active; existing Inactive links remain. Total Zone area cannot exceed Farm area, including when accepting a Farm shrink. Read [docs/ZONES_IMPLEMENTATION.md](docs/ZONES_IMPLEMENTATION.md), import docs/postman/Zones-Local-Test.postman_collection.json and enter JSON/JWT/UUID directly. No new dependencies or .env values; all data stays in memory.
+
+## Farmer assignments
+
+Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Current integrated local branch: feat/zone-assignments; read MODULE_HANDOFF.md for validation and publication status.

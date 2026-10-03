@@ -1,8 +1,8 @@
 # Tiêu chuẩn canh tác — bàn giao module
 
-Nhánh `feat/farming-standards` kế thừa `feat/agricultural-materials`. Đã đọc ERD XML/JSON: FARMING_STANDARDS có id UUID, code varchar(40), name varchar(100), description text, certifying_body varchar(120), status Active/Inactive. Không tự thêm field/bảng hoặc gắn tiêu chuẩn ở cấp Farm; tiêu chuẩn sẽ gắn Zone ở module Zone sau.
+Nhánh `feat/farming-standards` kế thừa `feat/agricultural-materials`. Đã đọc ERD XML/JSON: FARMING_STANDARDS có id UUID, code varchar(40), name varchar(100), description text, certifying_body varchar(120), status Active/Inactive. Không tự thêm field/bảng hoặc gắn tiêu chuẩn ở cấp Farm; tiêu chuẩn gắn Zone ở module Zones kế thừa.
 
-Phạm vi của nhánh này: danh mục tiêu chuẩn bộ nhớ, Admin tạo/sửa/Inactive, mọi user Active đọc. Bridge STANDARD_MATERIALS và Farm đã được triển khai ở các nhánh kế tiếp. Đọc MODULE_HANDOFF.md để lấy nhánh tích hợp mới nhất; hiện là feat/farm-approval-workflow, đạt 44/44 tests. Kết quả kiểm thử bên dưới là của riêng đợt Standards.
+Phạm vi của nhánh này: danh mục tiêu chuẩn bộ nhớ, Admin tạo/sửa/Inactive, mọi user Active đọc. Bridge, Farm, Zones và Assignments đã có trên các nhánh kế thừa; nhánh tích hợp local feat/zone-assignments đạt 55/55 tests. Zone phải gắn tiêu chuẩn Active khi tạo/đổi; Inactive giữ liên kết cũ. Đọc MODULE_HANDOFF.md và ZONES_IMPLEMENTATION.md. Kết quả kiểm thử bên dưới là của riêng đợt Standards.
 
 ## API
 
@@ -29,4 +29,4 @@ Import docs/postman/Standards-Local-Test.postman_collection.json. 01 Login Admin
 
 Lint/typecheck/build đạt; npm test **34/34**, thêm 2 test Standards trên 32 test trước. Bao phủ phân quyền, status/PATCH giữ field, ERD lengths/enums, TEXT limit, null/field thừa, filter/search code+tên/pagination, UUID không tồn tại, không lộ reference store. Tests không đọc .env/gửi SMS/email/ghi DB.
 
-Đọc MODULE_HANDOFF.md/IMPLEMENTATION_NOTES.md trước session sau. Nhánh bridge kế tiếp dựa trên nhánh này và dùng cùng store; không tạo bản copy Materials/Standards. Gắn tiêu chuẩn với Zone và xử lý lịch sử khi đổi tiêu chuẩn làm ở module Zone/Cultivation sau khi xác nhận nghiệp vụ. Chưa tạo bảng trước khi USERS hoàn tất.
+Đọc MODULE_HANDOFF.md/IMPLEMENTATION_NOTES.md trước session sau. Bridge/Zones dùng cùng store, không tạo bản copy Materials/Standards. Gắn tiêu chuẩn Zone đã có; lựa chọn vật tư/tiêu chuẩn trên event và lịch sử Cultivation cần triển khai ở module đó. Chưa tạo bảng trước khi USERS hoàn tất.

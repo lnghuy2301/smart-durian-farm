@@ -2,9 +2,11 @@
 
 ## Trạng thái và nguyên tắc
 
-Cập nhật 2026-10-04: Zones trên `feat/zones-management` kế thừa Farm. Chủ Farmer tạo/sửa trực tiếp; Admin đề xuất để chủ duyệt; Manager đọc theo HTX. Tổng diện tích Zone <= Farm, kiểm tra cả duyệt Farm shrink. Tiêu chuẩn Active khi gắn mới; Inactive giữ liên kết cũ. Đọc ZONES_IMPLEMENTATION.md. Quy tắc USERS_ZONES đã chốt: chủ phân công, Admin đề xuất cần chủ duyệt, Farmer được phân công phải chấp nhận; [start,end), một Farmer mỗi Zone tại một thời điểm, giữ lịch sử/correction 15 ngày từ end_date. Module phân công triển khai tiếp trên nhánh riêng.
+Cập nhật 2026-10-04: Zones trên `feat/zones-management` (e7bb204) kế thừa Farm; USERS_ZONES trên `feat/zone-assignments` kế thừa Zones. Chủ Farmer tạo/sửa Zone; Admin đề xuất cần chủ duyệt; Manager đọc theo HTX. Tổng diện tích Zone <= Farm, kiểm tra cả duyệt Farm shrink. Tiêu chuẩn Active khi gắn mới; Inactive giữ liên kết cũ. Phân công: chủ đề xuất; Admin cần chủ chấp thuận; người nhận Farmer phải nhận việc. Quyền theo [start,end), một Farmer mỗi Zone, giữ snapshot lịch sử riêng, policy correction 15 ngày từ end_date. Đọc ZONES_IMPLEMENTATION.md và ASSIGNMENTS_IMPLEMENTATION.md. Nhật ký/IoT chưa triển khai; helper quyền đã sẵn sàng cho các module đó.
 
 Nhánh Zones đạt **48/48 tests, lint/typecheck/build**. Collection Zones có 13 request JSON trực tiếp. Không dùng secrets .env thật hoặc gửi tin trong checks. User đã xác nhận test SMTP/Manager approval và Twilio thành công.
+
+Nhánh tích hợp Assignments đạt **55/55 tests, lint/typecheck/build**. Collection Assignments có 19 request JSON trực tiếp, gồm các luồng tùy chọn. Cả hai branch hiện chỉ commit local: auto-review đã chặn push Zones vì cần xác nhận gửi code/docs lên origin `https://github.com/lnghuy2301/smart-durian-farm.git`. Không thử cách khác để vượt chặn; chỉ push sau khi người dùng cho phép rõ việc gửi hai branch này. Không tự merge.
 
 Cập nhật Farm ngày 2026-10-02: đã triển khai tạo/sửa duyệt chéo Admin–chủ Farmer, gia nhập thêm Manager HTX duyệt, rời duyệt đối ứng và thông báo Manager qua API. Farm có thể độc lập; một Manager một HTX; is_owner chỉ thành true khi Farm được chấp nhận. Nhánh `feat/farm-approval-workflow` từ `feat/standard-materials`; đọc FARMS_IMPLEMENTATION.md và FARMS_WORKFLOW_DESIGN.md. **44/44 tests + lint/typecheck/build** đã đạt, fake transports, không gửi tin thật/ghi DB. Postman Farm có 18 request URL/JSON trực tiếp; Twilio giữ đúng 4.
 
@@ -22,10 +24,11 @@ Tất cả nghiệp vụ hiện lưu trong bộ nhớ. Chưa tạo bảng/seed/c
 | Liên kết tiêu chuẩn–vật tư | feat/standard-materials ← Tiêu chuẩn | STANDARD_MATERIALS_IMPLEMENTATION.md | Standard-Materials-Local-Test |
 | Farm / duyệt thay đổi và membership | feat/farm-approval-workflow ← Bridge | FARMS_IMPLEMENTATION.md | Farms-Local-Test |
 | Zone | feat/zones-management ← Farm | ZONES_IMPLEMENTATION.md | Zones-Local-Test |
+| Phân công USERS_ZONES | feat/zone-assignments ← Zones | ASSIGNMENTS_IMPLEMENTATION.md | Assignments-Local-Test |
 
 Vật tư/Tiêu chuẩn có Admin tạo/sửa/Inactive và user Active đọc/search/pagination. Bridge có Admin gắn/bỏ gắn, user Active đọc theo tiêu chuẩn; kiểm tra FK/cặp duy nhất và dùng đúng cùng store catalogs. Không kho/tồn hàng. Tiêu chuẩn gắn Zone sau, không gắn Farm. Hai catalog không hard-delete, không tự tạo UNIQUE tên/code ngoài ERD. Farm dùng đúng cùng Auth/USERS/HTX store; membership không sửa trực tiếp qua update, không áp dụng dữ liệu khi còn Pending.
 
-Checkout feat/zones-management để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge → Farm → Zones; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
+Checkout feat/zone-assignments để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge → Farm → Zones → Assignments; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
 
 ## Tái lập ở session khác
 
@@ -35,6 +38,8 @@ Checkout feat/zones-management để test toàn bộ chuỗi hiện tại. PR ph
 4. AUTH_MODE=mock, NODE_ENV=development, AUTH_TEST_ADMIN_PHONE/PASSWORD đầy đủ; DATABASE_URL/MONGODB_URI cần config nhưng danh mục không gọi DB. Email/SMS thật chỉ cần khi chủ động test luồng tương ứng.
 5. npm run dev:api; Swagger /api/docs. Import collection module, nhập JSON trực tiếp; copy JWT vào Authorization và UUID vào URL bằng tay. Restart xóa dữ liệu danh mục/đăng ký/Farm/yêu cầu/thông báo. Test Farm tạo/sửa cần Farmer/Admin, không cần SMTP. Gia nhập cần Manager đã xác minh email và được Admin approve qua USERS.
 6. npm run lint, npm run typecheck, npm run build, npm test. Tests dùng fake transports, không đọc .env. Stage đúng code/test/docs module, commit/push nhánh; không tự merge.
+
+Test Zones/Assignments: Farm phải Accepted và có standard Active. Chủ có thể phân công mình (vẫn cần accept) hoặc Farmer khác đăng ký bằng số mẫu không cần SIM. Pending không cấp quyền. Chủ end trực tiếp; Admin End proposal cần chủ duyệt. Hết phân công chỉ đọc own history/snapshot, không đọc Zone hiện tại nếu không sở hữu. Không xóa lịch sử, không gia hạn cửa sổ correction bằng phân công mới. Không có biến .env mới; Twilio/Users collection của người dùng không sửa.
 
 ## Quyết định cần hỏi trước module phụ thuộc
 

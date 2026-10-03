@@ -18,7 +18,7 @@ Farm có thể độc lập: `cooperative_id=null`, `join_cooperative_date=null`
 
 Farmer tạo cho chính mình; Admin phải chỉ định `owner_id` của Farmer Active. Một Farmer có thể có nhiều Farm. `USERS.is_owner` chỉ thành true khi Farm đầu tiên được chấp nhận; đăng ký hoặc yêu cầu tạo chưa duyệt không làm đổi field này. Chưa có xóa Farm hoặc chuyển chủ.
 
-Một Manager chỉ quản lý một HTX: store HTX kiểm tra ở cả create và assign, không ghi đè Manager hiện có. Manager không tạo/sửa Farm và không đọc Farm độc lập/HTX khác. Farmer hiện chỉ đọc các Farm do mình sở hữu; truy cập thông qua phân công Zone sẽ được thiết kế riêng khi triển khai USERS_ZONES.
+Một Manager chỉ quản lý một HTX: store HTX kiểm tra ở cả create và assign, không ghi đè Manager hiện có. Manager không tạo/sửa Farm và không đọc Farm độc lập/HTX khác. Farmer chỉ đọc các Farm do mình sở hữu; USERS_ZONES chỉ mở quyền đọc Zone được phân công đang hiệu lực, không mở toàn Farm. Xem ASSIGNMENTS_IMPLEMENTATION.md.
 
 ## API
 
@@ -91,7 +91,7 @@ Mỗi request cần tự paste `Authorization: Bearer <access_token>` thay PASTE
 - UsersModule export đúng MockCooperativeStore; AppModule tạo một usersModule và truyền cùng tham chiếu cho FarmsModule. Không gọi UsersModule/AuthModule factory độc lập cho Farm vì Nest 11 có thể tạo store thứ hai.
 - Thông báo rời HTX được tạo đúng một lần lúc chấp nhận, cho Manager đang gắn HTX. Manager bị Locked vẫn được lưu thông báo, có thể đọc khi Active trở lại. Không có gửi email/SMS/push, đánh dấu đã đọc hoặc websocket ở đợt này.
 
-Tiếp tục session: đọc guide này và handoff, kiểm tra branch/status/user edits, chạy bằng cấu hình hiện có; không ghi đè .env và không stage ERD/MQTT/xóa SpeedSMS của người dùng. Chưa triển khai chuyển chủ/xóa Farm, quản lý HTX độc lập, Zone/USERS_ZONES/Tree. Trước persistence phải chốt ERD nơi lưu yêu cầu/duyệt/thông báo và transaction; không tạo schema dựa riêng vào metadata Map.
+Tiếp tục session: đọc guide này và handoff, kiểm tra branch/status/user edits, chạy bằng cấu hình hiện có; không ghi đè .env và không stage ERD/MQTT/xóa SpeedSMS của người dùng. Zone/USERS_ZONES đã có ở nhánh kế thừa. Chưa triển khai chuyển chủ/xóa Farm, quản lý HTX độc lập hoặc Tree. Trước persistence phải chốt ERD nơi lưu yêu cầu/duyệt/thông báo và transaction; không tạo schema dựa riêng vào metadata Map.
 
 ## Kiểm tra
 

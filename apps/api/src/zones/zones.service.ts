@@ -8,6 +8,7 @@ import { TestFarm } from '../farms/farms.types';
 import { StandardsService } from '../standards/standards.service';
 import { CreateZoneDto, UpdateZoneDto, ZoneDetailsDto, ZoneListDto } from './zones.dto';
 import { TestZone, ZoneChangeRequest } from './zones.types';
+import { MockZoneAssignmentStore } from '../assignments/mock-zone-assignment.store';
 
 @Injectable()
 export class ZonesService {
@@ -20,23 +21,27 @@ export class ZonesService {
     @Inject(FarmsService) private readonly farms: FarmsService,
     @Inject(FarmAreaBudget) private readonly areaBudget: FarmAreaBudget,
     @Inject(StandardsService) private readonly standards: StandardsService,
+    @Inject(MockZoneAssignmentStore) private readonly assignments: MockZoneAssignmentStore,
   ) {}
 
   list(actorId: string, query: ZoneListDto) {
-    this.activeUser(actorId);
+    const actor = this.activeUser(actorId);
     // Kiểm tra quyền từng Farm, độc lập với pagination của endpoint danh sách Farm.
     const items = [...this.zones.values()].filter((zone) => {
       if (query.farm_id && zone.farm_id !== query.farm_id) { return false; }
-      const visible = this.canReadFarm(actorId, zone.farm_id);
+      const visible = this.canReadFarm(actorId, zone.farm_id)
+        || (actor.role === 'Farmer' && this.assignments.hasActive(actorId, zone.id));
       return visible && (!query.q || zone.zone_name.toLocaleLowerCase('vi').includes(query.q.toLocaleLowerCase('vi')));
     });
     return this.page(items, query);
   }
 
   get(actorId: string, id: string): TestZone {
-    this.activeUser(actorId);
+    const actor = this.activeUser(actorId);
     const zone = this.getRecord(id);
-    if (!this.canReadFarm(actorId, zone.farm_id)) { throw new NotFoundException('Không tìm thấy Zone trong phạm vi truy cập'); }
+    if (!this.canReadFarm(actorId, zone.farm_id) && !(actor.role === 'Farmer' && this.assignments.hasActive(actorId, zone.id))) {
+      throw new NotFoundException('Không tìm thấy Zone trong phạm vi truy cập');
+    }
     return zone;
   }
 

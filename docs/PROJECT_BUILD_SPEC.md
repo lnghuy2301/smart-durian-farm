@@ -199,6 +199,12 @@ Tại một thời điểm, một Zone chỉ có **một Farmer active**.
 Khi kết thúc phân công, không xóa record cũ; cập nhật `end_date`.
 
 Interval dùng [start_date, end_date), end_date null nghĩa là chưa định hạn.
+
+Cập nhật 2026-10-04: module USERS_ZONES trong bộ nhớ đã có lời mời/chấp thuận,
+kết thúc và lịch sử snapshot. Chủ kết thúc trực tiếp; Admin đề xuất End cần chủ duyệt.
+Farmer chỉ đọc lịch sử của mình sau hết hạn, correction tối đa 15 ngày từ end_date,
+không tạo nhật ký mới/điều khiển sau hết phân công. Correction policy/assertions đã có;
+endpoint Cultivation/IoT chưa triển khai. Xem ASSIGNMENTS_IMPLEMENTATION.md.
 Persistence cần exclusion constraint/transaction chống giao nhau của khoảng thời gian;
 partial unique index chỉ cho record chưa kết thúc không đủ bảo vệ lịch đã hẹn.
 Chưa tạo constraint/bảng ở giai đoạn bộ nhớ hiện tại.
@@ -377,7 +383,9 @@ Nếu Farmer phát hiện sai sau khi event đã LOCKED:
 -   correction event cũng trải qua PENDING → LOCKED như event bình
     thường.
 
-Không giới hạn số lần correction.
+Không giới hạn số lần correction trong cửa sổ còn quyền. Chỉ tác giả được correction;
+sau hết phân công, hạn tối đa 15 ngày từ end_date của phân công gốc, không gia hạn bằng
+phân công mới. Quyền correction không cho phép tạo nhật ký mới/điều khiển sau hết hạn.
 
 ### Hash chain
 

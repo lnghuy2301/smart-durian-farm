@@ -4,6 +4,8 @@ Nhánh `feat/zones-management`, kế thừa `feat/farm-approval-workflow`. Đố
 
 ## Nghiệp vụ
 
+Module tiếp nối USERS_ZONES hiện đã có trên feat/zone-assignments; xem ASSIGNMENTS_IMPLEMENTATION.md. Farmer không phải chủ được đọc Zone hiện tại chỉ khi nhận phân công và trong khoảng hiệu lực, không được sửa metadata Zone. Hết hạn vẫn đọc snapshot qua lịch sử phân công của mình. Các quy tắc viết Zone bên dưới giữ nguyên.
+
 Chủ Farmer Active tạo/sửa trực tiếp Zone trong Farm đã được duyệt của mình. Admin chỉ gửi đề xuất tạo/sửa; đúng chủ Farmer chấp nhận hoặc từ chối. Manager chỉ đọc Zone trong Farm hiện thuộc HTX của mình. Farmer khác chưa được phân công không đọc/ghi. Tên Zone không tự thêm UNIQUE; chưa có xóa Zone hoặc chuyển Farm. Phân công nằm ở module USERS_ZONES riêng.
 
 Diện tích Zone dương, decimal(7,3), tổng diện tích các Zone không vượt Farm. `FarmAreaBudget` dùng số nguyên theo đơn vị 0.001 để tính chính xác và được chia sẻ giữa FarmsService/ZonesService. Duyệt giảm diện tích Farm cũng kiểm tra bất biến này; đề xuất giảm chưa duyệt không hạn chế Zone ngay nhưng phải kiểm tra lại lúc commit.

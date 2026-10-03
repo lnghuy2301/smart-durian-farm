@@ -8,6 +8,7 @@ import { StandardsModule } from './standards/standards.module';
 import { StandardMaterialsModule } from './standard-materials/standard-materials.module';
 import { FarmsModule } from './farms/farms.module';
 import { ZonesModule } from './zones/zones.module';
+import { AssignmentsModule } from './assignments/assignments.module';
 
 @Module({})
 export class AppModule {
@@ -21,13 +22,15 @@ export class AppModule {
       const materialsModule = MaterialsModule.forMock(authModule);
       const standardsModule = StandardsModule.forMock(authModule);
       const farmsModule = FarmsModule.forMock(authModule, usersModule);
+      const zonesModule = ZonesModule.forMock(authModule, farmsModule, standardsModule);
       imports.push(
         usersModule,
         materialsModule,
         standardsModule,
         StandardMaterialsModule.forMock(authModule, materialsModule, standardsModule),
         farmsModule,
-        ZonesModule.forMock(authModule, farmsModule, standardsModule),
+        zonesModule,
+        AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );
     }
     return { module: AppModule, imports };
