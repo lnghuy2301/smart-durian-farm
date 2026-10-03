@@ -1,5 +1,7 @@
 # Implementation notes
 
+- 2026-10-04: Zones on feat/zones-management, based on Farm. Owner Farmer writes directly; Admin proposals need owner approval; Manager reads member-Farm Zones only. Area budget shared with Farm acceptance; integer thousandths; new standard links require Active. Read ZONES_IMPLEMENTATION.md. User approved assignments next: owner assigns, Admin proposal needs owner acceptance, assignee Farmer must accept, one Farmer per Zone interval, own history remains readable with correction up to 15 days from end_date. Cultivation/IoT enforcement follows in their modules. Live SMTP/Manager approval was successfully tested by user.
+
 - Farms complete on feat/farm-approval-workflow from feat/standard-materials (113da8f): reciprocal Admin/owner-Farmer creation/update approval; joining additionally requires the target Cooperative Manager; leaving requires only the counterpart, then records a Manager notification. User confirmed optional membership, one Manager per Cooperative and separate in-memory requests; is_owner changes only after accepted creation. 44/44 tests + lint/typecheck/build pass, no real messages/DB writes. Read FARMS_IMPLEMENTATION.md, FARMS_WORKFLOW_DESIGN.md and the 18-request manual JSON Postman collection. Shared HTX store now enforces Manager cardinality and returns copies; USERS test reads current store after assignment. Metadata does not authorize new database tables. Stop to clarify Zone/assignment permissions before the next dependent module.
 
 - Earlier Standard Materials batch on feat/standard-materials, based on Farming Standards, passed 36 tests + lint/typecheck/build; STANDARD_MATERIALS_IMPLEMENTATION.md documents shared catalog instances and FK/duplicate checks. Status changes preserve mappings; catalog configuration is separate from future cultivation eligibility. Its Farm questions were subsequently answered and implemented in the latest batch above.
@@ -27,7 +29,7 @@
 - ERD uses AI_DISEASE_DIAGNOSTICS rather than the spec's AI_LEAF_DIAGNOSIS; use ERD naming when AI is implemented.
 - Preserve enum capitalization from ERD. Resolve command_id generation, timeout representation, late/duplicate short ACKs and physical-button echo with firmware before IoT.
 - Manager cardinality confirmed on 2026-10-02 and enforced in the shared Cooperative store: one Manager manages one Cooperative. Verify nullability, uniqueness and deletion rules before migrations, including the storage of Farm approval requests/notifications approved only for in-memory testing so far.
-- Clarify author corrections after assignment ends and historical Tree/Device/Standard movement before relevant business modules.
+- Author corrections after assignment ends are limited to 15 days from end_date; only own history. Clarify historical Tree/Device movement before those modules.
 
 ## Database connection batch
 

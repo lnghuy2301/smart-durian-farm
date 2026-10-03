@@ -1,5 +1,7 @@
 # Implementation plan
 
+2026-10-04 update: Zones implemented on feat/zones-management; see ZONES_IMPLEMENTATION.md and MODULE_HANDOFF.md. Assignment permissions have been approved: owner assigns, Admin proposals require owner approval, target Farmer accepts before access; exclusive Zone intervals, retained own history and 15-day correction after end_date. USERS_ZONES is next on its own branch. Earlier unresolved Zone questions below are superseded by this decision; persistence remains deferred.
+
 Latest progress is tracked in MODULE_HANDOFF.md. Agricultural Materials → Farming Standards → Standard Materials → Farms are implemented on separate branches with docs/manual JSON Postman; 44 tests + lint/typecheck/build. Continue in memory. Farm changes use reciprocal Admin/owner approval; joining additionally needs Manager approval, leaving records a Manager notification. One Manager manages one Cooperative; membership is optional. Before Zones/USERS_ZONES, clarify write/assignment permissions and whether those changes need reciprocal approval. Later IoT/Cultivation has unresolved rules in notes. No database/schema changes without confirmation.
 
 ## Backend foundation batch

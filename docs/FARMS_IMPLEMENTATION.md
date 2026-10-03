@@ -4,6 +4,8 @@ Nhánh `feat/farm-approval-workflow`, base `feat/standard-materials` (113da8f). 
 
 ## Quy tắc đã chốt và đang áp dụng
 
+Cập nhật phụ thuộc 2026-10-04: module Zones đã triển khai; xem ZONES_IMPLEMENTATION.md. Duyệt giảm diện tích Farm phải giữ tổng diện tích Zone <= Farm. Nếu không đủ diện tích, trả 409, Farm và yêu cầu duyệt giữ nguyên. Quyền phân công Zone đã chốt ở MODULE_HANDOFF.md; phần mô tả chưa triển khai bên dưới phản ánh thời điểm của nhánh Farm gốc.
+
 | Thao tác | Farmer chủ Farm đề xuất | Admin đề xuất | Vai trò Manager |
 |---|---|---|---|
 | Tạo/sửa Farm | Admin duyệt | Chủ Farmer chấp nhận | Chỉ xem Farm chính thức trong HTX mình |

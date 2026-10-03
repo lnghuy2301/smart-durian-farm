@@ -4,6 +4,7 @@ import { MockUserStore, TestUser } from '../auth/mock-user.store';
 import { MockCooperativeStore } from '../users/mock-cooperative.store';
 import { CreateFarmRequestDto, FarmDetailsDto, FarmListDto, FarmPageDto, FarmRequestListDto, UpdateFarmRequestDto } from './farms.dto';
 import { FarmAction, FarmApproval, FarmChangeRequest, FarmLeaveNotification, TestFarm } from './farms.types';
+import { FarmAreaBudget } from './farm-area-budget';
 
 interface StoredRequest { value: FarmChangeRequest; farmVersion: number | null }
 
@@ -17,6 +18,7 @@ export class FarmsService {
   constructor(
     @Inject(MockUserStore) private readonly users: MockUserStore,
     @Inject(MockCooperativeStore) private readonly cooperatives: MockCooperativeStore,
+    @Inject(FarmAreaBudget) private readonly areaBudget: FarmAreaBudget,
   ) {}
 
   list(actorId: string, query: FarmListDto) {
@@ -40,6 +42,9 @@ export class FarmsService {
     const items = this.cooperatives.list().filter((coop) => actor.role !== 'Manager' || coop.manager_id === actor.id);
     return this.page(items, query);
   }
+
+  // Chỉ dùng bên trong các service. HTTP vẫn phải đi qua get(actorId, farmId).
+  getRecord(farmId: string): TestFarm { return structuredClone(this.requireFarm(farmId)); }
 
   createRequest(actorId: string, input: CreateFarmRequestDto): FarmChangeRequest {
     const actor = this.activeUser(actorId);
@@ -215,6 +220,7 @@ export class FarmsService {
     }
     const farm = this.requireFarm(request.farm_id!);
     if (request.action === 'Update') {
+      this.areaBudget.assertCapacity(farm.id, request.proposed_changes.area_size ?? farm.area_size);
       this.farms.set(farm.id, { ...farm, ...request.proposed_changes });
     } else if (request.action === 'Join') {
       this.farms.set(farm.id, { ...farm, cooperative_id: request.cooperative_id, join_cooperative_date: now });

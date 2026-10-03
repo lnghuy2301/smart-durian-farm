@@ -179,7 +179,7 @@ Manager/Admin chỉ đọc cultivation logs.
 - Farm có thể chưa thuộc HTX. Gia nhập cần duyệt đối ứng như trên **và** Manager HTX chấp thuận; rời giữ duyệt đối ứng, chỉ thông báo Manager sau khi hoàn tất, không cần Manager duyệt.
 - Một Manager quản lý một HTX. Manager đọc Farm thuộc HTX mình và xét gia nhập; không tạo/sửa Farm.
 - Yêu cầu duyệt và thông báo hiện lưu riêng trong bộ nhớ, chỉ áp dụng Farm sau khi đủ duyệt. Thiết kế nơi lưu lâu dài phải chốt ERD trước khi tạo bảng. Xem FARMS_IMPLEMENTATION.md và MODULE_HANDOFF.md.
-- Quyền tạo/sửa Zone và phân công Farmer chưa chốt; không tự suy từ quyền thay đổi Farm.
+- Cập nhật 2026-10-04: chủ Farmer tạo/sửa Zone trực tiếp; Admin đề xuất cần chủ duyệt. Manager đọc trong HTX. Chủ phân công Farmer; Admin đề xuất phân công cần chủ duyệt; Farmer nhận phân công phải chấp nhận. Giữ lịch sử riêng và correction của chính tác giả trong 15 ngày từ end_date, không tạo nhật ký/điều khiển sau hết hạn. Xem ZONES_IMPLEMENTATION.md và MODULE_HANDOFF.md.
 
 ------------------------------------------------------------------------
 
@@ -198,8 +198,10 @@ Tại một thời điểm, một Zone chỉ có **một Farmer active**.
 
 Khi kết thúc phân công, không xóa record cũ; cập nhật `end_date`.
 
-Có thể enforce ở PostgreSQL bằng partial unique index cho assignment
-đang active.
+Interval dùng [start_date, end_date), end_date null nghĩa là chưa định hạn.
+Persistence cần exclusion constraint/transaction chống giao nhau của khoảng thời gian;
+partial unique index chỉ cho record chưa kết thúc không đủ bảo vệ lịch đã hẹn.
+Chưa tạo constraint/bảng ở giai đoạn bộ nhớ hiện tại.
 
 ------------------------------------------------------------------------
 

@@ -93,4 +93,8 @@ Farm creation/updates require reciprocal Admin–owner-Farmer approval. Joining 
 
 Read [docs/FARMS_IMPLEMENTATION.md](docs/FARMS_IMPLEMENTATION.md) and import **docs/postman/Farms-Local-Test.postman_collection.json**. Its 18 requests use literal URLs/JSON and manually pasted JWT/UUID values; no scripts/environment are needed. Creation/update tests need Farmer/Admin only; membership tests need a Manager previously email-verified and approved through USERS. Manager notifications are read through `/api/farm-notifications`. No additional npm install is required.
 
-Checkout feat/farm-approval-workflow for the integrated modules. Latest validation: lint/typecheck/build and **44 passing tests**, using fake transports without sending mail/SMS or writing database records. Before the next Zone/assignment module, confirm write/assignment permissions; persistent approval/notification storage needs an ERD decision.
+See MODULE_HANDOFF.md for the latest integrated branch and validation; persistent approval/notification storage needs an ERD decision.
+
+## Zones
+
+Owner Farmers create/update Zones directly. Admin proposes changes for owner approval; Managers read only current member-Farm Zones. New standard links require Active; existing Inactive links remain. Total Zone area cannot exceed Farm area, including when accepting a Farm shrink. Read [docs/ZONES_IMPLEMENTATION.md](docs/ZONES_IMPLEMENTATION.md), import docs/postman/Zones-Local-Test.postman_collection.json and enter JSON/JWT/UUID directly. No new dependencies or .env values; all data stays in memory. Current branch: feat/zones-management.

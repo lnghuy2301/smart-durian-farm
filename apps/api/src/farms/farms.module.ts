@@ -1,6 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { FarmAccessController, FarmRequestsController, FarmsController } from './farms.controller';
 import { FarmsService } from './farms.service';
+import { FarmAreaBudget } from './farm-area-budget';
 
 @Module({})
 export class FarmsModule {
@@ -9,7 +10,7 @@ export class FarmsModule {
     return {
       module: FarmsModule, imports: [authModule, usersModule],
       controllers: [FarmsController, FarmRequestsController, FarmAccessController],
-      providers: [FarmsService], exports: [FarmsService],
+      providers: [FarmsService, FarmAreaBudget], exports: [FarmsService, FarmAreaBudget],
     };
   }
 }
