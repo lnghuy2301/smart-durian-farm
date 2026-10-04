@@ -180,6 +180,7 @@ Manager/Admin chỉ đọc cultivation logs.
 - Một Manager quản lý một HTX. Manager đọc Farm thuộc HTX mình và xét gia nhập; không tạo/sửa Farm.
 - Yêu cầu duyệt và thông báo hiện lưu riêng trong bộ nhớ, chỉ áp dụng Farm sau khi đủ duyệt. Thiết kế nơi lưu lâu dài phải chốt ERD trước khi tạo bảng. Xem FARMS_IMPLEMENTATION.md và MODULE_HANDOFF.md.
 - Cập nhật 2026-10-04: chủ Farmer tạo/sửa Zone trực tiếp; Admin đề xuất cần chủ duyệt. Manager đọc trong HTX. Chủ phân công Farmer; Admin đề xuất phân công cần chủ duyệt; Farmer nhận phân công phải chấp nhận. Giữ lịch sử riêng và correction của chính tác giả trong 15 ngày từ end_date, không tạo nhật ký/điều khiển sau hết hạn. Xem ZONES_IMPLEMENTATION.md và MODULE_HANDOFF.md.
+- HTX độc lập: Admin tạo được HTX chưa có Manager/sửa trực tiếp. Gắn Manager giữ luồng USERS approve. Manager sửa tên HTX/director/địa chỉ/số liên hệ HTX mình sau email tài khoản rồi SMS điện thoại tài khoản; chứng nhận chỉ Admin sửa. Cảnh báo Admin ngày 7, xóa ngày 30 nếu vẫn chưa có Manager và không tham chiếu nghiệp vụ; có liên kết thì giữ và cảnh báo. Metadata hiện trong bộ nhớ, không bổ sung schema. Xem COOPERATIVES_IMPLEMENTATION.md.
 
 ------------------------------------------------------------------------
 
@@ -212,6 +213,8 @@ Chưa tạo constraint/bảng ở giai đoạn bộ nhớ hiện tại.
 ------------------------------------------------------------------------
 
 ## 7. Tree and traceability
+
+Quyết định cho module Trees tiếp theo: chủ Farmer sửa metadata cây trực tiếp; Admin đề xuất sửa cần chủ duyệt; Farmer khác chỉ đọc metadata cây. Backend sinh tree_code; đợt đầu chưa cho chuyển Zone. Trees chưa triển khai trong đợt HTX.
 
 Mỗi Tree có `tree_code` unique.
 

@@ -7,6 +7,7 @@ export interface TwilioVerifyConfig {
   authToken: string;
   serviceSid: string;
   allowedPhone: string;
+  allowedPhones?: string[];
   liveEnabled: boolean;
   timeoutMs: number;
 }
@@ -64,7 +65,8 @@ export class TwilioVerifyGateway extends OtpProvider {
   private requireAllowedPhone(phone: string): string {
     if (!this.config.liveEnabled) { throw new ServiceUnavailableException('Bật LIVE_SMS_ENABLED=true để dùng Twilio Verify'); }
     const to = normalizeTwilioPhone(phone);
-    if (to !== normalizeTwilioPhone(this.config.allowedPhone)) { throw new ServiceUnavailableException('Số nhận SMS không nằm trong danh sách demo'); }
+    const allowed = [this.config.allowedPhone, ...(this.config.allowedPhones ?? [])].map(normalizeTwilioPhone);
+    if (!allowed.includes(to)) { throw new ServiceUnavailableException('Số nhận SMS không nằm trong danh sách demo'); }
     return to;
   }
 

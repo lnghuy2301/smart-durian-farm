@@ -43,6 +43,14 @@ export class FarmsService {
     return this.page(items, query);
   }
 
+  // Kể cả yêu cầu đã xử lý vẫn là tham chiếu nghiệp vụ cần được bảo toàn.
+  hasCooperativeReferences(cooperativeId: string): boolean {
+    return [...this.farms.values()].some((farm) => farm.cooperative_id === cooperativeId)
+      || [...this.requests.values()].some(({ value }) => value.cooperative_id === cooperativeId
+        || value.farm_snapshot?.cooperative_id === cooperativeId)
+      || [...this.notifications.values()].some((item) => item.cooperative_id === cooperativeId);
+  }
+
   // Chỉ dùng bên trong các service. HTTP vẫn phải đi qua get(actorId, farmId).
   getRecord(farmId: string): TestFarm { return structuredClone(this.requireFarm(farmId)); }
 

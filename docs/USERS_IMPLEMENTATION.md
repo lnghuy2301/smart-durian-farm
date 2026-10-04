@@ -128,7 +128,7 @@ Admin login bằng AUTH_TEST_ADMIN_PHONE/PASSWORD qua /auth/login. Copy access_t
 }
 ```
 
-Hoặc gắn HTX chưa có Manager bằng `{"cooperative_id":"<UUID HTX>"}`, không truyền cùng cooperative. Hiện chưa có API tạo HTX độc lập: demo thông thường dùng tạo HTX khi duyệt. Store hỗ trợ gắn HTX chưa có Manager cho module HTX tiếp theo và đã có test riêng. HTX tạo qua approve đã có Manager nên không gắn cho tài khoản khác. Reject dùng body `{}`.
+Hoặc gắn HTX chưa có Manager bằng `{"cooperative_id":"<UUID HTX>"}`, không truyền cùng cooperative. Nhánh USERS gốc chưa có API tạo HTX độc lập; nhánh tích hợp feat/cooperatives-management đã thêm POST `/api/cooperatives` cho Admin tạo HTX trống, dùng cùng store và luồng approve này. Xem COOPERATIVES_IMPLEMENTATION.md. HTX tạo qua approve đã có Manager nên không gắn cho tài khoản khác. Reject dùng body `{}`.
 
 ## Logic và cấu trúc code
 

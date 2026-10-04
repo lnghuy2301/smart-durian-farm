@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Farm approvals, Zones and Farmer assignments; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones and Farmer assignments; clients follow later.
 
 ## Local API setup
 
@@ -8,7 +8,7 @@ Requires Node.js 20.19+ and npm. Run from the repository root:
 
 ```powershell
 npm install
-Copy-Item .env.example .env
+if (-not (Test-Path -LiteralPath .env)) { Copy-Item .env.example .env }
 docker compose up -d
 npm run dev:api
 ```
@@ -39,7 +39,7 @@ npm run test:integration --workspace @smart-durian/api
 npm run start --workspace @smart-durian/api
 ```
 
-Import the collection and Local environment from docs/postman into Postman, select Local and run the Foundation folder. Only implemented endpoints are included. Do not export real credentials or tokens to Git.
+Business-module Postman collections use literal URLs/JSON: paste JWT/UUID/OTP manually, with no scripts or environment. The older Foundation collection has an optional Local environment. Only implemented endpoints are included. Do not export real credentials or tokens to Git.
 
 ## Structure
 
@@ -101,4 +101,14 @@ Owner Farmers create/update Zones directly. Admin proposes changes for owner app
 
 ## Farmer assignments
 
-Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Current integrated local branch: feat/zone-assignments; read MODULE_HANDOFF.md for validation and publication status.
+Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Assignments on feat/zone-assignments are inherited by the integrated feat/cooperatives-management branch; read MODULE_HANDOFF.md for validation and publication status.
+
+## Cooperatives
+
+Admin creates Cooperatives without a Manager and edits their information directly. Manager attachment uses the existing USERS approval flow. Managers can update their own Cooperative's name, director, address and contact number after email verification followed by SMS verification; only Admin edits its certificate number. OTP goes to the Manager account's email/phone, and changes apply only after both steps succeed.
+
+Unmanaged Cooperatives warn Admin after 7 days and are removed after 30 days only when no business records reference them. Notifications and lifecycle data stay in memory and disappear on restart. Read [docs/COOPERATIVES_IMPLEMENTATION.md](docs/COOPERATIVES_IMPLEMENTATION.md), import **docs/postman/Cooperatives-Local-Test.postman_collection.json** (20 manual requests). The integrated local branch is now **feat/cooperatives-management**, based on feat/zone-assignments; no migrations/seed or database writes were added.
+
+For real Manager SMS, manually add `TWILIO_HTX_VERIFY_SERVICE_SID` (a separate six-digit Verify Service) and `HTX_SMS_ALLOWED_PHONES` to your existing .env. Shared Twilio account credentials and SMTP remain as configured; Farmer reset service/allowlist stay unchanged. Without these optional HTX settings, existing Auth works and real HTX SMS returns 503. Automated checks use fake providers, never real .env credentials.
+
+Integrated validation: **69/69 tests**, lint/typecheck/build passed. On this Windows session the npm wrapper was unavailable because of installation-path permissions, so the equivalent local commands documented in the Cooperative guide were used.

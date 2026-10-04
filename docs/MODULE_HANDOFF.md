@@ -2,6 +2,14 @@
 
 ## Trạng thái và nguyên tắc
 
+Cập nhật HTX 2026-10-04: `feat/cooperatives-management`, base Assignments c9dbe67, là nhánh tích hợp mới nhất. Admin tạo HTX chưa có Manager/sửa trực tiếp; Manager sửa tên, director, địa chỉ, số liên hệ HTX mình sau email tài khoản → SMS điện thoại tài khoản. Chỉ Admin sửa chứng nhận. Gắn Manager qua USERS approve, không tháo/chuyển Manager. Cảnh báo ngày 7, xóa ngày 30 nếu không Manager và không tham chiếu nghiệp vụ; có liên kết thì giữ và cảnh báo Admin. Worker 60 giây và kiểm tra khi truy cập API HTX. Metadata/timer/request/notifications trong bộ nhớ, restart mất dữ liệu; không schema/migration/seed mới. Đọc COOPERATIVES_IMPLEMENTATION.md và collection Cooperatives 20 request JSON trực tiếp.
+
+SMS HTX thật dùng TWILIO_HTX_VERIFY_SERVICE_SID riêng và HTX_SMS_ALLOWED_PHONES (tối đa 20 số), cùng account credentials nhưng không đổi service/allowlist Farmer. SMTP dùng cùng EmailSender USERS; `.env` thật không sửa. Thiếu cấu hình HTX thì SMS HTX thật trả 503, Auth cũ vẫn chạy. Mock HTX/outbox tách reset; test-sms chỉ đúng Manager trong bước SmsPending và SMS_PROVIDER=mock.
+
+Trees đã chốt cho module sau: chủ Farm sửa trực tiếp, Admin đề xuất cần chủ Farmer duyệt, Farmer khác chỉ đọc metadata cây; tree_code backend sinh, đợt đầu không chuyển Zone. Chưa triển khai Trees. Device movement và Cultivation details/hash-chain vẫn cần bàn riêng.
+
+Kiểm tra HTX: **69/69 tests**, lint/typecheck/build đạt (14 tests HTX + 55 hồi quy), fake providers, không đọc .env thật/gửi tin/ghi DB. Postman 20 request đã parse JSON hợp lệ, không scripts/variables. Npm wrapper Windows EPERM nên checks chạy trực tiếp công cụ local tương đương theo guide HTX. Nhánh HTX chỉ local, chưa push/merge; cần xác nhận rõ quyền gửi branch lên origin, không suy từ lệnh triển khai thành quyền push.
+
 Cập nhật 2026-10-04: Zones trên `feat/zones-management` (e7bb204) kế thừa Farm; USERS_ZONES trên `feat/zone-assignments` kế thừa Zones. Chủ Farmer tạo/sửa Zone; Admin đề xuất cần chủ duyệt; Manager đọc theo HTX. Tổng diện tích Zone <= Farm, kiểm tra cả duyệt Farm shrink. Tiêu chuẩn Active khi gắn mới; Inactive giữ liên kết cũ. Phân công: chủ đề xuất; Admin cần chủ chấp thuận; người nhận Farmer phải nhận việc. Quyền theo [start,end), một Farmer mỗi Zone, giữ snapshot lịch sử riêng, policy correction 15 ngày từ end_date. Đọc ZONES_IMPLEMENTATION.md và ASSIGNMENTS_IMPLEMENTATION.md. Nhật ký/IoT chưa triển khai; helper quyền đã sẵn sàng cho các module đó.
 
 Nhánh Zones đạt **48/48 tests, lint/typecheck/build**. Collection Zones có 13 request JSON trực tiếp. Không dùng secrets .env thật hoặc gửi tin trong checks. User đã xác nhận test SMTP/Manager approval và Twilio thành công.
@@ -25,10 +33,11 @@ Tất cả nghiệp vụ hiện lưu trong bộ nhớ. Chưa tạo bảng/seed/c
 | Farm / duyệt thay đổi và membership | feat/farm-approval-workflow ← Bridge | FARMS_IMPLEMENTATION.md | Farms-Local-Test |
 | Zone | feat/zones-management ← Farm | ZONES_IMPLEMENTATION.md | Zones-Local-Test |
 | Phân công USERS_ZONES | feat/zone-assignments ← Zones | ASSIGNMENTS_IMPLEMENTATION.md | Assignments-Local-Test |
+| HTX độc lập / xác minh sửa của Manager | feat/cooperatives-management ← Assignments | COOPERATIVES_IMPLEMENTATION.md | Cooperatives-Local-Test |
 
 Vật tư/Tiêu chuẩn có Admin tạo/sửa/Inactive và user Active đọc/search/pagination. Bridge có Admin gắn/bỏ gắn, user Active đọc theo tiêu chuẩn; kiểm tra FK/cặp duy nhất và dùng đúng cùng store catalogs. Không kho/tồn hàng. Tiêu chuẩn gắn Zone sau, không gắn Farm. Hai catalog không hard-delete, không tự tạo UNIQUE tên/code ngoài ERD. Farm dùng đúng cùng Auth/USERS/HTX store; membership không sửa trực tiếp qua update, không áp dụng dữ liệu khi còn Pending.
 
-Checkout feat/zone-assignments để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge → Farm → Zones → Assignments; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
+Checkout feat/cooperatives-management để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge → Farm → Zones → Assignments → HTX; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
 
 ## Tái lập ở session khác
 
@@ -37,13 +46,13 @@ Checkout feat/zone-assignments để test toàn bộ chuỗi hiện tại. PR ph
 3. Node 20.19+, npm ci ở root nếu chưa có dependencies. Không Copy-Item ghi đè .env hiện có; thêm khóa thiếu từ .env.example.
 4. AUTH_MODE=mock, NODE_ENV=development, AUTH_TEST_ADMIN_PHONE/PASSWORD đầy đủ; DATABASE_URL/MONGODB_URI cần config nhưng danh mục không gọi DB. Email/SMS thật chỉ cần khi chủ động test luồng tương ứng.
 5. npm run dev:api; Swagger /api/docs. Import collection module, nhập JSON trực tiếp; copy JWT vào Authorization và UUID vào URL bằng tay. Restart xóa dữ liệu danh mục/đăng ký/Farm/yêu cầu/thông báo. Test Farm tạo/sửa cần Farmer/Admin, không cần SMTP. Gia nhập cần Manager đã xác minh email và được Admin approve qua USERS.
-6. npm run lint, npm run typecheck, npm run build, npm test. Tests dùng fake transports, không đọc .env. Stage đúng code/test/docs module, commit/push nhánh; không tự merge.
+6. npm run lint, npm run typecheck, npm run build, npm test. Tests dùng fake transports, không đọc .env. Nếu npm wrapper EPERM trên Windows, chạy công cụ local tương đương trong guide HTX. Stage đúng file module và commit local; chỉ push khi được phép gửi branch lên origin, không tự merge.
 
 Test Zones/Assignments: Farm phải Accepted và có standard Active. Chủ có thể phân công mình (vẫn cần accept) hoặc Farmer khác đăng ký bằng số mẫu không cần SIM. Pending không cấp quyền. Chủ end trực tiếp; Admin End proposal cần chủ duyệt. Hết phân công chỉ đọc own history/snapshot, không đọc Zone hiện tại nếu không sở hữu. Không xóa lịch sử, không gia hạn cửa sổ correction bằng phân công mới. Không có biến .env mới; Twilio/Users collection của người dùng không sửa.
 
 ## Quyết định cần hỏi trước module phụ thuộc
 
-- Farm hiện đã triển khai theo quy tắc chốt; quản lý HTX độc lập, xóa/chuyển chủ Farm và hủy yêu cầu chưa có. Schema lưu yêu cầu/duyệt/thông báo lâu dài vẫn cần chốt với người dùng trước persistence, không tự thêm bảng từ metadata Map.
-- Zone/USERS_ZONES đã chốt quyền như cập nhật đầu file; không hỏi lại. Cultivation cần giữ quyền đọc lịch sử riêng và correction của chính tác giả trong 15 ngày sau kết thúc; không cấp tạo nhật ký/điều khiển cho phân công hết hạn. Di chuyển Tree/Device và details lựa chọn chưa cung cấp.
+- Farm và quản lý HTX độc lập đã triển khai theo quy tắc chốt. Xóa/chuyển chủ Farm và hủy yêu cầu Farm chưa có. Schema lưu yêu cầu/duyệt/thông báo lâu dài vẫn cần chốt trước persistence, không tự thêm bảng từ metadata Map.
+- Zone/USERS_ZONES đã chốt quyền, không hỏi lại. Cultivation giữ quyền đọc lịch sử riêng và correction của chính tác giả trong 15 ngày sau kết thúc; không cấp tạo nhật ký/điều khiển sau hết phân công. Trees đợt đầu không chuyển Zone; Device movement và details lựa chọn chưa cung cấp.
 - IoT: command_id, timeout và ACK thiếu correlation cần thống nhất firmware.
 - Database: cardinality/nullability/unique/deletion rules còn cần chốt, không suy từ store demo thành schema mới.

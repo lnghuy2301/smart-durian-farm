@@ -2,6 +2,8 @@
 
 Nhánh `feat/farm-approval-workflow`, base `feat/standard-materials` (113da8f). Kế thừa Auth/Twilio/USERS/catalogs trong bộ nhớ. Đọc MODULE_HANDOFF.md trước khi tiếp tục session khác. Không tạo bảng, migration/seed hoặc sửa ERD. Không cần npm install thêm. Twilio vẫn đúng 4 request và .env hiện có được giữ nguyên.
 
+Cập nhật HTX: feat/cooperatives-management kế thừa Assignments và thêm quản lý HTX độc lập. GET `/api/cooperatives` chuyển sang controller HTX, giữ danh bạ/pagination/quyền cũ. Farm vẫn chỉ xin gia nhập HTX có Manager Active. Xóa HTX trống sau 30 ngày bị chặn nếu có Farm/yêu cầu (kể cả lịch sử/snapshot)/thông báo tham chiếu; không cascade hoặc tự làm Farm rời HTX. Xem COOPERATIVES_IMPLEMENTATION.md.
+
 ## Quy tắc đã chốt và đang áp dụng
 
 Cập nhật phụ thuộc 2026-10-04: module Zones đã triển khai; xem ZONES_IMPLEMENTATION.md. Duyệt giảm diện tích Farm phải giữ tổng diện tích Zone <= Farm. Nếu không đủ diện tích, trả 409, Farm và yêu cầu duyệt giữ nguyên. Quyền phân công Zone đã chốt ở MODULE_HANDOFF.md; phần mô tả chưa triển khai bên dưới phản ánh thời điểm của nhánh Farm gốc.

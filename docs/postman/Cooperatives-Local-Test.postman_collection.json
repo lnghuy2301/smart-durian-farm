@@ -1,0 +1,480 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Cooperatives - Nhap JSON",
+    "description": "Đọc COOPERATIVES_IMPLEMENTATION.md. URL/JSON trực tiếp, không scripts/environment. Copy JWT/UUID/OTP bằng tay. Chuẩn bị Manager đã xác minh email qua Users collection; gắn HTX ở bước 07. Bước 15 chỉ SMS_PROVIDER=mock, email vẫn cần SMTP thật. 17/18 là tùy chọn khi yêu cầu còn Pending; không chạy Runner.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng cấu hình Admin hiện có. Copy access_token vào Headers các request Admin."
+      },
+      "response": []
+    },
+    {
+      "name": "02 Create unmanaged Cooperative",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cooperative_name\": \"HTX Sau Rieng Demo\",\n  \"director\": \"Nguoi dai dien\",\n  \"certificate_number\": \"HTX-DEMO-001\",\n  \"address\": \"Dia chi HTX ban dau\",\n  \"contact_number\": \"0900000009\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperatives",
+        "description": "Admin tạo HTX chưa có Manager. Copy response.id là UUID HTX cho URL/JSON sau."
+      },
+      "response": []
+    },
+    {
+      "name": "03 List Cooperatives - Admin",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperatives?limit=20&offset=0",
+        "description": "Tất cả HTX; có thể thêm q để tìm tên/chứng nhận/địa chỉ."
+      },
+      "response": []
+    },
+    {
+      "name": "04 Cooperative lifecycle - Admin",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperatives/22222222-2222-4222-8222-222222222222",
+        "description": "Thay UUID HTX. Xem lifecycle.created_at/warning_at/deletion_due_at; đây là metadata bộ nhớ."
+      },
+      "response": []
+    },
+    {
+      "name": "05 Update Cooperative - Admin",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"Dia chi do Admin cap nhat\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperatives/22222222-2222-4222-8222-222222222222",
+        "description": "Admin sửa trực tiếp, không cần OTP. Nếu Manager đang xác minh yêu cầu, thay đổi này làm yêu cầu đó lỗi thời."
+      },
+      "response": []
+    },
+    {
+      "name": "06 Pending Managers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/users/pending-managers",
+        "description": "Trước đó dùng Users collection để SMTP xác minh email và đăng ký Manager Pending. Copy user.id Manager."
+      },
+      "response": []
+    },
+    {
+      "name": "07 Approve Manager into existing Cooperative",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cooperative_id\": \"22222222-2222-4222-8222-222222222222\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/users/44444444-4444-4444-8444-444444444444/approve",
+        "description": "URL là UUID Manager Pending; cooperative_id là UUID HTX bước 02. Đủ điều kiện thì Manager Active, dừng lịch xóa HTX."
+      },
+      "response": []
+    },
+    {
+      "name": "08 Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"ManagerDemo123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay số/mật khẩu tài khoản Manager vừa được duyệt. Copy JWT Manager, giữ riêng JWT Admin."
+      },
+      "response": []
+    },
+    {
+      "name": "09 My Cooperative",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperatives",
+        "description": "Manager chỉ thấy HTX mình. Farmer đọc danh bạ; không được sửa."
+      },
+      "response": []
+    },
+    {
+      "name": "10 Cooperative detail - Manager",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperatives/22222222-2222-4222-8222-222222222222",
+        "description": "Thay UUID HTX mình. Sau gắn Manager warning_at/deletion_due_at là null."
+      },
+      "response": []
+    },
+    {
+      "name": "11 Request Manager update and send email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cooperative_name\": \"HTX Sau Rieng Demo Moi\",\n  \"director\": \"Nguoi dai dien moi\",\n  \"address\": \"Dia chi do Manager de xuat\",\n  \"contact_number\": \"0900000008\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperatives/22222222-2222-4222-8222-222222222222/update-requests",
+        "description": "Chỉ 4 field này được phép. Gửi email OTP tới gmail đã xác minh của tài khoản Manager, không áp dụng thay đổi ngay. Copy response.id là UUID yêu cầu sửa."
+      },
+      "response": []
+    },
+    {
+      "name": "12 Update request detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333",
+        "description": "URL là UUID yêu cầu, không phải UUID HTX. Kiểm tra status/expires_at; không có OTP trong response."
+      },
+      "response": []
+    },
+    {
+      "name": "13 Verify email OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"otp\": \"000000\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333/email/verify",
+        "description": "Nhập OTP 6 số từ email. Email có hạn 10 phút; thành công chuyển EmailVerified, có 10 phút để bắt đầu bước SMS."
+      },
+      "response": []
+    },
+    {
+      "name": "14 Send SMS after email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333/sms/send",
+        "description": "Chỉ sau email thành công. SMS gửi tới phone_number tài khoản Manager; hạn 5 phút mới tính từ lúc gửi, không gửi tới contact_number vừa đề xuất."
+      },
+      "response": []
+    },
+    {
+      "name": "15 Read mock SMS - optional",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333/test-sms",
+        "description": "Chỉ SMS_PROVIDER=mock, đúng Manager/yêu cầu ở bước SmsPending. Copy messages[0].otp. Twilio thật trả 404; lấy OTP từ điện thoại."
+      },
+      "response": []
+    },
+    {
+      "name": "16 Verify SMS and apply update",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"otp\": \"000000\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333/sms/verify",
+        "description": "Nhập OTP SMS. Đủ cả hai, còn quyền và HTX chưa đổi thì request Accepted và trả cooperative chính thức. Dùng 10 đọc lại."
+      },
+      "response": []
+    },
+    {
+      "name": "17 Resend email - optional",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333/email/resend",
+        "description": "Chỉ khi EmailPending và chưa hết hạn. Đợi 60 giây; lần gửi mới thay OTP cũ. Không chạy sau 13/16."
+      },
+      "response": []
+    },
+    {
+      "name": "18 Cancel pending update - optional",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/cooperative-update-requests/33333333-3333-4333-8333-333333333333/cancel",
+        "description": "Hủy yêu cầu đang chờ của mình trước khi Accepted; không hủy khi provider đang gửi/check. Sau hủy có thể lập yêu cầu mới với nội dung khác."
+      },
+      "response": []
+    },
+    {
+      "name": "19 Cooperative notifications - Admin",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperative-notifications?limit=20&offset=0",
+        "description": "Cảnh báo thiếu Manager ngày 7, chặn xóa khi có tham chiếu và thông báo xóa ngày 30. Không sửa timestamp để test tay; mốc thời gian được kiểm thử tự động."
+      },
+      "response": []
+    },
+    {
+      "name": "20 Update request history - Admin",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperative-update-requests?limit=20&offset=0",
+        "description": "Admin xem mọi yêu cầu; dùng JWT Manager để chỉ xem yêu cầu của mình. Lịch sử không lộ digest/proof/OTP."
+      },
+      "response": []
+    }
+  ]
+}

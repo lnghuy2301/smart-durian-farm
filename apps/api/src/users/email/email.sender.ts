@@ -13,7 +13,7 @@ export interface SmtpConfig {
 }
 
 export abstract class EmailSender {
-  abstract sendVerification(to: string, code: string): Promise<void>;
+  abstract sendVerification(to: string, code: string, purpose?: 'cooperative-update'): Promise<void>;
 }
 
 export class DisabledEmailSender extends EmailSender {
@@ -47,13 +47,13 @@ export class SmtpEmailSender extends EmailSender {
     });
   }
 
-  async sendVerification(to: string, code: string): Promise<void> {
+  async sendVerification(to: string, code: string, purpose?: 'cooperative-update'): Promise<void> {
     try {
       const info = await this.transport.sendMail({
         from: this.config.from,
         to,
-        subject: 'Smart Durian Farm - Xác minh email',
-        text: `Mã xác minh email của bạn là: ${code}. Mã có hiệu lực trong 10 phút. Nếu bạn không yêu cầu, vui lòng bỏ qua email này.`,
+        subject: purpose ? 'Smart Durian Farm - Xác nhận sửa HTX' : 'Smart Durian Farm - Xác minh email',
+        text: `Mã ${purpose ? 'xác nhận sửa HTX' : 'xác minh email'} của bạn là: ${code}. Mã có hiệu lực trong 10 phút. Nếu bạn không yêu cầu, vui lòng bỏ qua email này.`,
       });
       if (!Array.isArray(info.accepted) || !info.accepted.includes(to) || (info.rejected?.length ?? 0) > 0) {
         throw new Error('Recipient not accepted');

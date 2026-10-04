@@ -9,6 +9,7 @@ import { StandardMaterialsModule } from './standard-materials/standard-materials
 import { FarmsModule } from './farms/farms.module';
 import { ZonesModule } from './zones/zones.module';
 import { AssignmentsModule } from './assignments/assignments.module';
+import { CooperativesModule } from './cooperatives/cooperatives.module';
 
 @Module({})
 export class AppModule {
@@ -29,6 +30,7 @@ export class AppModule {
         standardsModule,
         StandardMaterialsModule.forMock(authModule, materialsModule, standardsModule),
         farmsModule,
+        CooperativesModule.forMock(config.auth, authModule, usersModule, farmsModule),
         zonesModule,
         AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );

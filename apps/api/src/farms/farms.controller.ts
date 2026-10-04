@@ -73,9 +73,6 @@ export class FarmRequestsController {
 export class FarmAccessController {
   constructor(@Inject(FarmsService) private readonly farms: FarmsService) {}
 
-  @Get('cooperatives')
-  cooperatives(@Req() request: AuthRequest, @Query() query: FarmPageDto) { return this.farms.listCooperatives(request.user!.id, query); }
-
   @Get('farm-notifications')
   notifications(@Req() request: AuthRequest, @Query() query: FarmPageDto) { return this.farms.listNotifications(request.user!.id, query); }
 }

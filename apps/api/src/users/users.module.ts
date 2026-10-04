@@ -16,7 +16,7 @@ export class UsersModule {
       module: UsersModule,
       imports: [authModule],
       controllers: [RegistrationController, UsersController],
-      exports: [MockCooperativeStore],
+      exports: [MockCooperativeStore, EmailSender],
       providers: [
         UsersService, MockCooperativeStore, EmailVerificationService, AdminGuard,
         {

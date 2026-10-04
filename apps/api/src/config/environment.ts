@@ -11,6 +11,7 @@ export interface MockAuthConfig {
   sms: { provider: 'mock' } | SpeedSmsConfig | TwilioVerifyConfig;
   admin?: { phoneNumber: string; password: string };
   email?: SmtpConfig;
+  cooperativeSms?: TwilioVerifyConfig;
 }
 
 export interface Environment {
@@ -62,6 +63,7 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
     if (Buffer.byteLength(jwtSecret) < 32) { throw new Error('JWT_SECRET must contain at least 32 bytes'); }
     const smsProvider = env.SMS_PROVIDER ?? 'mock';
     let sms: MockAuthConfig['sms'] = { provider: 'mock' };
+    let cooperativeSms: TwilioVerifyConfig | undefined;
     if (!['mock', 'speedsms', 'twilio'].includes(smsProvider)) { throw new Error('SMS_PROVIDER must be mock, speedsms or twilio'); }
     if (smsProvider === 'twilio') {
       const accountSid = env.TWILIO_ACCOUNT_SID?.trim() ?? '';
@@ -77,6 +79,19 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
       if (!/^\d+$/.test(rawSmsTimeout) || timeoutMs < 100 || timeoutMs > 30000) { throw new Error('SMS_TIMEOUT_MS must be between 100 and 30000'); }
       if (!['true', 'false'].includes(env.LIVE_SMS_ENABLED ?? 'false')) { throw new Error('LIVE_SMS_ENABLED must be true or false'); }
       sms = { provider: 'twilio', accountSid, authToken, serviceSid, allowedPhone, timeoutMs, liveEnabled: env.LIVE_SMS_ENABLED === 'true' };
+      const htxServiceSid = env.TWILIO_HTX_VERIFY_SERVICE_SID?.trim() ?? '';
+      const htxPhones = env.HTX_SMS_ALLOWED_PHONES?.trim() ?? '';
+      if (htxServiceSid || htxPhones) {
+        if (!/^VA[0-9a-fA-F]{32}$/.test(htxServiceSid) || htxServiceSid === serviceSid) {
+          throw new Error('TWILIO_HTX_VERIFY_SERVICE_SID must be a separate VA SID');
+        }
+        const allowedPhones = htxPhones.split(',').map((phone) => phone.trim());
+        if (!htxPhones || allowedPhones.length > 20 || allowedPhones.some((phone) => !phone)) {
+          throw new Error('HTX_SMS_ALLOWED_PHONES requires 1 to 20 Vietnamese mobile numbers');
+        }
+        const normalized = [...new Set(allowedPhones.map(normalizeTwilioPhone))];
+        cooperativeSms = { ...sms, serviceSid: htxServiceSid, allowedPhone: normalized[0], allowedPhones: normalized.slice(1) };
+      }
     }
     if (smsProvider === 'speedsms') {
       const accessToken = env.SPEEDSMS_ACCESS_TOKEN?.trim() ?? '';
@@ -126,7 +141,7 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
       if (!/^\d+$/.test(rawSmtpTimeout) || smtpTimeout < 100 || smtpTimeout > 30000) { throw new Error('SMTP_TIMEOUT_MS must be between 100 and 30000'); }
       email = { provider: 'smtp', host, port: smtpPort, secure: rawSecure === 'true', user, password: smtpPassword, from, timeoutMs: smtpTimeout };
     }
-    auth = { mode: 'mock', phoneNumber, password, jwtSecret, sms, admin, email };
+    auth = { mode: 'mock', phoneNumber, password, jwtSecret, sms, admin, email, cooperativeSms };
   }
   return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth };
 }
