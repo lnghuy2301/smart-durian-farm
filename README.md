@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones and Farmer assignments; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments and Trees; clients follow later.
 
 ## Local API setup
 
@@ -101,14 +101,20 @@ Owner Farmers create/update Zones directly. Admin proposes changes for owner app
 
 ## Farmer assignments
 
-Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Assignments on feat/zone-assignments are inherited by the integrated feat/cooperatives-management branch; read MODULE_HANDOFF.md for validation and publication status.
+Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Assignments are inherited by the integrated feat/trees-management branch; read MODULE_HANDOFF.md for validation and publication status.
 
 ## Cooperatives
 
 Admin creates Cooperatives without a Manager and edits their information directly. Manager attachment uses the existing USERS approval flow. Managers can update their own Cooperative's name, director, address and contact number after email verification followed by SMS verification; only Admin edits its certificate number. OTP goes to the Manager account's email/phone, and changes apply only after both steps succeed.
 
-Unmanaged Cooperatives warn Admin after 7 days and are removed after 30 days only when no business records reference them. Notifications and lifecycle data stay in memory and disappear on restart. Read [docs/COOPERATIVES_IMPLEMENTATION.md](docs/COOPERATIVES_IMPLEMENTATION.md), import **docs/postman/Cooperatives-Local-Test.postman_collection.json** (20 manual requests). The integrated local branch is now **feat/cooperatives-management**, based on feat/zone-assignments; no migrations/seed or database writes were added.
+Unmanaged Cooperatives warn Admin after 7 days and are removed after 30 days only when no business records reference them. Notifications and lifecycle data stay in memory and disappear on restart. Read [docs/COOPERATIVES_IMPLEMENTATION.md](docs/COOPERATIVES_IMPLEMENTATION.md), import **docs/postman/Cooperatives-Local-Test.postman_collection.json** (20 manual requests). Its branch **feat/cooperatives-management** is inherited by feat/trees-management; no migrations/seed or database writes were added.
 
-For real Manager SMS, manually add `TWILIO_HTX_VERIFY_SERVICE_SID` (a separate six-digit Verify Service) and `HTX_SMS_ALLOWED_PHONES` to your existing .env. Shared Twilio account credentials and SMTP remain as configured; Farmer reset service/allowlist stay unchanged. Without these optional HTX settings, existing Auth works and real HTX SMS returns 503. Automated checks use fake providers, never real .env credentials.
+For real Manager SMS, fill `TWILIO_HTX_VERIFY_SERVICE_SID` (a separate six-digit Verify Service) and `HTX_SMS_ALLOWED_PHONES` in your local .env. Blank keys were appended locally at the user's request; add missing keys from .env.example without overwriting existing values. Shared Twilio account credentials and SMTP remain as configured; Farmer reset service/allowlist stay unchanged. Without these optional HTX settings, existing Auth works and real HTX SMS returns 503. Automated checks use fake providers, never real .env credentials.
 
-Integrated validation: **69/69 tests**, lint/typecheck/build passed. On this Windows session the npm wrapper was unavailable because of installation-path permissions, so the equivalent local commands documented in the Cooperative guide were used.
+## Trees
+
+Owner Farmers create/update Trees directly; Admin submits proposals for the correct owner to approve. Managers read Trees in their Cooperative's current Farms; assigned Farmers only read Trees in accepted, effective Zone assignments. Backend generates immutable DRN-UUID codes; no Zone transfer or hard delete. Dead/Removed can be restored to Active to correct mistakes, retaining metadata snapshots and the same code. Owner edits make older Admin proposals require rejection and resubmission.
+
+Read [docs/TREES_IMPLEMENTATION.md](docs/TREES_IMPLEMENTATION.md) and import **docs/postman/Trees-Local-Test.postman_collection.json** (20 manual requests). No new .env settings or dependencies. Data stays in memory; QR public trace, cultivation and harvests follow separately. Latest local branch: **feat/trees-management**, based on HTX commit 2752454; no push/merge.
+
+Integrated validation: **77/77 tests**, lint/typecheck/build passed. On this Windows session the npm wrapper was unavailable because of installation-path permissions, so the equivalent local commands documented in the Trees guide were used.

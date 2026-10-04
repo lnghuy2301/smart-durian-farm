@@ -55,3 +55,5 @@ Import `docs/postman/Zones-Local-Test.postman_collection.json`. Không Environme
 Code chính: src/zones/{dto,types,service,controller,module}; chính sách diện tích src/farms/farm-area-budget.ts. AppModule truyền cùng tham chiếu farmsModule/standardsModule, không tạo store thứ hai. Tối đa 1000 Zone, 2000 đề xuất kể cả lịch sử, đầy trả 429. Mọi response là bản sao; validate/commit đồng bộ cho demo một process. Persistence cần transaction và nơi lưu request/version theo ERD được duyệt trước.
 
 Kiểm thử tập trung quyền, HTTP/DTO, duyệt đồng thời, đề xuất lỗi thời, tiêu chuẩn Inactive, diện tích chính xác và Farm shrink. Kết quả kiểm tra cập nhật trong MODULE_HANDOFF.md. Các checks không đọc .env thật, không gửi mail/SMS hay ghi DB.
+
+Trees đã triển khai trên nhánh kế thừa HTX, sử dụng cùng ZonesService để đọc theo phạm vi owner/Admin/HTX/phân công Accepted đang hiệu lực. Không có chuyển Zone; Farmer nhận việc chỉ đọc metadata cây, chủ ghi trực tiếp, Admin đề xuất cần chủ duyệt. Xem TREES_IMPLEMENTATION.md; lịch sử metadata cây không cấp quyền sửa Zone hoặc thay đổi policy Cultivation.

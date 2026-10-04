@@ -1,0 +1,465 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Trees - Nhap JSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "20 request thủ công. Chuẩn bị Farm Accepted và Zone bằng collection Farms/Zones. Thay UUID mẫu ở URL/Body, mã DRN từ response và JWT_* trong header bằng giá trị thật. Không scripts, variables hay environment. Login dùng số/mật khẩu cấu hình local, mẫu không phải secret thật. Farmer được phân công chỉ đọc khi Accepted và đang hiệu lực; Manager cần Farm thuộc HTX mình. Restart mất mọi dữ liệu nghiệp vụ."
+  },
+  "item": [
+    {
+      "name": "01 Login Owner Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng tài khoản chủ Farm local; copy access_token vào JWT_OWNER.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng Admin fixture local; copy JWT_ADMIN.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Owner Create Tree",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees",
+        "description": "Thay zone_id thật; 201 trả id/tree_code backend. Không gửi tree_code; status mặc định Active.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"variety\": \"Ri6\",\n  \"plant_date\": \"2024-05-01T08:00:00+07:00\",\n  \"longitude\": 106.1234567,\n  \"latitude\": 10.7654321\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "04 List Trees",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees?limit=20&offset=0",
+        "description": "Chỉ các Zone được phép đọc. Có thể thêm zone_id, status và q (giống hoặc mã cây)."
+      }
+    },
+    {
+      "name": "05 Get Tree",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111",
+        "description": "Thay UUID bằng id Tree từ 03."
+      }
+    },
+    {
+      "name": "06 Get Tree By Code",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/by-code/DRN-11111111-1111-4111-8111-111111111111",
+        "description": "Thay toàn bộ DRN-UUID bằng tree_code response. Đây là API JWT; chưa phải public QR."
+      }
+    },
+    {
+      "name": "07 Owner Update Metadata",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111",
+        "description": "Không nhận zone_id/tree_code/id; không truyền status thì giữ trạng thái hiện tại.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"variety\": \"Monthong\",\n  \"longitude\": 106.1234568\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "08 Owner Mark Dead",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111",
+        "description": "200, lưu snapshot trước/sau; cây vẫn đọc được, không xóa.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Dead\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "09 Owner Restore Active",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111",
+        "description": "Sửa nhầm trạng thái: giữ nguyên mã/Zone, thêm lịch sử.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 Owner Mark Removed",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111",
+        "description": "Không hard-delete. Có thể dùng 09 để khôi phục khi nhập nhầm.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Removed\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 Tree Metadata History",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111/history?limit=20&offset=0",
+        "description": "Lịch sử thay đổi metadata, gồm version/actor/before/after và nguồn đề xuất. Không phải nhật ký Cultivation."
+      }
+    },
+    {
+      "name": "12 Admin Propose Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/requests",
+        "description": "201 chỉ tạo Pending, tree_id=null, chưa sinh mã/cây chính thức; copy id đề xuất.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"variety\": \"Ri6\",\n  \"plant_date\": \"2024-05-01T08:00:00+07:00\",\n  \"longitude\": 106.1234567,\n  \"latitude\": 10.7654321\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "13 List Pending Tree Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-requests?status=Pending&limit=20&offset=0",
+        "description": "Admin xem tất cả, chủ xem đề xuất của mình; Manager/Farmer khác không xem."
+      }
+    },
+    {
+      "name": "14 Get Tree Request",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-requests/11111111-1111-4111-8111-111111111111",
+        "description": "UUID là id đề xuất, khác Tree id."
+      }
+    },
+    {
+      "name": "15 Owner Approve Tree Request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "UUID đề xuất từ 12 hoặc 16. Chỉ chủ duyệt; 200 Accepted trả tree_id. Duyệt lần hai 409.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "16 Admin Propose Update",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees/11111111-1111-4111-8111-111111111111/update-requests",
+        "description": "UUID là Tree id. Chỉ một Pending Update mỗi cây. Nếu chủ sửa trong lúc chờ, duyệt 409; dùng 17 từ chối rồi đề xuất lại.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"variety\": \"Ri6\",\n  \"status\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "17 Owner Reject Tree Request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-requests/11111111-1111-4111-8111-111111111111/reject",
+        "description": "UUID là id đề xuất Pending chưa được xử lý; không thay đổi Tree/lịch sử metadata.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Không áp dụng thay đổi này\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "18 Login Assigned Farmer (optional)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Farmer khác phải đăng ký và chấp nhận phân công từ collection Assignments; sửa mẫu tài khoản rồi copy JWT_WORKER.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000002\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "19 Assigned Farmer Read Trees (optional)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_WORKER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees?zone_id=11111111-1111-4111-8111-111111111111&limit=20&offset=0",
+        "description": "UUID là Zone id đã nhận việc. Trước nhận việc/start hoặc từ end trở đi, danh sách rỗng; không có quyền sửa metadata cây."
+      }
+    },
+    {
+      "name": "20 Manager Read Trees (optional)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_MANAGER"
+          }
+        ],
+        "url": "http://localhost:3000/api/trees?limit=20&offset=0",
+        "description": "Login Manager đã được Admin duyệt bằng Users collection, copy JWT_MANAGER. Farm phải gia nhập HTX hoàn tất; rời HTX mất quyền đọc."
+      }
+    }
+  ]
+}

@@ -214,7 +214,7 @@ Chưa tạo constraint/bảng ở giai đoạn bộ nhớ hiện tại.
 
 ## 7. Tree and traceability
 
-Quyết định cho module Trees tiếp theo: chủ Farmer sửa metadata cây trực tiếp; Admin đề xuất sửa cần chủ duyệt; Farmer khác chỉ đọc metadata cây. Backend sinh tree_code; đợt đầu chưa cho chuyển Zone. Trees chưa triển khai trong đợt HTX.
+Trees đã triển khai in-memory ngày 2026-10-04: chủ Farmer tạo/sửa metadata cây trực tiếp; Admin đề xuất tạo/sửa cần đúng chủ duyệt. Manager chỉ đọc trong HTX mình, Farmer nhận phân công chỉ đọc Zone Accepted đang hiệu lực. Backend sinh tree_code DRN-UUID bất biến cùng id/zone_id; không chuyển Zone/hard-delete. Dead/Removed được khôi phục Active để sửa nhầm, giữ snapshot metadata trước/sau và version; chủ sửa trong khi chờ làm đề xuất Admin lỗi thời. Xem TREES_IMPLEMENTATION.md. Lịch sử metadata cây không thay thế Cultivation/assignment history; QR public và Harvests chưa triển khai. Không thêm bảng/migration/seed trong batch này.
 
 Mỗi Tree có `tree_code` unique.
 

@@ -10,6 +10,7 @@ import { FarmsModule } from './farms/farms.module';
 import { ZonesModule } from './zones/zones.module';
 import { AssignmentsModule } from './assignments/assignments.module';
 import { CooperativesModule } from './cooperatives/cooperatives.module';
+import { TreesModule } from './trees/trees.module';
 
 @Module({})
 export class AppModule {
@@ -32,6 +33,7 @@ export class AppModule {
         farmsModule,
         CooperativesModule.forMock(config.auth, authModule, usersModule, farmsModule),
         zonesModule,
+        TreesModule.forMock(authModule, farmsModule, zonesModule),
         AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );
     }
