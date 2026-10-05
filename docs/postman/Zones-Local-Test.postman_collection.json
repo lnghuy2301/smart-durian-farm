@@ -1,0 +1,319 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Zones - Nhap JSON",
+    "description": "Nhập JSON trực tiếp; không Environment/Scripts. Đọc ZONES_IMPLEMENTATION.md. Thay UUID và Headers Authorization bằng dữ liệu thật.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Login Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0913179099\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Dùng số/mật khẩu Farmer của bạn. Copy access_token để paste vào Headers của các request chủ Farmer."
+      },
+      "response": []
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Dùng AUTH_TEST_ADMIN_PHONE/PASSWORD trong .env. Copy JWT Admin."
+      },
+      "response": []
+    },
+    {
+      "name": "03 Create Zone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"farm_id\": \"22222222-2222-4222-8222-222222222222\",\n  \"standard_id\": \"33333333-3333-4333-8333-333333333333\",\n  \"zone_name\": \"Khu A\",\n  \"area_size\": 0.3,\n  \"longitude\": 106.1234567,\n  \"latitude\": 10.7654321\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zones",
+        "description": "Farm phải Accepted qua Farms collection; standard Active qua Standards collection. Thay hai UUID trong JSON. Copy response.id của Zone."
+      },
+      "response": []
+    },
+    {
+      "name": "04 Zones",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zones?farm_id=22222222-2222-4222-8222-222222222222",
+        "description": "Thay UUID Farm trên URL; GET không cần Body."
+      },
+      "response": []
+    },
+    {
+      "name": "05 Zone",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zones/44444444-4444-4444-8444-444444444444",
+        "description": "Thay UUID Zone bằng response.id từ 03."
+      },
+      "response": []
+    },
+    {
+      "name": "06 Update Zone",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_name\": \"Khu A cập nhật\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zones/44444444-4444-4444-8444-444444444444",
+        "description": "Chủ Farmer sửa trực tiếp; không truyền farm_id."
+      },
+      "response": []
+    },
+    {
+      "name": "07 Create Zone request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"farm_id\": \"22222222-2222-4222-8222-222222222222\",\n  \"standard_id\": \"33333333-3333-4333-8333-333333333333\",\n  \"zone_name\": \"Khu B\",\n  \"area_size\": 0.2,\n  \"longitude\": 106.1234567,\n  \"latitude\": 10.7654321\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zones/requests",
+        "description": "Admin đề xuất. Copy response.id đề xuất; Zone chưa tồn tại khi Pending."
+      },
+      "response": []
+    },
+    {
+      "name": "08 Pending Zone requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zone-requests?status=Pending",
+        "description": "Chủ Farmer xem các đề xuất trên Farm mình."
+      },
+      "response": []
+    },
+    {
+      "name": "09 Approve Zone request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zone-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "Thay UUID URL bằng id đề xuất từ 07 hoặc 10. Chủ Farmer chấp nhận, lấy zone_id."
+      },
+      "response": []
+    },
+    {
+      "name": "10 Create Update request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_name\": \"Khu A theo đề xuất Admin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zones/44444444-4444-4444-8444-444444444444/update-requests",
+        "description": "Thay UUID Zone. Copy id đề xuất và dùng 09 hoặc 11 để xử lý."
+      },
+      "response": []
+    },
+    {
+      "name": "11 Reject Zone request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Chưa phù hợp\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zone-requests/11111111-1111-4111-8111-111111111111/reject",
+        "description": "Từ chối đề xuất chưa xử lý; dữ liệu Zone chính thức giữ nguyên."
+      },
+      "response": []
+    },
+    {
+      "name": "12 Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"ManagerDemo123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Manager phải được xác minh email/đăng ký/duyệt qua USERS; không cần SIM cho luồng này."
+      },
+      "response": []
+    },
+    {
+      "name": "13 Zones of Cooperative",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay phần PASTE bằng access_token của tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zones",
+        "description": "Chỉ thấy Zones của Farm đã gia nhập HTX do Manager này quản lý."
+      },
+      "response": []
+    }
+  ]
+}
