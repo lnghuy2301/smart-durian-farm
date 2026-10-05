@@ -1,6 +1,6 @@
 # Devices — chuẩn bị module và điểm cần chốt
 
-Ngày 2026-10-05. Branch `feat/devices-management`, base GitHub main `c71820d` sau PR #5. **Chưa triển khai Devices API/store; đang chờ trả lời nghiệp vụ.** Không coi đề xuất trong tài liệu này là quyết định đã được duyệt.
+Ngày 2026-10-05. Branch `feat/devices-management`, base GitHub main `c71820d` sau PR #5. **Chưa triển khai Devices API/store; quyền và định danh đã chốt, trạng thái/số cây bao quát còn cần trả lời.** Không coi đề xuất còn chờ trong tài liệu này là quyết định đã được duyệt.
 
 ## Trạng thái đã kiểm chứng
 
@@ -11,7 +11,7 @@ Ngày 2026-10-05. Branch `feat/devices-management`, base GitHub main `c71820d` s
 
 ## Phạm vi đợt đề xuất
 
-Chỉ DEVICES: metadata trạm gắn Zone, danh sách/chi tiết theo phạm vi, tạo/sửa theo quyền sẽ chốt. Dùng RAM như các module hiện tại. Một Device thuộc một Zone; một Zone có nhiều Device. Sensors/Actuators sẽ có branch riêng; MQTT, telemetry, command/ACK và Cultivation bàn ở các đợt sau. Không tạo bảng/migration/seed hoặc sửa ERD.
+DEVICES: metadata trạm gắn Zone, danh sách/chi tiết theo phạm vi, chủ tạo/sửa trực tiếp và Admin đề xuất cần chủ duyệt. Dùng RAM như các module hiện tại. Một Device thuộc một Zone; một Zone có nhiều Device. Sensors/Actuators sẽ có branch riêng. Cần chốt theo dõi kết nối MQTT có thuộc đợt Devices hay module kế tiếp; không tự triển khai telemetry/control/command ACK hoặc Cultivation. Không tạo bảng/migration/seed hoặc sửa ERD.
 
 Field ERD giữ nguyên:
 
@@ -19,33 +19,45 @@ Field ERD giữ nguyên:
 |---|---|
 | id | UUID nội bộ backend |
 | zone_id | UUID tham chiếu Zone |
-| auth_token | varchar(255), thông tin cấp cho phần cứng; cần chốt cách cấp |
-| station_id | varchar(50), mã trạm dùng trong MQTT topic, khác id nội bộ |
+| station_id | varchar(50), mã thật của ESP32, bắt buộc/duy nhất/bất biến, khác id nội bộ |
 | installed_at | timestamp ngày lắp, chuẩn hóa UTC |
 | cost | decimal(10,2), chi phí |
-| status | Active / Offline / Maintenance |
+| status | ERD còn Active / Offline / Maintenance; người dùng yêu cầu Online, cần chốt biểu diễn |
 
-## Ba quyết định đang chờ
+ERD XML và JSON mới tại workspace đã bỏ auth_token, vẫn chưa có field số cây hoặc liên kết Device–Tree. Không phục hồi auth_token từ phiên bản tài liệu trước.
 
-1. **Quyền quản lý:** đề xuất chủ Farm tạo/sửa trực tiếp, Admin gửi đề xuất cần đúng chủ duyệt, Manager và Farmer đang được phân công chỉ đọc trong phạm vi. Chưa có quy tắc Devices được duyệt; không tự suy quyền từ Trees. Nếu chọn chỉ Admin quản lý phải điều chỉnh thiết kế tương ứng.
-2. **Vị trí và trạng thái:** đề xuất đợt đầu không chuyển Zone/xóa trạm. Người có quyền quản lý cập nhật status thủ công, default Offline khi tạo; tự phát hiện online/offline chờ MQTT. Chuyển Zone có thể làm telemetry cũ bị hiểu thành thuộc Zone mới vì document chỉ chứa device_id, nên phải chốt lịch sử trước nếu người dùng cần chuyển ngay.
-3. **Mã/token phần cứng:** đề xuất nhập station_id thật từ ESP32, duy nhất toàn hệ thống và bất biến; backend sinh auth_token, chỉ chủ nhận một lần khi tạo trực tiếp hoặc duyệt Create. Không đưa token vào danh sách/chi tiết/history/proposal. Cần xác nhận firmware có chấp nhận token backend sinh hoặc đã có cơ chế riêng. Định dạng/chuẩn hóa station_id cần khớp firmware; không tự áp mã MAC-only từ ghi chú chưa kiểm chứng. Unique ở đây là đề xuất kiểm tra trong RAM, chưa phải constraint DB đã tạo.
+## Quyết định người dùng đã chốt
 
-Các câu hỏi trên đã gửi bằng công cụ hỏi người dùng. Phải có câu trả lời trước khi viết logic tương ứng. Nếu token cần cấp lại/luân chuyển hoặc xem lại sau khi mất, chốt quyền và quy trình trước khi thêm route; không ngầm mở API trả token. Không thêm auth_token vào MQTT payload hay đổi protocol trong đợt metadata.
+1. Chủ Farm tạo/sửa trực tiếp; Admin gửi đề xuất cần đúng chủ duyệt; Manager đọc trong HTX mình, Farmer có phân công Accepted đang hiệu lực chỉ đọc trong phạm vi.
+2. Không cho chuyển Zone. Số cây mỗi trạm bao quát cố định, nhưng chưa rõ đây là hạn mức hay danh sách cây; chưa chốt số/cách gắn cây. Không tự thêm field/quan hệ.
+3. DEVICES.id là UUID backend/database sinh, dùng PK nội bộ. DEVICES.station_id là mã ESP32, ví dụ E08CFE41DCAC, UNIQUE NOT NULL và không cho thay đổi sau đăng ký. Giai đoạn RAM phải kiểm tra tương đương, chưa tạo constraint DB.
+4. Firmware dùng cùng station_id trong subscribe/station/{station_id} và publish/station/{station_id}. Khi nhận MQTT backend lấy station_id từ topic, lookup Device, lấy Device.id cho xử lý nội bộ. SENSORS/ACTUATORS/IOT_TELEMETRIES/ACTUATOR_TASKS tham chiếu device_id là UUID; không dùng station_id làm FK hoặc gộp hai identifier.
+5. Firmware hiện không có MQTT authentication, mqtt_user/mqtt_password rỗng. Không triển khai auth_token, sinh/cấp lại token, token DTO/API hoặc kiểm tra token MQTT trong đợt này. station_id chỉ là mã phần cứng, không phải secret/chứng minh xác thực. Giữ nguyên topic/protocol đang chạy.
+6. Trạng thái Online phải phản ánh kết nối MQTT với phần cứng; không dùng PATCH metadata để giả lập việc thiết bị đang kết nối. Tên enum và tiêu chí xác định mất kết nối còn cần chốt.
+
+Đề xuất cũ backend sinh auth_token và cập nhật Online/Offline hoàn toàn thủ công đã được yêu cầu mới thay thế, không được triển khai lại ở session sau.
+
+## Ba điểm còn chờ trả lời
+
+1. **Tên trạng thái:** ERD mới vẫn Active/Offline/Maintenance; người dùng nói Online. Đề xuất đổi biểu diễn thành Online/Offline/Maintenance sau khi chốt, hoặc giữ Active trong dữ liệu và dùng nhãn Online. Không tự sửa ERD của người dùng.
+2. **Số cây bao quát:** hạn mức N hay tập tree_id cụ thể? N áp dụng toàn bộ thiết bị hay nhập riêng một lần khi đăng ký? Có cần liên kết từng cây ngay không? ERD chưa có field/quan hệ cho yêu cầu này. Chỉ giới hạn số lượng không xác định được cây nào do trạm phụ trách khi một Zone có nhiều trạm.
+3. **MQTT presence và phạm vi đợt:** đề xuất Online sau gói MQTT từ station đã đăng ký; Offline sau 30 phút không có gói hoặc backend mất broker; Maintenance không bị tự ghi đè. Đây chỉ là đề xuất, chưa được duyệt. Chỉ backend kết nối broker thành công không chứng minh ESP32 của từng trạm đang kết nối. Nếu người dùng chọn theo dõi ở đợt sau, module metadata chưa được mô tả là đã phát hiện online/offline thực tế.
+
+Các câu hỏi mới đã gửi bằng công cụ hỏi người dùng. Phải có câu trả lời trước khi viết logic tương ứng; thời gian chờ/lựa chọn mặc định không phải chấp thuận. Không thêm heartbeat/topic/payload mới vào firmware để đáp ứng presence nếu chưa được cho phép.
 
 ## Cách triển khai sau khi chốt
 
 - Cập nhật phần quyết định được duyệt trong tài liệu này và handoff trước khi code; lựa chọn bị bác bỏ ghi rõ để session sau không áp nhầm.
 - Theo cấu trúc controller/DTO/service/types/module đang dùng. Module nhận đúng các tham chiếu Auth/Farms/Zones tạo một lần tại AppModule; không gọi lại factory gây duplicate store. Tái sử dụng quyền đọc Zone và shared assignment store.
-- DTO theo field ERD, validate UUID/timestamp/decimal/enum; backend không nhận id hoặc field lạ. Không expose thông tin bí mật trong response/audit, dùng response bản sao.
-- Nếu có Admin proposals: recheck chủ/actor Active và Zone/Farm khi duyệt; xử lý version lỗi thời, không ghi một phần hoặc chèn await giữa kiểm tra và commit RAM. Comment tiếng Việt ở logic duyệt, uniqueness, version và token redaction.
-- Tạo DEVICES_IMPLEMENTATION.md mô tả API thực tế, workflow, giới hạn RAM, lỗi, fixture và cách tái lập. Chỉ tạo collection Devices sau khi contract được chốt; literal URL/JSON, JWT/UUID/token copy bằng tay, không scripts/environment.
-- Kiểm thử tập trung quyền từng vai trò, hết phân công, uniqueness, race/stale proposal nếu có, không lộ token và dùng cùng store. Chạy lint/typecheck/build và bộ tests tích hợp sau khi code; ghi số tests thực tế, không dùng kết quả 89 tests cũ để khẳng định Devices đã pass.
+- DTO theo field ERD và các quyết định đã chốt, validate UUID/timestamp/decimal/enum; backend không nhận id hoặc field lạ. Không nhận auth_token. id/zone_id/station_id bất biến sau đăng ký; response bản sao.
+- Admin proposals: recheck chủ/actor Active và Zone/Farm khi duyệt; xử lý version lỗi thời, không ghi một phần hoặc chèn await giữa kiểm tra và commit RAM. Comment tiếng Việt ở logic duyệt, uniqueness/version, phân biệt ID phần cứng/nội bộ và presence nếu thuộc đợt này.
+- Tạo DEVICES_IMPLEMENTATION.md mô tả API thực tế, workflow, giới hạn RAM, lỗi, fixture và cách tái lập. Chỉ tạo collection Devices sau khi contract được chốt; literal URL/JSON, JWT/UUID/station_id copy bằng tay, không scripts/environment.
+- Kiểm thử tập trung quyền từng vai trò, hết phân công, station_id duy nhất/bất biến, UUID khác mã ESP32, race/stale proposal, không có auth_token và dùng cùng store; thêm kiểm thử coverage/presence theo quyết định cuối. Chạy lint/typecheck/build và bộ tests tích hợp sau khi code; ghi số tests thực tế, không dùng kết quả 89 tests cũ để khẳng định Devices đã pass.
 
 ## Tái lập session tiếp theo
 
 1. Đọc AGENTS.md nếu xuất hiện; git status/branch/log, MODULE_HANDOFF, notes/plan/spec, ERD XML/JSON, tài liệu này và tài liệu module liên quan.
 2. Fetch origin, kiểm tra main đã chứa PR #5 và branch hiện tại. Nếu branch Devices đã tồn tại thì tiếp tục branch đó; không tạo branch trùng hoặc bắt đầu lại module cũ.
-3. Kiểm tra câu trả lời ba quyết định; nếu chưa có, tiếp tục trao đổi và không code nghiệp vụ cần câu trả lời. Base chuẩn bị c71820d; tài liệu chuẩn bị không có Devices API chạy được.
+3. Giữ các quyết định đã chốt, không hỏi lại quyền/ID/token. Kiểm tra câu trả lời ba điểm còn chờ (status/coverage/phạm vi MQTT); nếu chưa có, tiếp tục trao đổi và không code nghiệp vụ cần câu trả lời. Base chuẩn bị c71820d; tài liệu chuẩn bị không có Devices API chạy được.
 4. Giữ .env và sửa đổi riêng ERD/MQTT/Postman (kể cả file bị xóa) ngoài stage/commit. Không reset/clean, không stage toàn bộ workspace. Không push branch mới hoặc merge remote theo quyền xuất bản đợt cũ.
 5. Sau khi có câu trả lời, hoàn thành module, docs/README/handoff/notes/plan, Postman và kiểm thử; stage danh sách file cụ thể rồi commit local. Persistence vẫn cần buổi chốt riêng.

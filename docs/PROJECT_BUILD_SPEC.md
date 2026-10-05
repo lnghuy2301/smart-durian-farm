@@ -427,6 +427,8 @@ Mục đích:
 
 ### DEVICES
 
+Quyết định 2026-10-05: chủ Farm tạo/sửa metadata trực tiếp, Admin đề xuất cần chủ duyệt; Manager/Farmer đang phụ trách chỉ đọc trong phạm vi. Không chuyển Zone. DEVICES.id là UUID PK nội bộ; station_id là mã ESP32 bắt buộc, duy nhất và bất biến sau đăng ký, không phải secret/token. Firmware giữ subscribe/station/{station_id} và publish/station/{station_id}; backend lookup theo mã trong topic rồi dùng UUID device_id cho SENSORS/ACTUATORS/IOT_TELEMETRIES/ACTUATOR_TASKS. Không triển khai auth_token hoặc MQTT authentication ở đợt hiện tại; ERD XML/JSON mới đã bỏ auth_token. Số cây trạm bao quát cố định và Online theo kết nối phần cứng là yêu cầu mới; nghĩa/hạn mức cây, tên enum (ERD còn Active) và quy tắc/phạm vi MQTT presence còn cần chốt trước code. Xem DEVICES_WORKFLOW_DESIGN.md; không tự thêm field/quan hệ hoặc đổi protocol.
+
 Một Device thuộc đúng một Zone.
 
 Một Zone có thể có nhiều Device.
