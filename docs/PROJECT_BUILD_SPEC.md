@@ -427,6 +427,8 @@ Mục đích:
 
 ### DEVICES
 
+Làm rõ mới nhất 2026-10-05: Active nghĩa là đã lắp đặt/đang sử dụng; Inactive là đã rút điện hoặc tháo chưa kết nối lại. Không đổi tên Active thành Online. Khi lắp chọn từng cây qua TREES.device_id (UUID nội bộ của Device), số cây theo danh sách này; không tự tạo thêm bảng/hạn mức riêng. Hai file ERD đang đọc chưa có TREES.device_id và còn Active/Offline/Maintenance: cần chốt enum cuối và nullability/cùng Zone/danh sách cố định hoặc thay thiết bị trước code. Người dùng giao quyền chọn thời điểm kết nối hardware; triển khai MQTT/presence/control ở module sau metadata/Sensors/Actuators, giữ nguyên protocol và kiểm thử tách biệt. Các đề xuất Online/hạn mức cây ở đoạn lịch sử bên dưới đã được trao đổi này thay thế.
+
 Quyết định 2026-10-05: chủ Farm tạo/sửa metadata trực tiếp, Admin đề xuất cần chủ duyệt; Manager/Farmer đang phụ trách chỉ đọc trong phạm vi. Không chuyển Zone. DEVICES.id là UUID PK nội bộ; station_id là mã ESP32 bắt buộc, duy nhất và bất biến sau đăng ký, không phải secret/token. Firmware giữ subscribe/station/{station_id} và publish/station/{station_id}; backend lookup theo mã trong topic rồi dùng UUID device_id cho SENSORS/ACTUATORS/IOT_TELEMETRIES/ACTUATOR_TASKS. Không triển khai auth_token hoặc MQTT authentication ở đợt hiện tại; ERD XML/JSON mới đã bỏ auth_token. Số cây trạm bao quát cố định và Online theo kết nối phần cứng là yêu cầu mới; nghĩa/hạn mức cây, tên enum (ERD còn Active) và quy tắc/phạm vi MQTT presence còn cần chốt trước code. Xem DEVICES_WORKFLOW_DESIGN.md; không tự thêm field/quan hệ hoặc đổi protocol.
 
 Một Device thuộc đúng một Zone.
