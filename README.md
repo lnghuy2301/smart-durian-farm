@@ -1,6 +1,8 @@
 # Smart Durian Farm
 
-All existing module branches are now integrated into **main locally** (2026-10-05). Start the next module branch from this main. Read [branch integration notes](docs/BRANCH_INTEGRATION.md) and [handoff](docs/MODULE_HANDOFF.md). Feature branches remain available; no remote push was performed. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
+GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
+
+The next module branch is **feat/devices-management**, based on this merged main. Devices business rules are awaiting confirmation; no Devices API has been implemented yet. Read [Devices preparation and open decisions](docs/DEVICES_WORKFLOW_DESIGN.md), [branch integration notes](docs/BRANCH_INTEGRATION.md) and [handoff](docs/MODULE_HANDOFF.md) before continuing.
 
 Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees and Tree Harvests; clients follow later.
 
