@@ -72,20 +72,20 @@ test('OTP expires, resend replaces old code, wrong attempts lock challenge and r
     await app.init();
     const auth = app.get(AuthService);
     const phone = testEnv.AUTH_TEST_PHONE;
-    auth.forgotPassword(phone);
+    await auth.forgotPassword(phone);
     const first = auth.testSms(phone).messages[0];
-    auth.forgotPassword(phone);
+    await auth.forgotPassword(phone);
     assert.deepEqual(auth.testSms(phone).messages[0], first, 'cooldown must keep current code');
     now += 5 * 60 * 1000;
     await assert.rejects(auth.resetPassword(phone, first.otp, 'ChangedLocalTest123!'));
-    auth.forgotPassword(phone);
+    await auth.forgotPassword(phone);
     const current = auth.testSms(phone).messages[0].otp;
     const wrong = current === '000000' ? '000001' : '000000';
     for (let attempt = 0; attempt < 5; attempt++) {
       await assert.rejects(auth.resetPassword(phone, wrong, 'ChangedLocalTest123!'));
     }
     await assert.rejects(auth.resetPassword(phone, current, 'ChangedLocalTest123!'));
-    for (let attempt = 0; attempt < 4; attempt++) { auth.forgotPassword(phone); }
-    assert.throws(() => auth.forgotPassword(phone));
+    for (let attempt = 0; attempt < 4; attempt++) { await auth.forgotPassword(phone); }
+    await assert.rejects(auth.forgotPassword(phone));
   } finally { await app.close(); }
 });

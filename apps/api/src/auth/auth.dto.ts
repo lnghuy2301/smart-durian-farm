@@ -18,7 +18,7 @@ export class LoginDto extends PhoneDto {
 }
 
 export class ResetPasswordDto extends PhoneDto {
-  @ApiProperty({ example: '123456', description: 'OTP giả lập, đúng 6 chữ số' })
+  @ApiProperty({ example: '123456', description: 'OTP đúng 6 chữ số: từ SMS Twilio hoặc hộp thư mock tùy cấu hình' })
   @IsString()
   @Matches(/^\d{6}$/)
   otp!: string;

@@ -173,6 +173,15 @@ vào Zone liên quan.
 
 Manager/Admin chỉ đọc cultivation logs.
 
+### Quyết định Farm/HTX cập nhật ngày 2026-10-02
+
+- Admin tạo/sửa Farm phải được chủ Farmer chấp nhận; chủ Farmer tạo/sửa phải được Admin duyệt. is_owner chỉ thành true khi Farm được chấp nhận, không nhận từ frontend.
+- Farm có thể chưa thuộc HTX. Gia nhập cần duyệt đối ứng như trên **và** Manager HTX chấp thuận; rời giữ duyệt đối ứng, chỉ thông báo Manager sau khi hoàn tất, không cần Manager duyệt.
+- Một Manager quản lý một HTX. Manager đọc Farm thuộc HTX mình và xét gia nhập; không tạo/sửa Farm.
+- Yêu cầu duyệt và thông báo hiện lưu riêng trong bộ nhớ, chỉ áp dụng Farm sau khi đủ duyệt. Thiết kế nơi lưu lâu dài phải chốt ERD trước khi tạo bảng. Xem FARMS_IMPLEMENTATION.md và MODULE_HANDOFF.md.
+- Cập nhật 2026-10-04: chủ Farmer tạo/sửa Zone trực tiếp; Admin đề xuất cần chủ duyệt. Manager đọc trong HTX. Chủ phân công Farmer; Admin đề xuất phân công cần chủ duyệt; Farmer nhận phân công phải chấp nhận. Giữ lịch sử riêng và correction của chính tác giả trong 15 ngày từ end_date, không tạo nhật ký/điều khiển sau hết hạn. Xem ZONES_IMPLEMENTATION.md và MODULE_HANDOFF.md.
+- HTX độc lập: Admin tạo được HTX chưa có Manager/sửa trực tiếp. Gắn Manager giữ luồng USERS approve. Manager sửa tên HTX/director/địa chỉ/số liên hệ HTX mình sau email tài khoản rồi SMS điện thoại tài khoản; chứng nhận chỉ Admin sửa. Cảnh báo Admin ngày 7, xóa ngày 30 nếu vẫn chưa có Manager và không tham chiếu nghiệp vụ; có liên kết thì giữ và cảnh báo. Metadata hiện trong bộ nhớ, không bổ sung schema. Xem COOPERATIVES_IMPLEMENTATION.md.
+
 ------------------------------------------------------------------------
 
 ## 6. Zone assignment
@@ -190,12 +199,22 @@ Tại một thời điểm, một Zone chỉ có **một Farmer active**.
 
 Khi kết thúc phân công, không xóa record cũ; cập nhật `end_date`.
 
-Có thể enforce ở PostgreSQL bằng partial unique index cho assignment
-đang active.
+Interval dùng [start_date, end_date), end_date null nghĩa là chưa định hạn.
+
+Cập nhật 2026-10-04: module USERS_ZONES trong bộ nhớ đã có lời mời/chấp thuận,
+kết thúc và lịch sử snapshot. Chủ kết thúc trực tiếp; Admin đề xuất End cần chủ duyệt.
+Farmer chỉ đọc lịch sử của mình sau hết hạn, correction tối đa 15 ngày từ end_date,
+không tạo nhật ký mới/điều khiển sau hết phân công. Correction policy/assertions đã có;
+endpoint Cultivation/IoT chưa triển khai. Xem ASSIGNMENTS_IMPLEMENTATION.md.
+Persistence cần exclusion constraint/transaction chống giao nhau của khoảng thời gian;
+partial unique index chỉ cho record chưa kết thúc không đủ bảo vệ lịch đã hẹn.
+Chưa tạo constraint/bảng ở giai đoạn bộ nhớ hiện tại.
 
 ------------------------------------------------------------------------
 
 ## 7. Tree and traceability
+
+Trees đã triển khai in-memory ngày 2026-10-04: chủ Farmer tạo/sửa metadata cây trực tiếp; Admin đề xuất tạo/sửa cần đúng chủ duyệt. Manager chỉ đọc trong HTX mình, Farmer nhận phân công chỉ đọc Zone Accepted đang hiệu lực. Backend sinh tree_code DRN-UUID bất biến cùng id/zone_id; không chuyển Zone/hard-delete. Dead/Removed được khôi phục Active để sửa nhầm, giữ snapshot metadata trước/sau và version; chủ sửa trong khi chờ làm đề xuất Admin lỗi thời. Xem TREES_IMPLEMENTATION.md. Lịch sử metadata cây không thay thế Cultivation/assignment history; QR public chưa triển khai, Harvests hiện có trên nhánh kế thừa. Không thêm bảng/migration/seed trong batch này.
 
 Mỗi Tree có `tree_code` unique.
 
@@ -229,6 +248,8 @@ Không hard-delete Tree khi cây chết/bị loại bỏ. Dùng `status` theo ER
 ------------------------------------------------------------------------
 
 ## 8. Harvest model
+
+Cập nhật RAM 2026-10-05: một TREE_HARVESTS theo ERD mới, created_by và status Draft/Pending/Confirmed, updated_by/updated_at nullable. Chủ nhập trực tiếp; Farmer khác cần phân công hiệu lực. Người tạo gửi/chủ xác nhận, chủ là tác giả thì gửi auto-confirm; lần đầu update fields null. Khóa từng bản ghi, không khóa batch; batch dùng chung nhiều cây cùng Zone/ngày, không UNIQUE batch_code; chống trùng tree_id + harvest_date. Sửa Confirmed qua proposal RAM: Manager HTX hoặc Admin cho Farm độc lập duyệt/áp dụng ngay, ghi actual editor/time; từ chối giữ dữ liệu. Tác giả hết phân công đọc riêng/gửi reason, chủ chuẩn bị sửa. Không xóa bản ghi đã từng Confirmed, không quyền 24 giờ/hash/PENDING 15 phút. Nhập bù 7 ngày lịch Việt Nam hoặc grant Admin đúng người/Zone/ngày/hạn; Dead/Removed chỉ nhập ngày cũ. Xem TREE_HARVESTS_IMPLEMENTATION.md và workflow design; metadata RAM, chưa tạo bảng/migration/seed.
 
 `TREE_HARVESTS` là lịch sử thu hoạch của từng Tree.
 
@@ -367,7 +388,9 @@ Nếu Farmer phát hiện sai sau khi event đã LOCKED:
 -   correction event cũng trải qua PENDING → LOCKED như event bình
     thường.
 
-Không giới hạn số lần correction.
+Không giới hạn số lần correction trong cửa sổ còn quyền. Chỉ tác giả được correction;
+sau hết phân công, hạn tối đa 15 ngày từ end_date của phân công gốc, không gia hạn bằng
+phân công mới. Quyền correction không cho phép tạo nhật ký mới/điều khiển sau hết hạn.
 
 ### Hash chain
 

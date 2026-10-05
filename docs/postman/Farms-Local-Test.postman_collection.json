@@ -1,0 +1,436 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Farms - Nhap JSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Đọc docs/FARMS_IMPLEMENTATION.md. URL/JSON trực tiếp, không Scripts/Environment. JWT và UUID copy bằng tay. 01→03→02→05→06 tạo Farm. Gia nhập: 11→05(Admin)→13(Manager), đủ hai duyệt mới Accepted. Rời: 14→15(Admin)→16(Manager nhận thông báo). Manager/HTX tạo qua collection USERS với email đã xác minh; không có fixture Manager bỏ xác minh."
+  },
+  "item": [
+    {
+      "name": "01 Login Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Thay số/mật khẩu bằng AUTH_TEST_PHONE và mật khẩu hiện tại. Copy access_token Farmer và user.id."
+      },
+      "response": []
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Dùng AUTH_TEST_ADMIN_PHONE/PASSWORD trong .env. Copy access_token Admin, không dùng JWT Farmer để duyệt yêu cầu Farmer."
+      },
+      "response": []
+    },
+    {
+      "name": "03 Create Farm request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms/requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"area_size\": 1.25,\n  \"address\": \"Dia chi nong trai demo\",\n  \"certificate_number\": \"FARM-DEMO-001\",\n  \"longitude\": 106.1234567,\n  \"latitude\": 10.7654321\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT Farmer. 201 Pending, Farm chưa tạo. Copy response.id là id yêu cầu. Farmer không cần owner_id."
+      },
+      "response": []
+    },
+    {
+      "name": "04 Pending Farm requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-requests?status=Pending",
+        "description": "JWT Admin/owner/Manager. Phạm vi theo vai trò; Manager chỉ thấy yêu cầu gia nhập cần mình duyệt. Xem required_approvals để biết còn thiếu bên nào."
+      },
+      "response": []
+    },
+    {
+      "name": "05 Approve Farm request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-requests/11111111-1111-4111-8111-111111111111/approve",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Thay 111… bằng id yêu cầu. JWT Admin để duyệt đề xuất Farmer; JWT chủ Farmer để nhận đề xuất Admin. Tạo Accepted mới có farm_id. Có thể dùng lại request này cho sửa/gia nhập; gia nhập mới duyệt một bên vẫn Pending."
+      },
+      "response": []
+    },
+    {
+      "name": "06 Farms",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms",
+        "description": "JWT Farmer chỉ xem Farm sở hữu; Admin tất cả; Manager chỉ Farm thuộc HTX mình. Farm đang chờ tạo không có trong danh sách."
+      },
+      "response": []
+    },
+    {
+      "name": "07 Farm",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms/22222222-2222-4222-8222-222222222222",
+        "description": "Thay 222… bằng farm_id thật từ chấp nhận yêu cầu tạo. JWT theo phạm vi quyền."
+      },
+      "response": []
+    },
+    {
+      "name": "08 Create Update request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms/22222222-2222-4222-8222-222222222222/update-requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"Dia chi da cap nhat\",\n  \"area_size\": 1.5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT Farmer owner hoặc Admin. Thay 222… bằng Farm id. Copy id yêu cầu mới; dữ liệu chính chưa đổi. Duyệt bằng 05 hoặc từ chối bằng 09 với vai trò đối ứng."
+      },
+      "response": []
+    },
+    {
+      "name": "09 Reject Farm request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-requests/11111111-1111-4111-8111-111111111111/reject",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Can kiem tra lai thong tin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT bên cần duyệt, không dùng JWT người đề xuất. Thay 111… bằng id yêu cầu mới. Giữ nguyên Farm khi Rejected."
+      },
+      "response": []
+    },
+    {
+      "name": "10 Cooperatives",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/cooperatives",
+        "description": "JWT Farmer/Admin: copy id HTX trong items để xin gia nhập. Manager chỉ thấy HTX mình. HTX được tạo khi Admin duyệt Manager ở collection USERS."
+      },
+      "response": []
+    },
+    {
+      "name": "11 Create Join request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms/22222222-2222-4222-8222-222222222222/join-requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cooperative_id\": \"33333333-3333-4333-8333-333333333333\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT Farmer owner. Thay 222… Farm id và 333… HTX id thật. Copy id yêu cầu. Dùng 05 với JWT Admin và id này, sau đó 13 với JWT Manager cùng id. Farm phải đang độc lập."
+      },
+      "response": []
+    },
+    {
+      "name": "12 Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"ManagerDemo123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Tài khoản Manager phải đã đăng ký, xác minh email và được Admin duyệt kèm HTX qua collection USERS. Nhập đúng phone/password, copy JWT Manager."
+      },
+      "response": []
+    },
+    {
+      "name": "13 Approve Join request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-requests/11111111-1111-4111-8111-111111111111/approve",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT Manager đúng HTX xin gia nhập. Thay 111… bằng cùng id yêu cầu từ 11. Admin cũng phải duyệt qua 05; thứ tự hai bên tùy ý, đủ hai bên mới Accepted."
+      },
+      "response": []
+    },
+    {
+      "name": "14 Create Leave request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms/22222222-2222-4222-8222-222222222222/leave-requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT Farmer owner. Thay 222… Farm id. Copy id yêu cầu mới. Farm vẫn thuộc HTX đến khi Admin duyệt."
+      },
+      "response": []
+    },
+    {
+      "name": "15 Approve Leave request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-requests/11111111-1111-4111-8111-111111111111/approve",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT Admin cho đề xuất Farmer từ 14; nếu Admin là người đề xuất thì dùng JWT chủ Farmer. Thay 111… bằng id yêu cầu rời. Không cần Manager chấp thuận."
+      },
+      "response": []
+    },
+    {
+      "name": "16 Farm Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-notifications",
+        "description": "JWT Manager HTX vừa rời. Thông báo FarmLeftCooperative chỉ xuất hiện khi rời được chấp nhận; đây là thông báo bộ nhớ đọc qua API."
+      },
+      "response": []
+    },
+    {
+      "name": "17 Create Farm for Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farms/requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"area_size\": 1.25,\n  \"address\": \"Dia chi nong trai demo\",\n  \"certificate_number\": \"FARM-DEMO-001\",\n  \"longitude\": 106.1234567,\n  \"latitude\": 10.7654321,\n  \"owner_id\": \"44444444-4444-4444-8444-444444444444\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Tùy chọn test chiều ngược. JWT Admin, thay 444… bằng user.id Farmer từ login/đăng ký. Copy id yêu cầu; Farmer chưa là owner đến khi Farm được chấp nhận."
+      },
+      "response": []
+    },
+    {
+      "name": "18 Accept Farm by owner",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "url": "http://localhost:3000/api/farm-requests/11111111-1111-4111-8111-111111111111/approve",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "JWT đúng chủ Farmer chỉ định ở 17. Thay 111… id yêu cầu từ 17. Admin người đề xuất không tự duyệt."
+      },
+      "response": []
+    }
+  ]
+}

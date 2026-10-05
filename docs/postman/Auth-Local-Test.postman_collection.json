@@ -3,7 +3,7 @@
     "_postman_id": "9e12e60a-8db3-4383-a68a-efb303780445",
     "name": "Smart Durian Farm - Auth Local Test",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "AUTH_MODE=mock only. No database writes or actual SMS. Restart API before each full collection run to restore initial test password and clear rate limits. Run requests in order. Local environment passwords are fake examples."
+    "description": "MOCK SMS ONLY: set SMS_PROVIDER=mock and restart API. Use Local environment and match test_phone/test_password to .env. Automatic mock outbox read is unavailable with Twilio. Current real SMS demo uses Twilio-Verify-Demo files. AUTH_MODE=mock only. No database writes or actual SMS. Restart API before each full collection run to restore initial test password and clear rate limits. Run requests in order. Local environment passwords are fake examples."
   },
   "item": [
     {

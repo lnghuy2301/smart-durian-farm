@@ -19,7 +19,7 @@ export function configureApplication(app: INestApplication, config: Environment)
   app.enableShutdownHooks();
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Smart Durian Farm API')
-    .setDescription('Health reports API liveness. Health/ready checks PostgreSQL and MongoDB connectivity; schemas and business modules follow separately.')
+    .setDescription('Local in-memory Auth/Users, catalogs, Cooperatives, Farms, Zones, assignments, Trees and Tree Harvests. Manager Cooperative updates require email then SMS verification. Unmanaged Cooperatives warn after 7 days and are removed after 30 days only without business references. Admin Zone/assignment/Tree proposals need owner approval; assignee Farmers accept before access. Trees use immutable backend codes and keep metadata snapshots. Harvest creators submit for owner confirmation; reviewed corrections retain data while Pending. Initial confirmation keeps update fields null. Backdate beyond 7 Vietnam calendar days requires scoped Admin permission. Cultivation correction policy remains separate. Database readiness checks connectivity only.')
     .setVersion('0.1.0')
     .addBearerAuth()
     .build();

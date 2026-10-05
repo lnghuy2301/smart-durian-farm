@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Standards - Nhap JSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Login Admin, paste JWT ở Headers, thay UUID bằng id tiêu chuẩn. JSON trực tiếp, không scripts/environment."
+  },
+  "item": [
+    {
+      "name": "01 Login Admin",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Dùng AUTH_TEST_ADMIN_PHONE/PASSWORD, copy access_token."
+      },
+      "response": []
+    },
+    {
+      "name": "02 Create standard",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/standards",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"code\": \"DEMO\",\n  \"name\": \"Tieu chuan demo\",\n  \"description\": \"Mo ta mau\",\n  \"certifying_body\": \"To chuc demo\",\n  \"status\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Admin; copy id response."
+      },
+      "response": []
+    },
+    {
+      "name": "03 List standards",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/standards?limit=20&offset=0",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "description": "User Active. Thêm q để tìm code/tên, status=Active để lọc."
+      },
+      "response": []
+    },
+    {
+      "name": "04 Standard details",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/standards/11111111-1111-4111-8111-111111111111",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "description": "Thay UUID bằng id tiêu chuẩn."
+      },
+      "response": []
+    },
+    {
+      "name": "05 Update standard",
+      "request": {
+        "method": "PATCH",
+        "url": "http://localhost:3000/api/standards/11111111-1111-4111-8111-111111111111",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"Mo ta da cap nhat\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Admin. Field không gửi được giữ nguyên."
+      },
+      "response": []
+    },
+    {
+      "name": "06 Deactivate standard",
+      "request": {
+        "method": "PATCH",
+        "url": "http://localhost:3000/api/standards/11111111-1111-4111-8111-111111111111",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Admin. Không xóa identity; liên kết được giữ để module khác đọc."
+      },
+      "response": []
+    }
+  ]
+}

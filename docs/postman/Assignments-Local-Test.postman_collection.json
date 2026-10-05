@@ -1,0 +1,444 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Assignments - Nhap JSON",
+    "description": "Đọc ASSIGNMENTS_IMPLEMENTATION.md. Không Scripts/Environment. Thay UUID/JSON/JWT bằng tay. Các luồng Admin/Manager tùy chọn, không chạy tuần tự tất cả nếu request cũ đã Accepted.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Login Farmer Owner",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0913179099\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Chủ Farm; thay số và mật khẩu hiện tại của bạn. Lưu JWT chủ riêng."
+      },
+      "response": []
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Dùng AUTH_TEST_ADMIN_PHONE/PASSWORD trong .env."
+      },
+      "response": []
+    },
+    {
+      "name": "03 Register Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_name\": \"Farmer nhận phân công\",\n  \"phone_number\": \"0900000002\",\n  \"password\": \"FarmerDemo123!\",\n  \"role\": \"Farmer\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/register",
+        "description": "Tùy chọn nếu chưa có người nhận. Số mẫu chưa trùng tài khoản, không cần SIM; request này không gửi SMS. Copy response.user.id. Nếu tự nhận việc, bỏ bước này và dùng id chủ."
+      },
+      "response": []
+    },
+    {
+      "name": "04 Login Farmer Assignee",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000002\",\n  \"password\": \"FarmerDemo123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Farmer nhận phân công; lưu JWT người nhận riêng với JWT chủ."
+      },
+      "response": []
+    },
+    {
+      "name": "05 Create Assignment request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": \"55555555-5555-4555-8555-555555555555\",\n  \"end_date\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zones/44444444-4444-4444-8444-444444444444/assignment-requests",
+        "description": "Chủ Farmer mời. Thay UUID Zone trên URL, user_id bằng response.user.id người nhận. Copy response.id lời mời; chưa cấp quyền trước accept. Có thể thêm start_date/end_date ISO có timezone."
+      },
+      "response": []
+    },
+    {
+      "name": "06 Pending Assignment requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ASSIGNEE_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/assignment-requests?status=Pending",
+        "description": "Người nhận xem lời mời, snapshot và những bên còn cần chấp nhận."
+      },
+      "response": []
+    },
+    {
+      "name": "07 Accept Assignment request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ASSIGNEE_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/assignment-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "URL dùng id lời mời. JWT người nhận. Đủ duyệt mới Accepted; copy response.assignment_id."
+      },
+      "response": []
+    },
+    {
+      "name": "08 My Assignments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ASSIGNEE_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zone-assignments/mine",
+        "description": "Lịch sử của người nhận, vẫn xem sau hết phân công và hết hạn correction."
+      },
+      "response": []
+    },
+    {
+      "name": "09 Assignment",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ASSIGNEE_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zone-assignments/66666666-6666-4666-8666-666666666666",
+        "description": "URL dùng assignment_id, không dùng id lời mời. Có snapshot/active/correction_deadline."
+      },
+      "response": []
+    },
+    {
+      "name": "10 Zone",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ASSIGNEE_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zones/44444444-4444-4444-8444-444444444444",
+        "description": "Chỉ 200 trong khoảng phân công hiệu lực. Hết hạn trả 404 nếu không phải chủ, lịch sử 08/09 vẫn xem được."
+      },
+      "response": []
+    },
+    {
+      "name": "11 End Assignment",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zone-assignments/66666666-6666-4666-8666-666666666666/end",
+        "description": "Chủ Farmer kết thúc đang hiệu lực. end_date giờ server; giữ lịch sử. Dùng assignment_id."
+      },
+      "response": []
+    },
+    {
+      "name": "12 Create Assignment by Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": \"55555555-5555-4555-8555-555555555555\",\n  \"end_date\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zones/44444444-4444-4444-8444-444444444444/assignment-requests",
+        "description": "Luồng thay thế sau khi hết phân công cũ/Zone khác. Admin cần chủ và người nhận chấp nhận. Copy id lời mời mới."
+      },
+      "response": []
+    },
+    {
+      "name": "13 Approve Assignment by Owner",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/assignment-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "Admin đề xuất Assign: chủ chấp nhận nhưng còn Pending nếu thiếu người nhận (07). Admin đề xuất End: chủ chấp nhận kết thúc. URL luôn là id request hiện tại."
+      },
+      "response": []
+    },
+    {
+      "name": "14 Create End request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/zone-assignments/66666666-6666-4666-8666-666666666666/end-requests",
+        "description": "Admin đề xuất kết thúc phân công đang hiệu lực; copy response.id rồi dùng 13, cần chủ duyệt."
+      },
+      "response": []
+    },
+    {
+      "name": "15 Reject Assignment request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ASSIGNEE_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Chưa phù hợp\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/assignment-requests/11111111-1111-4111-8111-111111111111/reject",
+        "description": "Chỉ lời mời Pending. Người nhận từ chối Assign; chủ hoặc proposer rút lời mời bằng JWT của mình. End chỉ chủ/proposer xử lý."
+      },
+      "response": []
+    },
+    {
+      "name": "16 Assignment Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/assignment-requests",
+        "description": "Chủ xem lịch sử lời mời và các bên đã chấp nhận."
+      },
+      "response": []
+    },
+    {
+      "name": "17 Assignments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zone-assignments?zone_id=44444444-4444-4444-8444-444444444444",
+        "description": "Chủ xem lịch sử phân công của Zone. Thay UUID Zone."
+      },
+      "response": []
+    },
+    {
+      "name": "18 Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"ManagerDemo123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Tùy chọn; Manager đã email verify/được Admin approve. Farm phải gia nhập HTX Manager này."
+      },
+      "response": []
+    },
+    {
+      "name": "19 Assignments of Cooperative",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_ACCESS_TOKEN",
+            "description": "Giữ Key Authorization; thay PASTE bằng access_token của đúng tài khoản."
+          }
+        ],
+        "url": "http://localhost:3000/api/zone-assignments",
+        "description": "Manager chỉ đọc các phân công thuộc Farm hiện trong HTX mình."
+      },
+      "response": []
+    }
+  ]
+}
