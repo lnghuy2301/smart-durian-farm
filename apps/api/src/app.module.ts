@@ -12,6 +12,7 @@ import { AssignmentsModule } from './assignments/assignments.module';
 import { CooperativesModule } from './cooperatives/cooperatives.module';
 import { TreesModule } from './trees/trees.module';
 import { TreeHarvestsModule } from './tree-harvests/tree-harvests.module';
+import { DevicesModule } from './devices/devices.module';
 
 @Module({})
 export class AppModule {
@@ -36,6 +37,7 @@ export class AppModule {
         CooperativesModule.forMock(config.auth, authModule, usersModule, farmsModule),
         zonesModule,
         treesModule,
+        DevicesModule.forMock(authModule, farmsModule, zonesModule, treesModule),
         TreeHarvestsModule.forMock(authModule, usersModule, farmsModule, zonesModule, treesModule),
         AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );

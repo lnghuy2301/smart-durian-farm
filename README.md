@@ -2,9 +2,9 @@
 
 GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
 
-The next module branch is **feat/devices-management**, based on this merged main. Owner writes/Admin proposals and distinct internal UUID/immutable ESP32 station_id are confirmed; no device auth_token in this batch. Active/Inactive describe installation/use, and trees will link through TREES.device_id. MQTT hardware integration will follow in a dedicated module. Devices API is not implemented yet while final enum membership and fixed tree-link/replacement rules are pending. Read [Devices preparation and open decisions](docs/DEVICES_WORKFLOW_DESIGN.md), [branch integration notes](docs/BRANCH_INTEGRATION.md) and [handoff](docs/MODULE_HANDOFF.md) before continuing.
+The latest integrated branch is **feat/devices-management**, based on merged main c71820d. Devices metadata, owner writes/Admin proposals, immutable UUID/ESP32 station_id and Active/Inactive installation status are implemented. Trees are related through the shared Zone; no TREES.device_id, fixed tree list or device auth_token. **98/98 tests, lint/typecheck/build passed.** MQTT hardware integration follows separately. Read [Devices implementation](docs/DEVICES_IMPLEMENTATION.md), [final workflow](docs/DEVICES_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). This new branch is committed locally and has not been pushed.
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees and Tree Harvests; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees, Tree Harvests and Devices; clients follow later.
 
 ## Local API setup
 
@@ -129,4 +129,10 @@ One harvest per Tree/day prevents conflicting entries. Multiple Trees share a ba
 
 Read [docs/TREE_HARVESTS_IMPLEMENTATION.md](docs/TREE_HARVESTS_IMPLEMENTATION.md) and [final workflow design](docs/TREE_HARVESTS_WORKFLOW_DESIGN.md). Import **docs/postman/Tree-Harvests-Local-Test.postman_collection.json** (24 manual requests); replace dates, JWT and UUID manually. No new .env settings/dependencies or persistence. Latest integrated local branch: **feat/tree-harvests-management**, based on Trees d39c5ce; no push/merge.
 
-Integrated validation: **89/89 tests**, lint/typecheck/build passed. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the Harvests guide.
+Harvests batch validation: **89/89 tests**, lint/typecheck/build passed. The latest Devices branch passes **98/98 tests**. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the module guides.
+
+## Devices metadata
+
+Owners register hardware stations and edit installation dates/cost/status directly; Admin proposals require the correct owner's approval. Manager/current assigned-Farmer reads reuse the existing Farm/Zone/assignment scope. UUID id and immutable unique station_id remain distinct; Active/Inactive records are retained without moving Zone or deleting the station. Trees in the Device's Zone are read directly from the shared Trees store. Metadata does not establish MQTT connectivity or send control commands.
+
+Read [Devices API and reproduction guide](docs/DEVICES_IMPLEMENTATION.md); import **docs/postman/Devices-Local-Test.postman_collection.json** (24 manual requests). Copy JWT/UUID/station_id by hand. No new .env settings/dependencies, auth_token, TREES.device_id, migrations or seed. All data stays in backend RAM and disappears on restart.
