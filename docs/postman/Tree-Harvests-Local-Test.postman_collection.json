@@ -1,0 +1,578 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Tree Harvests - Nhap JSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "24 request thủ công. Không scripts, variables hoặc environment. Chuẩn bị Farm Accepted/Zone/Trees; Worker đăng ký qua Users và nhận việc qua Assignments; Manager duyệt cần Farm thuộc HTX mình. Thay UUID tại URL/Body và JWT_* tại header bằng giá trị thật. Thay harvest_date và expires_at theo ngày thử (lịch Việt Nam); mẫu hiện ngày 2026-10-05. Restart mất toàn bộ dữ liệu nghiệp vụ/đề xuất/quyền nhập bù."
+  },
+  "item": [
+    {
+      "name": "01 Login Owner",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Tài khoản mẫu local, thay theo .env đang có. Copy access_token vào JWT_OWNER.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay theo Admin fixture local, copy JWT_ADMIN.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Owner Create Draft",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests",
+        "description": "Thay tree_id bằng cây thật trong Farm của chủ. Backend lấy created_by/created_at/status. Copy Harvest id; updated_by/updated_at=null.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tree_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"season_name\": \"Vu thu hoach 2026\",\n  \"harvest_date\": \"2026-10-05\",\n  \"fruit_count\": 10,\n  \"total_weight_kg\": 30.5,\n  \"batch_code\": \"ZONE-A-20261005\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "04 List Harvests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests?limit=20&offset=0",
+        "description": "Có thể thêm q (batch/season), tree_id, zone_id, status. Scope lọc trước phân trang."
+      }
+    },
+    {
+      "name": "05 Get Harvest",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests/11111111-1111-4111-8111-111111111111",
+        "description": "UUID là Harvest id, không phải Tree id."
+      }
+    },
+    {
+      "name": "06 Update Draft Totals",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests/11111111-1111-4111-8111-111111111111",
+        "description": "Sửa thành tổng mới khi thu hoạch thêm, không phải số gia tăng. Chỉ Draft; updated fields vẫn null.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fruit_count\": 15,\n  \"total_weight_kg\": 45.5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "07 Owner Submit And Auto Confirm",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests/11111111-1111-4111-8111-111111111111/submit",
+        "description": "Chủ đồng thời là tác giả: Confirmed ngay khi gửi, không tự confirm lúc tạo. update fields vẫn null.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "08 Login Assigned Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Farmer này không phải fixture mặc định ngoài tests; đăng ký qua Users và nhận việc qua Assignments trước. Copy JWT_WORKER.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000002\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "09 Worker Create Another Tree Draft",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_WORKER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests",
+        "description": "Thay bằng cây khác trong Zone đang phụ trách. Cùng batch/ngày với 03 được phép dù 03 đã Confirmed. Cùng cây/ngày trả 409 kể cả đổi batch.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tree_id\": \"22222222-2222-4222-8222-222222222222\",\n  \"season_name\": \"Vu thu hoach 2026\",\n  \"harvest_date\": \"2026-10-05\",\n  \"fruit_count\": 10,\n  \"total_weight_kg\": 30.5,\n  \"batch_code\": \"ZONE-A-20261005\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 Worker Submit For Owner Approval",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_WORKER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests/11111111-1111-4111-8111-111111111111/submit",
+        "description": "UUID Harvest từ 09; Pending chờ chủ. Worker không tự duyệt, chủ không gửi thay tác giả.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 List Pending Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests?status=Pending&limit=20&offset=0",
+        "description": "Lấy request id của Harvest từ 10 hoặc 15, có thể thêm harvest_id. action Confirm khác Correct."
+      }
+    },
+    {
+      "name": "12 Get Request",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests/11111111-1111-4111-8111-111111111111",
+        "description": "UUID là request id, xem proposed_changes/snapshot/editor_id."
+      }
+    },
+    {
+      "name": "13 Owner Approve Initial Confirmation",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "Chỉ request action Confirm. Confirmed, update fields vẫn null. Duyệt lại 409.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "14 Reject Or Withdraw Request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests/11111111-1111-4111-8111-111111111111/reject",
+        "description": "Confirm bị từ chối về Draft; Correct bị từ chối về Confirmed và giữ dữ liệu cũ. Chọn request còn Pending.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Kiểm tra lại dữ liệu\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "15 Author Request Confirmed Correction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_WORKER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests/11111111-1111-4111-8111-111111111111/correction-requests",
+        "description": "UUID là Harvest Confirmed của Worker. Worker hết phân công bỏ toàn bộ changes, chỉ gửi reason; chủ dùng 16. Chủ cũng có thể dùng JWT_OWNER đề xuất sửa. Pending giữ dữ liệu chính cũ.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Cân lại khối lượng\",\n  \"changes\": {\n    \"total_weight_kg\": 46\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "16 Prepare Correction Content",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests/11111111-1111-4111-8111-111111111111/changes",
+        "description": "UUID request action Correct. Chủ chuẩn bị cho tác giả hết phân công; người yêu cầu còn phụ trách cũng được chuẩn bị. Backend ghi editor_id đúng người.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"total_weight_kg\": 46\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "17 Manager Approve Correction In HTX",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_MANAGER"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "Chỉ Correct của Farm hiện thuộc HTX Manager. Áp dụng ngay, Confirmed, updated_by=editor_id, updated_at=thời điểm áp dụng. Không cấp quyền 24 giờ.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "18 Admin Approve Independent Farm Correction",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-requests/11111111-1111-4111-8111-111111111111/approve",
+        "description": "Chỉ Correct của Farm độc lập. Admin không duyệt thay Manager khi Farm thuộc HTX. Chọn 17 hoặc 18 theo Farm.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "19 Admin Grant Backdate Permission",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-backdate-permissions",
+        "description": "Thay Farmer id/Zone id; expires_at phải ở tương lai. Người nhận vẫn phải có quyền ghi Zone. Một quyền dùng cho nhiều cây đúng Zone/ngày trước hết hạn, không dùng cho người/ngày/Zone khác.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"zone_id\": \"22222222-2222-4222-8222-222222222222\",\n  \"harvest_date\": \"2026-09-20\",\n  \"expires_at\": \"2026-10-06T08:00:00+07:00\",\n  \"reason\": \"Cho phép bổ sung thu hoạch cũ\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "20 List Backdate Permissions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-backdate-permissions?limit=20&offset=0",
+        "description": "Admin xem toàn bộ; Farmer nhận quyền hoặc chủ Farm xem quyền thuộc phạm vi của mình. expired/revoked vẫn được giữ trong lịch sử."
+      }
+    },
+    {
+      "name": "21 Admin Revoke Backdate Permission",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/harvest-backdate-permissions/11111111-1111-4111-8111-111111111111/revoke",
+        "description": "UUID quyền từ 19. Thu hồi chặn lần nhập bù sau, không xóa dữ liệu đã nhập.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "22 Delete Unconfirmed Draft",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests/11111111-1111-4111-8111-111111111111",
+        "description": "Chỉ xóa Draft chưa từng Confirmed. Chuẩn bị Draft riêng bằng 03 với cây/ngày chưa dùng; không dùng id đã confirm ở 07. Pending/Confirmed trả 409."
+      }
+    },
+    {
+      "name": "23 Login Manager (optional)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Đăng ký/xác minh email/Admin approve qua Users và hoàn tất Farm join HTX trước; copy JWT_MANAGER cho 17/24.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "24 Manager Read Harvests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_MANAGER"
+          }
+        ],
+        "url": "http://localhost:3000/api/tree-harvests?limit=20&offset=0",
+        "description": "Đọc Farm hiện thuộc HTX; rời HTX mất quyền. Manager/Admin không trực tiếp tạo/sửa/xóa thu hoạch."
+      }
+    }
+  ]
+}

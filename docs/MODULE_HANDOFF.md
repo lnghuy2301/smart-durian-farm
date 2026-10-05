@@ -2,7 +2,9 @@
 
 ## Trạng thái và nguyên tắc
 
-Cập nhật Trees 2026-10-04: nhánh tích hợp mới nhất `feat/trees-management`, base HTX `2752454`. Chủ Farmer tạo/sửa trực tiếp; Admin đề xuất Create/Update cần đúng chủ duyệt. Manager đọc Farm hiện thuộc HTX mình; Farmer nhận việc chỉ đọc cây trong Zone có phân công Accepted và hiệu lực [start,end). Backend sinh mã DRN-UUID bất biến; không chuyển Zone/hard-delete. Dead/Removed có thể khôi phục Active, giữ snapshot metadata và version. Một Pending Update/cây; chủ sửa trong khi chờ làm đề xuất lỗi thời (409). Đọc TREES_IMPLEMENTATION.md và collection Trees 20 request JSON trực tiếp. 77/77 tests (8 Trees + 69 hồi quy), lint/typecheck/build đạt; fake providers, không tin thật/ghi DB. Tất cả vẫn in-memory, nhánh chỉ local, chưa push/merge.
+Cập nhật Harvests 2026-10-05: nhánh tích hợp mới nhất `feat/tree-harvests-management` từ Trees `d39c5ce`. Một bảng TREE_HARVESTS Draft/Pending/Confirmed; chủ nhập trực tiếp hoặc Farmer đang phụ trách Zone nhập. Tác giả gửi/chủ xác nhận, tác giả là chủ thì gửi auto-confirm; lần đầu update fields null. Sửa Confirmed qua proposal RAM, Pending giữ dữ liệu chính; Manager HTX hoặc Admin cho Farm độc lập duyệt và áp dụng ngay, ghi actual editor/time. Tác giả hết phân công đọc riêng/gửi reason, chủ chuẩn bị nội dung. Khóa từng bản ghi, không khóa batch; cùng batch chỉ cùng Zone/ngày, không UNIQUE batch_code, chống trùng cây/ngày. Nhập bù 7 ngày lịch Việt Nam, quá hạn cần grant Admin; Dead/Removed chỉ nhập ngày cũ. Không quyền 24 giờ/hash/Cultivation 15 phút. 89/89 tests (12 Harvests + 77 hồi quy), lint/typecheck/build, fake providers không .env/tin thật/ghi DB. Đọc TREE_HARVESTS_IMPLEMENTATION.md, thiết kế cuối TREE_HARVESTS_WORKFLOW_DESIGN.md, Postman Tree-Harvests 24 request literal JSON. Cả ba câu hỏi đã trả lời, không hỏi lại. Giữ nguyên ERD/.env/thay đổi riêng; không push/merge. Kết quả bên dưới là lịch sử từng batch.
+
+Cập nhật Trees 2026-10-04: nhánh đợt Trees `feat/trees-management`, commit d39c5ce, base HTX `2752454`, được kế thừa trong Harvests. Chủ Farmer tạo/sửa trực tiếp; Admin đề xuất Create/Update cần đúng chủ duyệt. Manager đọc Farm hiện thuộc HTX mình; Farmer nhận việc chỉ đọc cây trong Zone có phân công Accepted và hiệu lực [start,end). Backend sinh mã DRN-UUID bất biến; không chuyển Zone/hard-delete. Dead/Removed có thể khôi phục Active, giữ snapshot metadata và version. Một Pending Update/cây; chủ sửa trong khi chờ làm đề xuất lỗi thời (409). Đọc TREES_IMPLEMENTATION.md và collection Trees 20 request JSON trực tiếp. 77/77 tests (8 Trees + 69 hồi quy), lint/typecheck/build đạt; fake providers, không tin thật/ghi DB. Tất cả vẫn in-memory, nhánh chỉ local, chưa push/merge.
 
 Cập nhật HTX 2026-10-04: `feat/cooperatives-management`, commit 2752454, base Assignments c9dbe67, được kế thừa trong Trees. Admin tạo HTX chưa có Manager/sửa trực tiếp; Manager sửa tên, director, địa chỉ, số liên hệ HTX mình sau email tài khoản → SMS điện thoại tài khoản. Chỉ Admin sửa chứng nhận. Gắn Manager qua USERS approve, không tháo/chuyển Manager. Cảnh báo ngày 7, xóa ngày 30 nếu không Manager và không tham chiếu nghiệp vụ; có liên kết thì giữ và cảnh báo Admin. Worker 60 giây và kiểm tra khi truy cập API HTX. Metadata/timer/request/notifications trong bộ nhớ, restart mất dữ liệu; không schema/migration/seed mới. Đọc COOPERATIVES_IMPLEMENTATION.md và collection Cooperatives 20 request JSON trực tiếp.
 
@@ -37,10 +39,11 @@ Tất cả nghiệp vụ hiện lưu trong bộ nhớ. Chưa tạo bảng/seed/c
 | Phân công USERS_ZONES | feat/zone-assignments ← Zones | ASSIGNMENTS_IMPLEMENTATION.md | Assignments-Local-Test |
 | HTX độc lập / xác minh sửa của Manager | feat/cooperatives-management ← Assignments | COOPERATIVES_IMPLEMENTATION.md | Cooperatives-Local-Test |
 | Trees / metadata và duyệt Admin | feat/trees-management ← HTX 2752454 | TREES_IMPLEMENTATION.md | Trees-Local-Test |
+| Tree Harvests / xác nhận và duyệt sửa | feat/tree-harvests-management ← Trees d39c5ce | TREE_HARVESTS_IMPLEMENTATION.md | Tree-Harvests-Local-Test |
 
 Vật tư/Tiêu chuẩn có Admin tạo/sửa/Inactive và user Active đọc/search/pagination. Bridge có Admin gắn/bỏ gắn, user Active đọc theo tiêu chuẩn; kiểm tra FK/cặp duy nhất và dùng đúng cùng store catalogs. Không kho/tồn hàng. Tiêu chuẩn gắn Zone sau, không gắn Farm. Hai catalog không hard-delete, không tự tạo UNIQUE tên/code ngoài ERD. Farm dùng đúng cùng Auth/USERS/HTX store; membership không sửa trực tiếp qua update, không áp dụng dữ liệu khi còn Pending.
 
-Checkout feat/trees-management để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge → Farm → Zones → Assignments → HTX → Trees; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
+Checkout feat/tree-harvests-management để test toàn bộ chuỗi hiện tại. PR phụ thuộc theo thứ tự USERS → Vật tư → Tiêu chuẩn → Bridge → Farm → Zones → Assignments → HTX → Trees → Harvests; so sánh mỗi branch với parent để review chỉ module đó. Khi parent merge main, cập nhật base PR phù hợp; không tự merge hoặc rebase làm mất thay đổi người dùng.
 
 ## Tái lập ở session khác
 
@@ -56,6 +59,8 @@ Test Zones/Assignments: Farm phải Accepted và có standard Active. Chủ có 
 Test Trees: chuẩn bị Zone như trên, nhập zone_id vào Create. Lấy Tree id/tree_code từ response; proposal id dùng riêng cho approve/reject. Mã không do client nhập; tra mã vẫn cần JWT. Đọc TREES_IMPLEMENTATION.md để chạy kiểm thử và 20 bước Postman. Không QR public hoặc nghiệp vụ Cultivation trong batch này.
 
 ## Quyết định cần hỏi trước module phụ thuộc
+
+- Harvests đã chốt/triển khai, không mang các phương án cũ (nhiều bảng, khóa batch, quyền 24 giờ) trở lại. Persistence phải bàn nơi lưu đề xuất/grant/version/everConfirmed và constraint cây/ngày/batch-scope. Chủ nhập Harvest không cần phân công là quyết định riêng, không đổi assertCanWork của Cultivation/IoT.
 
 - Farm và quản lý HTX độc lập đã triển khai theo quy tắc chốt. Xóa/chuyển chủ Farm và hủy yêu cầu Farm chưa có. Schema lưu yêu cầu/duyệt/thông báo lâu dài vẫn cần chốt trước persistence, không tự thêm bảng từ metadata Map.
 - Zone/USERS_ZONES đã chốt quyền, không hỏi lại. Cultivation giữ quyền đọc lịch sử riêng và correction của chính tác giả trong 15 ngày sau kết thúc; không cấp tạo nhật ký/điều khiển sau hết phân công. Trees đợt đầu không chuyển Zone; Device movement và details lựa chọn chưa cung cấp.

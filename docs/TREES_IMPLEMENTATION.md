@@ -70,7 +70,7 @@ Lỗi: 400 DTO/không đổi dữ liệu; 401 JWT thiếu/sai; 403 tài khoản/
 
 Giới hạn một process: 5000 cây (kể cả Dead/Removed), 2000 đề xuất (kể cả đã xử lý), 10000 snapshot (kể cả Create). Đầy trả 429; không loại bỏ lịch sử cũ. Khi lịch sử đầy, không tạo/sửa/duyệt được nhưng vẫn đọc hoặc từ chối đề xuất. Toàn bộ validate/commit đồng bộ, không await giữa kiểm tra và ghi, response deep-copy. Restart xóa cây/requests/versions/history cùng nghiệp vụ khác; không dùng nhiều process cho store này.
 
-Chưa ghi PostgreSQL/MongoDB, bảng/migration/seed. Persistence phải bàn riêng UNIQUE tree_code, FK, transaction/locking, lưu proposal/version/history/capacity. QR public, Tree Harvests, Cultivation, IoT chưa triển khai. Device movement, Cultivation details/hash-chain vẫn cần quyết định trước module tương ứng. Route JWT by-code hiện tại không thay thế `/trace/{tree_code}` công khai của giai đoạn sau.
+Chưa ghi PostgreSQL/MongoDB, bảng/migration/seed. Persistence phải bàn riêng UNIQUE tree_code, FK, transaction/locking, lưu proposal/version/history/capacity. Tree Harvests đã triển khai trên nhánh kế thừa, xem TREE_HARVESTS_IMPLEMENTATION.md; dùng cùng TreesService, không chuyển Zone. QR public, Cultivation, IoT chưa triển khai. Device movement, Cultivation details/hash-chain vẫn cần quyết định trước module tương ứng. Route JWT by-code hiện tại không thay thế `/trace/{tree_code}` công khai của giai đoạn sau.
 
 ## Postman thủ công
 

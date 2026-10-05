@@ -11,6 +11,7 @@ import { ZonesModule } from './zones/zones.module';
 import { AssignmentsModule } from './assignments/assignments.module';
 import { CooperativesModule } from './cooperatives/cooperatives.module';
 import { TreesModule } from './trees/trees.module';
+import { TreeHarvestsModule } from './tree-harvests/tree-harvests.module';
 
 @Module({})
 export class AppModule {
@@ -25,6 +26,7 @@ export class AppModule {
       const standardsModule = StandardsModule.forMock(authModule);
       const farmsModule = FarmsModule.forMock(authModule, usersModule);
       const zonesModule = ZonesModule.forMock(authModule, farmsModule, standardsModule);
+      const treesModule = TreesModule.forMock(authModule, farmsModule, zonesModule);
       imports.push(
         usersModule,
         materialsModule,
@@ -33,7 +35,8 @@ export class AppModule {
         farmsModule,
         CooperativesModule.forMock(config.auth, authModule, usersModule, farmsModule),
         zonesModule,
-        TreesModule.forMock(authModule, farmsModule, zonesModule),
+        treesModule,
+        TreeHarvestsModule.forMock(authModule, usersModule, farmsModule, zonesModule, treesModule),
         AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );
     }

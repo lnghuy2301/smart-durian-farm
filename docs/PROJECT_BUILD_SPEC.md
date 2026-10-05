@@ -214,7 +214,7 @@ Chưa tạo constraint/bảng ở giai đoạn bộ nhớ hiện tại.
 
 ## 7. Tree and traceability
 
-Trees đã triển khai in-memory ngày 2026-10-04: chủ Farmer tạo/sửa metadata cây trực tiếp; Admin đề xuất tạo/sửa cần đúng chủ duyệt. Manager chỉ đọc trong HTX mình, Farmer nhận phân công chỉ đọc Zone Accepted đang hiệu lực. Backend sinh tree_code DRN-UUID bất biến cùng id/zone_id; không chuyển Zone/hard-delete. Dead/Removed được khôi phục Active để sửa nhầm, giữ snapshot metadata trước/sau và version; chủ sửa trong khi chờ làm đề xuất Admin lỗi thời. Xem TREES_IMPLEMENTATION.md. Lịch sử metadata cây không thay thế Cultivation/assignment history; QR public và Harvests chưa triển khai. Không thêm bảng/migration/seed trong batch này.
+Trees đã triển khai in-memory ngày 2026-10-04: chủ Farmer tạo/sửa metadata cây trực tiếp; Admin đề xuất tạo/sửa cần đúng chủ duyệt. Manager chỉ đọc trong HTX mình, Farmer nhận phân công chỉ đọc Zone Accepted đang hiệu lực. Backend sinh tree_code DRN-UUID bất biến cùng id/zone_id; không chuyển Zone/hard-delete. Dead/Removed được khôi phục Active để sửa nhầm, giữ snapshot metadata trước/sau và version; chủ sửa trong khi chờ làm đề xuất Admin lỗi thời. Xem TREES_IMPLEMENTATION.md. Lịch sử metadata cây không thay thế Cultivation/assignment history; QR public chưa triển khai, Harvests hiện có trên nhánh kế thừa. Không thêm bảng/migration/seed trong batch này.
 
 Mỗi Tree có `tree_code` unique.
 
@@ -248,6 +248,8 @@ Không hard-delete Tree khi cây chết/bị loại bỏ. Dùng `status` theo ER
 ------------------------------------------------------------------------
 
 ## 8. Harvest model
+
+Cập nhật RAM 2026-10-05: một TREE_HARVESTS theo ERD mới, created_by và status Draft/Pending/Confirmed, updated_by/updated_at nullable. Chủ nhập trực tiếp; Farmer khác cần phân công hiệu lực. Người tạo gửi/chủ xác nhận, chủ là tác giả thì gửi auto-confirm; lần đầu update fields null. Khóa từng bản ghi, không khóa batch; batch dùng chung nhiều cây cùng Zone/ngày, không UNIQUE batch_code; chống trùng tree_id + harvest_date. Sửa Confirmed qua proposal RAM: Manager HTX hoặc Admin cho Farm độc lập duyệt/áp dụng ngay, ghi actual editor/time; từ chối giữ dữ liệu. Tác giả hết phân công đọc riêng/gửi reason, chủ chuẩn bị sửa. Không xóa bản ghi đã từng Confirmed, không quyền 24 giờ/hash/PENDING 15 phút. Nhập bù 7 ngày lịch Việt Nam hoặc grant Admin đúng người/Zone/ngày/hạn; Dead/Removed chỉ nhập ngày cũ. Xem TREE_HARVESTS_IMPLEMENTATION.md và workflow design; metadata RAM, chưa tạo bảng/migration/seed.
 
 `TREE_HARVESTS` là lịch sử thu hoạch của từng Tree.
 

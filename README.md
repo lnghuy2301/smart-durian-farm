@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments and Trees; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees and Tree Harvests; clients follow later.
 
 ## Local API setup
 
@@ -101,13 +101,13 @@ Owner Farmers create/update Zones directly. Admin proposes changes for owner app
 
 ## Farmer assignments
 
-Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Assignments are inherited by the integrated feat/trees-management branch; read MODULE_HANDOFF.md for validation and publication status.
+Owners invite Farmers; Admin invitations additionally need owner approval. Assigned Farmers accept before obtaining access inside their assignment interval. Ending retains history and the original Zone snapshot. A prepared policy limits original-author correction to 15 days after end_date; journal/IoT modules will use these permission helpers when implemented. Read [docs/ASSIGNMENTS_IMPLEMENTATION.md](docs/ASSIGNMENTS_IMPLEMENTATION.md) and import docs/postman/Assignments-Local-Test.postman_collection.json. No scripts or environment are needed in Postman. Assignments are inherited by the integrated feat/tree-harvests-management branch; read MODULE_HANDOFF.md for validation and publication status.
 
 ## Cooperatives
 
 Admin creates Cooperatives without a Manager and edits their information directly. Manager attachment uses the existing USERS approval flow. Managers can update their own Cooperative's name, director, address and contact number after email verification followed by SMS verification; only Admin edits its certificate number. OTP goes to the Manager account's email/phone, and changes apply only after both steps succeed.
 
-Unmanaged Cooperatives warn Admin after 7 days and are removed after 30 days only when no business records reference them. Notifications and lifecycle data stay in memory and disappear on restart. Read [docs/COOPERATIVES_IMPLEMENTATION.md](docs/COOPERATIVES_IMPLEMENTATION.md), import **docs/postman/Cooperatives-Local-Test.postman_collection.json** (20 manual requests). Its branch **feat/cooperatives-management** is inherited by feat/trees-management; no migrations/seed or database writes were added.
+Unmanaged Cooperatives warn Admin after 7 days and are removed after 30 days only when no business records reference them. Notifications and lifecycle data stay in memory and disappear on restart. Read [docs/COOPERATIVES_IMPLEMENTATION.md](docs/COOPERATIVES_IMPLEMENTATION.md), import **docs/postman/Cooperatives-Local-Test.postman_collection.json** (20 manual requests). Its branch **feat/cooperatives-management** is inherited by feat/tree-harvests-management; no migrations/seed or database writes were added.
 
 For real Manager SMS, fill `TWILIO_HTX_VERIFY_SERVICE_SID` (a separate six-digit Verify Service) and `HTX_SMS_ALLOWED_PHONES` in your local .env. Blank keys were appended locally at the user's request; add missing keys from .env.example without overwriting existing values. Shared Twilio account credentials and SMTP remain as configured; Farmer reset service/allowlist stay unchanged. Without these optional HTX settings, existing Auth works and real HTX SMS returns 503. Automated checks use fake providers, never real .env credentials.
 
@@ -115,6 +115,14 @@ For real Manager SMS, fill `TWILIO_HTX_VERIFY_SERVICE_SID` (a separate six-digit
 
 Owner Farmers create/update Trees directly; Admin submits proposals for the correct owner to approve. Managers read Trees in their Cooperative's current Farms; assigned Farmers only read Trees in accepted, effective Zone assignments. Backend generates immutable DRN-UUID codes; no Zone transfer or hard delete. Dead/Removed can be restored to Active to correct mistakes, retaining metadata snapshots and the same code. Owner edits make older Admin proposals require rejection and resubmission.
 
-Read [docs/TREES_IMPLEMENTATION.md](docs/TREES_IMPLEMENTATION.md) and import **docs/postman/Trees-Local-Test.postman_collection.json** (20 manual requests). No new .env settings or dependencies. Data stays in memory; QR public trace, cultivation and harvests follow separately. Latest local branch: **feat/trees-management**, based on HTX commit 2752454; no push/merge.
+Read [docs/TREES_IMPLEMENTATION.md](docs/TREES_IMPLEMENTATION.md) and import **docs/postman/Trees-Local-Test.postman_collection.json** (20 manual requests). No new .env settings or dependencies. Trees on feat/trees-management are inherited by the latest Harvests branch below. QR public trace and cultivation follow separately.
 
-Integrated validation: **77/77 tests**, lint/typecheck/build passed. On this Windows session the npm wrapper was unavailable because of installation-path permissions, so the equivalent local commands documented in the Trees guide were used.
+## Tree Harvests
+
+Owners enter harvests directly; other Farmers need an accepted, effective Zone assignment. Creator submits Draft for owner confirmation; owner-creators confirm automatically on submit. Initial confirmation leaves updated_by/updated_at null. Confirmed corrections retain original data while Pending; the current Cooperative Manager or Admin for an independent Farm approves changes and applies them immediately, recording the actual editor and update time.
+
+One harvest per Tree/day prevents conflicting entries. Multiple Trees share a batch code in the same Zone/day; individual confirmation keeps other Trees open for entry. Backdate up to seven Vietnam calendar days, beyond requires a scoped Admin permission. Former authors retain own history and can request correction, with the owner preparing changes. No Cultivation hash/15-minute lifecycle or extra business table; records/proposals/permissions remain in backend RAM.
+
+Read [docs/TREE_HARVESTS_IMPLEMENTATION.md](docs/TREE_HARVESTS_IMPLEMENTATION.md) and [final workflow design](docs/TREE_HARVESTS_WORKFLOW_DESIGN.md). Import **docs/postman/Tree-Harvests-Local-Test.postman_collection.json** (24 manual requests); replace dates, JWT and UUID manually. No new .env settings/dependencies or persistence. Latest integrated local branch: **feat/tree-harvests-management**, based on Trees d39c5ce; no push/merge.
+
+Integrated validation: **89/89 tests**, lint/typecheck/build passed. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the Harvests guide.
