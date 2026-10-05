@@ -1,5 +1,13 @@
 # Tích hợp tất cả branch vào main local
 
+## Xuất bản để người dùng merge trên GitHub
+
+Yêu cầu mới ngày 2026-10-05 đã cho phép push tất cả branch cũ/mới lên `https://github.com/lnghuy2301/smart-durian-farm.git`. Bản tích hợp main local được xuất bản qua `integration/all-modules-20261005`; tất cả branch module/docs/chore và `backup/main-before-integration-20261005` được giữ tên và tip hiện có. Không push trực tiếp `main`, không force push, không xóa branch hoặc tự merge trên GitHub. Người dùng có thể mở PR từ integration branch vào main để đưa toàn bộ module vào cùng một lần review/merge. Các ghi chú chưa được phép push ở phần lịch sử bên dưới được thay thế bởi yêu cầu này cho đợt xuất bản hiện tại.
+
+Push chỉ gửi nội dung đã commit. `.env` ignored và thay đổi riêng ERD/MQTT/Postman chưa commit vẫn nằm ở workspace local. Checks 89/89 tests, lint/typecheck/build áp dụng cho code tích hợp; cập nhật quyền xuất bản chỉ sửa tài liệu. Khi tiếp tục ở session mới, fetch remote, kiểm tra `origin/main` và integration branch/PR trước khi chọn base; chỉ dùng main remote sau khi xác nhận đã chứa bản tích hợp.
+
+Link tạo PR: https://github.com/lnghuy2301/smart-durian-farm/compare/main...integration/all-modules-20261005?expand=1
+
 Ngày 2026-10-05, theo yêu cầu rõ của người dùng kiểm tra tất cả branch và merge main. Đã fetch --all trước kiểm tra: 18 branch local (kể cả main), 12 remote branch refs origin (không tính origin/HEAD symbolic). Không xóa branch, không push, không sửa .env hoặc commit thay đổi riêng ERD/MQTT/Postman.
 
 ## Inventory các branch local trước tích hợp
