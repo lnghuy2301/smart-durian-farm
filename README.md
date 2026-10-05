@@ -1,5 +1,7 @@
 # Smart Durian Farm
 
+All existing module branches are now integrated into **main locally** (2026-10-05). Start the next module branch from this main. Read [branch integration notes](docs/BRANCH_INTEGRATION.md) and [handoff](docs/MODULE_HANDOFF.md). Feature branches remain available; no remote push was performed. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
+
 Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees and Tree Harvests; clients follow later.
 
 ## Local API setup
