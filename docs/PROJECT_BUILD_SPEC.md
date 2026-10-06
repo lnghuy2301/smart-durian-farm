@@ -444,6 +444,8 @@ DEVICES.station_id = third-party/hardware station identifier
 
 ### SENSORS
 
+Quyết định 2026-10-06: quyền như Devices (chủ trực tiếp, Admin đề xuất cần chủ duyệt, Manager/Farmer phụ trách chỉ đọc đúng phạm vi). data_stream_id không unique toàn hệ thống; unique theo cặp (device_id UUID, data_stream_id), telemetry vẫn lưu đúng cặp đó. Ngưỡng có thể chưa cấu hình (min_threshold/max_threshold cùng null); khi có phải đủ hai và min < max. Air_temperature dùng oC, Air_humidity/Soil_moisture dùng %. Branch feat/sensors-management từ Devices 09cb1da đang chuẩn bị, chưa API/store; cần chốt việc giữ cố định Device/mã luồng/loại/đơn vị hay cho sửa loại/đơn vị trước code. Xem SENSORS_WORKFLOW_DESIGN.md. Chưa tạo constraint/migration/seed hoặc sửa ERD; MQTT/Actuators riêng đợt sau.
+
 Sensor metadata nằm PostgreSQL.
 
 `data_stream_id` là identifier từ IoT/hardware side.
