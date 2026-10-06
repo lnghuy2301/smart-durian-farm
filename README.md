@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Current work branch: **feat/sensors-management**, based on Devices **09cb1da**. Sensor rights, per-Device stream uniqueness and nullable threshold-pair rules are confirmed; no Sensors API has been implemented yet while one identity/type/unit edit decision is pending. Read [Sensors preparation](docs/SENSORS_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). The implemented API and 98-test result below describe the inherited Devices base.
+Current work branch: **feat/sensors-management**, based on Devices **09cb1da**. Rights, per-Device stream uniqueness, nullable threshold-pair rules, immutable sensor_type and editable unit are confirmed. No Sensors API yet: valid unit choices per type still need clarification because the current ERD/mapping permits only one unit per type. Read [Sensors preparation](docs/SENSORS_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). The implemented API and 98-test result below describe the inherited Devices base.
 
 GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
 
