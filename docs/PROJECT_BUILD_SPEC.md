@@ -444,11 +444,9 @@ DEVICES.station_id = third-party/hardware station identifier
 
 ### SENSORS
 
-Làm rõ sửa Sensors 2026-10-06: cho sửa unit nhưng không sửa sensor_type; Device/mã luồng giữ cố định. ERD chỉ enum %/oC và mapping mỗi loại với một unit ở quyết định trước; phải xác nhận phạm vi unit được sửa (chỉnh sai về unit chuẩn hoặc thêm unit cụ thể) trước code. Không tự thêm đơn vị/đổi enum hoặc bỏ kiểm tra khớp loại. Giữ unit của snapshots/telemetry lịch sử, không dùng metadata mới ghi đè dữ liệu cũ. Câu hỏi đã gửi, branch Sensors hiện chỉ tài liệu chuẩn bị; các lựa chọn giữ cố định unit/cho sửa loại ở đoạn cũ đã được câu trả lời mới thay thế.
+Quyết định cuối và triển khai 2026-10-06: chủ Farm tạo/sửa trực tiếp, Admin đề xuất cần chủ duyệt; Manager HTX/Farmer có Accepted assignment còn hiệu lực chỉ đọc đúng scope Device → Zone → Farm. Sensor id backend UUID; device_id là DEVICES.id UUID, data_stream_id mã firmware exact, unique theo cặp (device_id, data_stream_id), không global. id/Device/stream/sensor_type bất biến, Inactive giữ cặp mã, không chuyển/hard-delete. Sensor_type Air_temperature/Air_humidity/Soil_moisture; unit được chọn/sửa giữa đúng hai enum % và oC cho mọi loại, không ép mapping loại → đơn vị; quyết định cuối thay thế mapping trước đó. Không thêm đơn vị ngoài enum/không tự chuyển ngưỡng hoặc telemetry lịch sử. Ngưỡng cùng null khi chưa cấu hình hoặc đủ hai số min < max; PATCH kiểm tra cặp sau ghép. Telemetry tương lai vẫn lưu Device UUID + stream và unit tại thời điểm đo. API/guide/final workflow/Postman đã hoàn tất trên feat/sensors-management từ Devices 09cb1da, 107 tests. Shared stores, snapshots/version/atomic RAM commit; chưa schema/constraint/migration/seed/ERD riêng. Xem SENSORS_IMPLEMENTATION.md, SENSORS_WORKFLOW_DESIGN.md; Actuators/MQTT riêng đợt sau.
 
-Quyết định 2026-10-06: quyền như Devices (chủ trực tiếp, Admin đề xuất cần chủ duyệt, Manager/Farmer phụ trách chỉ đọc đúng phạm vi). data_stream_id không unique toàn hệ thống; unique theo cặp (device_id UUID, data_stream_id), telemetry vẫn lưu đúng cặp đó. Ngưỡng có thể chưa cấu hình (min_threshold/max_threshold cùng null); khi có phải đủ hai và min < max. Air_temperature dùng oC, Air_humidity/Soil_moisture dùng %. Branch feat/sensors-management từ Devices 09cb1da đang chuẩn bị, chưa API/store; cần chốt việc giữ cố định Device/mã luồng/loại/đơn vị hay cho sửa loại/đơn vị trước code. Xem SENSORS_WORKFLOW_DESIGN.md. Chưa tạo constraint/migration/seed hoặc sửa ERD; MQTT/Actuators riêng đợt sau.
-
-Sensor metadata nằm PostgreSQL.
+Sensor metadata dự kiến nằm PostgreSQL khi persistence được duyệt; bản hiện tại chỉ RAM.
 
 `data_stream_id` là identifier từ IoT/hardware side.
 

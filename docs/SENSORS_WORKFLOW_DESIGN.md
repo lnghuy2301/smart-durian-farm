@@ -1,57 +1,29 @@
-# Sensors — thiết kế chuẩn bị và quyết định đang chờ
+# Sensors — quy trình đã chốt
 
-Ngày 2026-10-06. Branch `feat/sensors-management`, base `feat/devices-management` commit `09cb1da`. **Chưa có Sensors API/store; đã chốt không sửa loại/cho sửa đơn vị, đang chờ phạm vi đơn vị hợp lệ.** Không coi đề xuất còn chờ dưới đây là đã duyệt.
+Ngày 2026-10-06. Nhánh `feat/sensors-management` kế thừa Devices `09cb1da`; API/store/kiểm thử đã triển khai. Đọc [hướng dẫn API và tái lập](SENSORS_IMPLEMENTATION.md). Những câu hỏi ở bản chuẩn bị đã được trả lời, không tiếp tục dùng quy tắc loại → đơn vị cũ.
 
-## Trạng thái đã kiểm tra
+## Quyết định cuối
 
-- Không tìm thấy AGENTS.md trong repository và các thư mục cha được kiểm tra. Git status/branch/log đã kiểm tra; không triển khai lại Devices hoặc các module trước.
-- Devices base đã đạt 98/98 tests, lint/typecheck/build; đây là kết quả của base, không phải kiểm thử Sensors mới. Main local c71820d chỉ chứa module tới Harvests, nên branch Sensors kế thừa Devices để giữ đầy đủ phụ thuộc.
-- Đã đọc handoff/notes/plan/spec, guide Devices và ERD XML/JSON. Field SENSORS và IOT_TELEMETRIES khớp giữa hai ERD. Không sửa ERD/MQTT/Postman riêng hoặc .env.
+1. Quyền giống Devices: chủ Farmer tạo/sửa trực tiếp; Admin đọc và đề xuất Create/Update, cần đúng chủ Farm duyệt. Manager chỉ đọc HTX mình; Farmer nhận việc chỉ đọc trong Zone có phân công Accepted đang hiệu lực [start,end). Mọi tài khoản phải Active. Không cấp quyền điều khiển hardware.
+2. `id` là UUID Sensor do backend sinh; `device_id` là UUID DEVICES.id. `data_stream_id` giữ đúng mã phần cứng. Unique theo **(device_id, data_stream_id)**, không unique stream toàn hệ thống. ESP32 khác có thể cùng stream "2". Inactive vẫn giữ cặp mã.
+3. `id/device_id/data_stream_id/sensor_type` bất biến, không chuyển Device/hard-delete. Loại: Air_temperature, Air_humidity, Soil_moisture.
+4. **Unit là dropdown enum gồm đúng `%` và `oC`**, được đổi giữa hai giá trị cho mọi sensor_type. Không nhận đơn vị ngoài enum, không ép loại nào chỉ dùng một đơn vị. Quyết định cuối này thay thế mapping Air_temperature → oC, độ ẩm → % trong bản thảo.
+5. Ngưỡng cùng null khi chưa cấu hình; khi có phải đủ hai số và min < max. PATCH xét cặp sau khi ghép với dữ liệu hiện tại. Muốn bỏ cấu hình gửi cả hai null. Đổi unit chỉ sửa metadata, không tự đổi giá trị ngưỡng hay dữ liệu đo; người cấu hình chỉnh ngưỡng tương ứng khi cần.
+6. Active/Inactive là trạng thái metadata; không online/offline. Cho cấu hình Sensor thuộc Device Inactive để chuẩn bị lắp đặt; không tự đổi Sensor.status khi Device.status đổi.
+7. Dùng RAM/shared modules, không tạo schema/migration/seed. MQTT, telemetry, threshold alerts và Actuators làm riêng; giữ protocol/topic hiện có. Telemetry tương lai dùng Device UUID + stream và giữ unit ở thời điểm đo.
 
-## Quyết định người dùng đã chốt
+## Luồng ghi và duyệt
 
-1. Quyền như Devices: chủ Farmer tạo/sửa trực tiếp; Admin đề xuất Create/Update cần đúng chủ Farm duyệt; Manager đọc trong HTX mình, Farmer nhận việc chỉ đọc Zone có phân công Accepted đang hiệu lực [start,end). Admin đọc toàn bộ. Quyền sửa metadata không cấp quyền điều khiển hardware.
-2. UUID Sensor là id nội bộ; device_id tham chiếu UUID Device. data_stream_id là mã luồng firmware, không UUID sensor_id. **Unique theo cặp (device_id, data_stream_id), không unique toàn hệ thống.** Hai ESP32 có thể cùng dùng stream "2"; cùng một Device không có hai Sensor dùng cùng stream. Telemetry vẫn chứa device_id UUID + data_stream_id.
-3. Cho phép ngưỡng chưa cấu hình: min_threshold/max_threshold cùng null. Khi cấu hình phải có cả hai và min < max. Air_temperature dùng oC, Air_humidity/Soil_moisture dùng %. Không tự ghi lệnh hardware từ việc sửa ngưỡng.
-4. Dùng RAM và shared module/store như Devices; không tạo bảng/migration/seed. MQTT/telemetry/control và Actuators làm đợt riêng tiếp theo, giữ nguyên protocol hiện có.
-5. Làm rõ mới nhất: cho phép sửa unit, không cho sửa sensor_type. Giữ định danh device_id/data_stream_id cố định theo bộ quy tắc đã hỏi; Inactive giữ cặp mã, không hard-delete/chuyển Device. Không áp dụng đề xuất cũ cấm sửa unit hoặc cho sửa sensor_type.
+- Chủ tạo Sensor hoặc PATCH tên/unit/ngưỡng/status: áp dụng ngay, tăng version và thêm snapshot before/after.
+- Admin gửi Create proposal: chưa tạo Sensor và chưa giữ chỗ cặp mã. Chủ duyệt: kiểm tra lại chủ/proposer Active và vai trò, Device → Zone → Farm, capacity và unique trước commit. Hai đề xuất trùng chỉ một được chấp nhận.
+- Admin gửi Update proposal: lưu snapshot/version/nội dung riêng, Sensor chính chưa thay đổi. Một Pending Update/Sensor. Chủ sửa trực tiếp trong lúc chờ khiến đề xuất cũ lỗi thời; duyệt trả 409, phải từ chối rồi tạo lại.
+- Commit RAM không có await giữa kiểm tra và ghi; chỉ đánh Accepted sau Sensor/index/audit thành công. Từ chối không sửa Sensor. History đọc theo quyền hiện tại; hết phân công chỉ giữ lịch sử phân công riêng, không quyền xem metadata Sensor.
+- Trả deep copy cho dữ liệu/proposal/audit. Index hai tầng Device → stream tránh unique toàn hệ thống hoặc key ghép bị nhập nhằng.
 
-## Field theo ERD
+## Tiếp tục ở session khác
 
-| Field | Kiểu / ý nghĩa |
-|---|---|
-| id | UUID backend sinh |
-| device_id | UUID tham chiếu DEVICES.id |
-| name | varchar(80) |
-| sensor_type | Air_temperature / Air_humidity / Soil_moisture |
-| unit | oC hoặc %, khớp loại |
-| data_stream_id | varchar(50), mã luồng phần cứng |
-| min_threshold | decimal(7,2), nullable theo quyết định mới |
-| max_threshold | decimal(7,2), nullable theo quyết định mới |
-| status | Active / Inactive |
-
-Composite unique và nullability ngưỡng đã được người dùng chốt cho nghiệp vụ; chưa tạo constraint hoặc sửa schema thật. Cần đồng bộ ERD/DDL khi persistence được thảo luận, không suy từ store RAM thành migration.
-
-## Quyết định còn chờ — không code trước trả lời
-
-Quyền sửa unit đã được người dùng chốt; còn cần chốt **những giá trị unit được phép cho từng loại**. Cả ERD XML/JSON tại workspace chỉ có enum % và oC; quy tắc trước đó Air_temperature -> oC, Air_humidity/Soil_moisture -> %. Khi sensor_type cố định, mỗi loại chỉ có một giá trị hợp lệ; vì vậy không tự thêm oF/K/đơn vị khác hoặc bỏ validation loại/đơn vị để làm PATCH có hiệu lực.
-
-Đã hỏi: chỉ cho sửa đơn vị sai về đơn vị chuẩn theo loại, hay bổ sung đơn vị khác (cần nêu cụ thể theo từng loại)? Nếu chỉ giữ mapping hiện tại, không mô tả Sensor nhiệt độ có thể chuyển sang % hoặc Sensor độ ẩm sang oC. Nếu mở rộng unit, phải chốt quy tắc ngưỡng/chuyển đổi đo cùng đơn vị trước code và ghi nhận khác biệt schema; không tự chuyển đổi telemetry lịch sử.
-
-Lựa chọn mặc định/thời gian chờ không phải chấp thuận. Không hỏi lại quyền, composite uniqueness, ngưỡng, loại bất biến hoặc quyền sửa unit đã chốt. Các route/DTO/store runtime chỉ viết sau khi có câu trả lời về đơn vị hợp lệ. Tiếp tục branch Sensors đã tạo, không tạo branch trùng module.
-
-## Cách triển khai sau khi chốt
-
-- SensorsModule nhận chính Auth/Farms/Zones/Devices dynamic module đã tạo ở AppModule; không gọi lại factory tạo store trùng. Phạm vi Sensor suy Device -> Zone -> Farm và dùng cùng quyền đọc Zone/phân công hiện tại.
-- Index composite bằng cấu trúc tách theo device_id/stream, không map toàn hệ thống theo data_stream_id. Lookup nội bộ MQTT sau này phải nhận đủ UUID Device và mã stream. Public HTTP lookup vẫn kiểm tra JWT/scope, không coi mã stream là authentication.
-- Create proposal chưa đăng ký Sensor/chưa giữ chỗ cặp mã, recheck unique lúc chủ duyệt. Update proposal dùng version/snapshot như Devices; chỉ Accepted sau commit Sensor/index/history thành công. Check capacity, quyền và dữ liệu trước khi ghi, không await giữa validate/commit RAM.
-- Ngưỡng xác thực trên toàn bộ trạng thái sau PATCH, không chỉ từng field; gửi một field có thể hợp lệ nếu giá trị hiện tại của field còn lại tồn tại và cặp vẫn đúng. Để bỏ cấu hình gửi cả hai null; không cho chỉ một ngưỡng null. Unit được sửa nhưng phải theo tập giá trị được chốt cho sensor_type, không nhận unit tùy ý. Audit before/after giữ unit của từng lần sửa; metadata unit mới không được dùng để ghi đè đơn vị trong telemetry cũ.
-- Comment tiếng Việt ở composite lookup/unique, ngưỡng null/PATCH, recheck/version/commit và phân biệt UUID/mã luồng. DTO validate enum/decimal/UUID/timestamp audit theo conventions hiện tại.
-- Tạo SENSORS_IMPLEMENTATION.md, Postman literal URL/JSON và tests tập trung scope, cùng stream khác Device được phép/cùng Device bị chặn, nullable pair, unit/type, version/đồng thời, deep-copy và capacity. Chạy lint/typecheck/build/toàn bộ tests; không ghi số tests mới trước khi chạy.
-
-## Tái lập session khác
-
-1. Đọc AGENTS.md nếu có, git status/branch/log, MODULE_HANDOFF/notes/plan/spec, ERD XML/JSON, guide Devices và tài liệu này.
-2. Tiếp tục feat/sensors-management đã tạo từ 09cb1da; không tạo lại module/branch. Kiểm tra câu trả lời còn chờ trước code.
-3. Giữ .env/ERD/MQTT/Postman riêng ngoài commit; không reset/clean hoặc stage toàn bộ workspace. Không push branch mới theo quyền xuất bản các nhánh cũ.
-4. Sau khi chốt, hoàn thành code/tests/guide/Postman, cập nhật README/handoff/notes/plan/spec và commit local đúng danh sách file. Persistence, MQTT và Actuators cần quy trình riêng.
+1. Đọc AGENTS.md nếu có, git status/branch/log và handoff/notes/plan/spec, hai ERD, guide Devices/Sensors. Module Sensors đã xong, không tạo lại.
+2. Tiếp tục trên nhánh này hoặc nhánh kế thừa nếu main chưa chứa Devices/Sensors. Nhánh Sensors đã tạo trước code; không tạo branch trùng.
+3. Test theo SENSORS_IMPLEMENTATION.md và import collection Sensors JSON trực tiếp. 107/107 tests (9 mới + 98 hồi quy), lint/typecheck/build đạt, fake providers không .env thật/tin thật/DB/hardware.
+4. Giữ thay đổi riêng ERD/MQTT/Postman và .env; chỉ stage file đúng module, không reset/clean/stage toàn bộ. Nhánh mới chưa push/merge; quyền publish các nhánh cũ không áp dụng tự động.
+5. Actuators là metadata tiếp theo, rồi MQTT core. Dừng trao đổi khi chưa rõ nghiệp vụ, nhất là capability_id/status/purpose, command correlation/timeouts/ACK. Persistence bàn riêng.

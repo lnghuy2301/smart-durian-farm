@@ -1,12 +1,12 @@
 # Smart Durian Farm
 
-Current work branch: **feat/sensors-management**, based on Devices **09cb1da**. Rights, per-Device stream uniqueness, nullable threshold-pair rules, immutable sensor_type and editable unit are confirmed. No Sensors API yet: valid unit choices per type still need clarification because the current ERD/mapping permits only one unit per type. Read [Sensors preparation](docs/SENSORS_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). The implemented API and 98-test result below describe the inherited Devices base.
+Latest integrated feature branch: **feat/sensors-management**, based on Devices **09cb1da**. Sensors metadata is implemented: owner writes/Admin proposals, current read scope, composite unique (device_id, data_stream_id), immutable type/identity, editable unit enum **% / oC**, nullable threshold pairs and metadata audit. **107/107 tests, lint/typecheck/build passed.** Read [Sensors API and reproduction guide](docs/SENSORS_IMPLEMENTATION.md), [final workflow](docs/SENSORS_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). Devices/Sensors are local commits, not pushed; MQTT/persistence follow separately.
 
 GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
 
-The latest integrated branch is **feat/devices-management**, based on merged main c71820d. Devices metadata, owner writes/Admin proposals, immutable UUID/ESP32 station_id and Active/Inactive installation status are implemented. Trees are related through the shared Zone; no TREES.device_id, fixed tree list or device auth_token. **98/98 tests, lint/typecheck/build passed.** MQTT hardware integration follows separately. Read [Devices implementation](docs/DEVICES_IMPLEMENTATION.md), [final workflow](docs/DEVICES_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). This new branch is committed locally and has not been pushed.
+The Devices base branch is **feat/devices-management**, based on merged main c71820d. Devices metadata, owner writes/Admin proposals, immutable UUID/ESP32 station_id and Active/Inactive installation status are implemented. Trees are related through the shared Zone; no TREES.device_id, fixed tree list or device auth_token. **98/98 tests, lint/typecheck/build passed.** MQTT hardware integration follows separately. Read [Devices implementation](docs/DEVICES_IMPLEMENTATION.md), [final workflow](docs/DEVICES_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). This new branch is committed locally and has not been pushed.
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees, Tree Harvests and Devices; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees, Tree Harvests, Devices and Sensors; clients follow later.
 
 ## Local API setup
 
@@ -131,7 +131,13 @@ One harvest per Tree/day prevents conflicting entries. Multiple Trees share a ba
 
 Read [docs/TREE_HARVESTS_IMPLEMENTATION.md](docs/TREE_HARVESTS_IMPLEMENTATION.md) and [final workflow design](docs/TREE_HARVESTS_WORKFLOW_DESIGN.md). Import **docs/postman/Tree-Harvests-Local-Test.postman_collection.json** (24 manual requests); replace dates, JWT and UUID manually. No new .env settings/dependencies or persistence. Latest integrated local branch: **feat/tree-harvests-management**, based on Trees d39c5ce; no push/merge.
 
-Harvests batch validation: **89/89 tests**, lint/typecheck/build passed. The latest Devices branch passes **98/98 tests**. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the module guides.
+Harvests batch validation: **89/89 tests**, lint/typecheck/build passed. The Devices batch passed **98/98 tests**; the latest Sensors branch passes **107/107 tests**. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the module guides.
+
+## Sensors metadata
+
+Owners create/update Sensors directly; Admin proposes for owner approval. Reads follow Device → Zone scope. UUID device_id and data_stream_id form the unique stream pair; identical stream IDs on different Devices are allowed. Type/identity stay fixed; unit can change between enum % and oC for every type. Thresholds are both null or both numeric with min < max; unit edits do not convert values.
+
+Read [Sensors API and reproduction guide](docs/SENSORS_IMPLEMENTATION.md); import **docs/postman/Sensors-Local-Test.postman_collection.json** (24 manual requests). Copy JWT/Device UUID/Sensor UUID/Request UUID by hand. Metadata/history remain in backend RAM. No new .env settings, dependencies, MQTT/telemetry/control, migrations or seed.
 
 ## Devices metadata
 

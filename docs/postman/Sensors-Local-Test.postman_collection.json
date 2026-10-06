@@ -1,0 +1,675 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Sensors - Nhap JSON",
+    "description": "24 request thủ công, không scripts/environments/variables. Đọc docs/SENSORS_IMPLEMENTATION.md; tạo Farm/Zone/Device qua guide trước. DEVICES.id UUID khác station_id và SENSOR.id. Sửa JWT/UUID/JSON bằng tay; unit dropdown chỉ %/oC, không sửa loại. RAM metadata, chưa MQTT/DB. Mật khẩu login là mẫu fixture local, không secret thật.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Đăng nhập Chủ Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng cấu hình AUTH_TEST_PHONE/PASSWORD của mình khi gửi. Copy access_token vào Authorization các request OWNER bằng tay; không export thông tin thật.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Đăng nhập Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng AUTH_TEST_ADMIN_PHONE/PASSWORD của mình; copy access_token cho ADMIN.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Danh sách Sensors",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors?limit=20&offset=0",
+        "description": "Lọc scope hiện tại trước phân trang. Có thể thêm device_id, sensor_type, status, q (name/stream)."
+      }
+    },
+    {
+      "name": "04 Chủ tạo Sensor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors",
+        "description": "201. Tạo Device theo Devices guide trước, thay UUID 1111... bằng DEVICES.id (không station_id); copy Sensor id mới thay 2222... trong URL. Bỏ ngưỡng khi tạo nhận null/null.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Nhiệt độ không khí\",\n  \"sensor_type\": \"Air_temperature\",\n  \"unit\": \"oC\",\n  \"data_stream_id\": \"2\",\n  \"min_threshold\": 10,\n  \"max_threshold\": 40\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "05 Đọc Sensor",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "200. Unit được chọn giữa đúng %/oC; type/Device/stream bất biến."
+      }
+    },
+    {
+      "name": "06 Lookup cặp Device + stream",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/by-stream/11111111-1111-4111-8111-111111111111/2",
+        "description": "200. Dùng Device UUID + mã stream exact/case-sensitive; endpoint vẫn kiểm tra scope/JWT."
+      }
+    },
+    {
+      "name": "07 Chủ sửa unit enum",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "200. Dropdown chỉ % hoặc oC cho mọi loại. Không tự chuyển giá trị ngưỡng; history giữ before/after unit. Có thể sửa lại oC.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"unit\": \"%\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "08 Chủ cấu hình ngưỡng",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "200. Cùng numeric, min < max. Có thể PATCH một ngưỡng nếu cặp kết quả vẫn hợp lệ.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"min_threshold\": 20,\n  \"max_threshold\": 80\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "09 Chủ bỏ cấu hình ngưỡng",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "200. Gửi cả hai null; một null và một số trả 400.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"min_threshold\": null,\n  \"max_threshold\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 Chủ ngưng dùng Sensor",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "200. Inactive giữ cặp Device/stream, không DELETE/chuyển Device; sửa name/unit không tự Active. Device.status riêng.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 Lịch sử metadata",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222/history?limit=20&offset=0",
+        "description": "200. before/after/version/actor/proposer/request. Giữ unit lịch sử, không hash-chain. Cần quyền đọc hiện tại."
+      }
+    },
+    {
+      "name": "12 Admin đề xuất tạo Sensor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_ADMIN_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/requests",
+        "description": "201 Pending/sensor_id=null; chưa xuất hiện list Sensor và không reserve stream. Copy request.id để chủ duyệt request 16.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Độ ẩm không khí\",\n  \"sensor_type\": \"Air_humidity\",\n  \"unit\": \"%\",\n  \"data_stream_id\": \"3\",\n  \"min_threshold\": 30,\n  \"max_threshold\": 90\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "13 Admin đề xuất sửa Sensor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_ADMIN_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222/update-requests",
+        "description": "201 Pending, Sensor chính giữ nguyên. Copy request.id; một Pending Update/Sensor. Chủ sửa trực tiếp trước duyệt khiến proposal cũ 409; reject rồi tạo lại.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nhiệt độ vị trí 1\",\n  \"unit\": \"oC\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "14 Danh sách đề xuất",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensor-requests?status=Pending&limit=20&offset=0",
+        "description": "200, chủ chỉ thấy đề xuất Farm mình; Admin thấy tất cả. Manager/Farmer phụ trách không thấy."
+      }
+    },
+    {
+      "name": "15 Xem đề xuất",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensor-requests/33333333-3333-4333-8333-333333333333",
+        "description": "Thay 3333... bằng request.id lấy từ request 12 hoặc 13. Kiểm tra action/proposed_changes/sensor_snapshot trước duyệt."
+      }
+    },
+    {
+      "name": "16 Chủ duyệt đề xuất",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensor-requests/33333333-3333-4333-8333-333333333333/approve",
+        "description": "200 Accepted sau commit Sensor/audit. Recheck quyền, version, unique/capacity. Body chỉ {}. Duplicate/stale/already-resolved 409; error giữ Pending. Nếu Create: lấy sensor_id mới.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "17 Chủ từ chối đề xuất",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensor-requests/33333333-3333-4333-8333-333333333333/reject",
+        "description": "Chọn một request còn Pending khác request đã duyệt; 200 Rejected không sửa Sensor. Có thể gửi {}.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Cấu hình chưa phù hợp\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "18 Chặn unit ngoài enum",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "400. Chỉ % và oC; không nhận oF/°C/C/K hoặc đơn vị nhập tùy ý.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"unit\": \"oF\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "19 Chặn sửa loại sensor",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "400. sensor_type bất biến, kể cả gửi giá trị cũ. Tương tự device_id/data_stream_id/id không được sửa.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sensor_type\": \"Air_humidity\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "20 Chặn trùng cặp Device + stream",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors",
+        "description": "409 khi Device/stream đã tồn tại, kể cả Sensor Inactive. data_stream_id không unique toàn hệ thống.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Nhiệt độ không khí\",\n  \"sensor_type\": \"Air_temperature\",\n  \"unit\": \"oC\",\n  \"data_stream_id\": \"2\",\n  \"min_threshold\": 10,\n  \"max_threshold\": 40\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "21 Cùng stream trên Device khác",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors",
+        "description": "201 nếu Device khác tồn tại và thuộc Farm chủ. Thay 4444... bằng UUID Device khác, stream 2 vẫn hợp lệ.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"44444444-4444-4444-8444-444444444444\",\n  \"name\": \"Nhiệt độ không khí\",\n  \"sensor_type\": \"Air_temperature\",\n  \"unit\": \"oC\",\n  \"data_stream_id\": \"2\",\n  \"min_threshold\": 10,\n  \"max_threshold\": 40\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "22 Farmer đang phụ trách đọc",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_WORKER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "Paste JWT Farmer đã accept assignment [start,end) của Zone Device. 200 trong hiệu lực; 404 khi chưa nhận/hết hiệu lực/ngoài scope. Login bằng collection Users/Auth."
+      }
+    },
+    {
+      "name": "23 Manager HTX đọc",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_MANAGER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "Paste JWT Manager đã được USERS approve và Farm đã join HTX (qua Admin và Manager). 200 đúng HTX, 404 khi Farm rời HTX hoặc ngoài scope."
+      }
+    },
+    {
+      "name": "24 Chặn Farmer phụ trách sửa",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_WORKER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/sensors/22222222-2222-4222-8222-222222222222",
+        "description": "403 dù đang phụ trách Zone. Manager/Admin ghi trực tiếp cũng 403; Admin phải proposal. Chủ Farmer được sửa trực tiếp.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"unit\": \"%\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
