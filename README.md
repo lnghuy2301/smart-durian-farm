@@ -1,12 +1,12 @@
 # Smart Durian Farm
 
-Latest integrated feature branch: **feat/sensors-management**, based on Devices **09cb1da**. Sensors metadata is implemented: owner writes/Admin proposals, current read scope, composite unique (device_id, data_stream_id), immutable type/identity, editable unit enum **% / oC**, nullable threshold pairs and metadata audit. **107/107 tests, lint/typecheck/build passed.** Read [Sensors API and reproduction guide](docs/SENSORS_IMPLEMENTATION.md), [final workflow](docs/SENSORS_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). Devices/Sensors are local commits, not pushed; MQTT/persistence follow separately.
+Latest integrated feature branch: **feat/actuators-management**, based on Sensors **c9d0940**. Actuators metadata is implemented: owner writes/Admin proposals, current read scope, composite unique (device_id, capability_id), immutable hardware identity/purpose and retained snapshots. Purpose enum **Watering / Spraying / Shared** models a separately controlled shared pump and two valves. **116/116 tests, lint/typecheck/build passed.** Read [Actuators API and reproduction guide](docs/ACTUATORS_IMPLEMENTATION.md), [final workflow](docs/ACTUATORS_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). Devices/Sensors/Actuators are local commits, not pushed; MQTT control and persistence follow separately.
 
 GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
 
 The Devices base branch is **feat/devices-management**, based on merged main c71820d. Devices metadata, owner writes/Admin proposals, immutable UUID/ESP32 station_id and Active/Inactive installation status are implemented. Trees are related through the shared Zone; no TREES.device_id, fixed tree list or device auth_token. **98/98 tests, lint/typecheck/build passed.** MQTT hardware integration follows separately. Read [Devices implementation](docs/DEVICES_IMPLEMENTATION.md), [final workflow](docs/DEVICES_WORKFLOW_DESIGN.md) and [handoff](docs/MODULE_HANDOFF.md). This new branch is committed locally and has not been pushed.
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees, Tree Harvests, Devices and Sensors; clients follow later.
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees, Tree Harvests, Devices, Sensors and Actuators; clients follow later.
 
 ## Local API setup
 
@@ -131,7 +131,15 @@ One harvest per Tree/day prevents conflicting entries. Multiple Trees share a ba
 
 Read [docs/TREE_HARVESTS_IMPLEMENTATION.md](docs/TREE_HARVESTS_IMPLEMENTATION.md) and [final workflow design](docs/TREE_HARVESTS_WORKFLOW_DESIGN.md). Import **docs/postman/Tree-Harvests-Local-Test.postman_collection.json** (24 manual requests); replace dates, JWT and UUID manually. No new .env settings/dependencies or persistence. Latest integrated local branch: **feat/tree-harvests-management**, based on Trees d39c5ce; no push/merge.
 
-Harvests batch validation: **89/89 tests**, lint/typecheck/build passed. The Devices batch passed **98/98 tests**; the latest Sensors branch passes **107/107 tests**. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the module guides.
+Harvests batch validation: **89/89 tests**, lint/typecheck/build passed. The Devices batch passed **98/98 tests**; the Sensors batch passed **107/107 tests** and the latest Actuators branch passes **116/116 tests**. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the module guides.
+
+## Actuators metadata
+
+Owners create/update names and Active/Inactive metadata directly; Admin proposes for owner approval. Current reads follow Device → Zone → Farm. UUID actuator/device IDs remain distinct from numeric firmware capability_id. The unique pair is (device_id, capability_id); Device/capability/purpose are immutable, including while Inactive.
+
+Purpose enum Watering / Spraying / Shared represents a shared pump with its own capability plus separate watering/spraying valves. Future dedicated pumps and valves may share the same purpose. The user updated both private ERD files during this session to include Shared; code and diagrams now agree, and those user edits remain outside this module commit. Active/Inactive does not toggle relays, and this batch does not send MQTT commands.
+
+Read [Actuators API and reproduction guide](docs/ACTUATORS_IMPLEMENTATION.md); import **docs/postman/Actuators-Local-Test.postman_collection.json** (24 manual requests). Enter actual firmware capability IDs, copy JWT/UUID by hand. All data remains in RAM; no new .env settings/dependencies/migrations/seed. Next: discuss and implement MQTT core separately.
 
 ## Sensors metadata
 

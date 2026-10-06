@@ -22,6 +22,8 @@ Ngày 2026-10-06. Nhánh `feat/sensors-management` kế thừa Devices `09cb1da`
 
 ## Tiếp tục ở session khác
 
+Cập nhật sau Sensors: Actuators metadata đã hoàn tất trên feat/actuators-management từ Sensors c9d0940, enum Watering/Spraying/Shared cho bơm dùng chung. Đọc ACTUATORS_IMPLEMENTATION.md và MODULE_HANDOFF.md; kết quả tích hợp mới nhất 116 tests. Các bước đề xuất Actuators trong bản Sensors là lịch sử; không triển khai lại. MQTT core là bước tiếp theo cần trao đổi correlation/timeout/bơm–van, persistence vẫn bàn riêng.
+
 1. Đọc AGENTS.md nếu có, git status/branch/log và handoff/notes/plan/spec, hai ERD, guide Devices/Sensors. Module Sensors đã xong, không tạo lại.
 2. Tiếp tục trên nhánh này hoặc nhánh kế thừa nếu main chưa chứa Devices/Sensors. Nhánh Sensors đã tạo trước code; không tạo branch trùng.
 3. Test theo SENSORS_IMPLEMENTATION.md và import collection Sensors JSON trực tiếp. 107/107 tests (9 mới + 98 hồi quy), lint/typecheck/build đạt, fake providers không .env thật/tin thật/DB/hardware.

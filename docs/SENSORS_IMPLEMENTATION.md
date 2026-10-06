@@ -146,4 +146,6 @@ Giữ .env/ERD/MQTT/Twilio/Users Postman riêng ngoài commit, không reset/clea
 
 ## Tiếp theo
 
+Cập nhật sau Sensors: Actuators metadata đã hoàn tất trên feat/actuators-management từ Sensors c9d0940, enum Watering/Spraying/Shared cho bơm dùng chung. Đọc ACTUATORS_IMPLEMENTATION.md và MODULE_HANDOFF.md; kết quả tích hợp mới nhất 116 tests. Các bước đề xuất Actuators trong bản Sensors là lịch sử; không triển khai lại. MQTT core là bước tiếp theo cần trao đổi correlation/timeout/bơm–van, persistence vẫn bàn riêng.
+
 Actuators metadata là bước tiếp theo trước MQTT core. Khi chưa rõ capability_id immutable/composite uniqueness, purpose và status thì trao đổi trước code. MQTT giữ subscribe/station/{station_id}, publish/station/{station_id}; topic station → Device UUID → stream lookup bằng cặp, không station_id secret/auth_token. ACK/correlation/timeout/retry/presence phải được thảo luận và kiểm thử riêng. Persistence/proposals/history schema và Cultivation/hash-chain vẫn là đợt riêng.

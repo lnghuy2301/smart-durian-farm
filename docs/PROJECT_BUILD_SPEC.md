@@ -454,21 +454,21 @@ Không dùng internal `sensor_id` để nhận MQTT telemetry.
 
 ### ACTUATORS
 
-Actuator metadata nằm PostgreSQL.
+Triển khai metadata 2026-10-06 trên feat/actuators-management từ Sensors c9d0940, 116 tests. Chủ Farmer tạo/sửa name/status trực tiếp; Admin đề xuất cần chủ duyệt; Manager HTX/Farmer phân công Accepted hiệu lực chỉ đọc đúng scope Device → Zone → Farm. Shared Auth/Farms/Zones/Devices dynamic modules và RAM stores, chưa PostgreSQL persistence/schema/migration/seed.
 
-`capability_id` tương ứng `taskingCapabilityId` của IoT protocol.
+ACTUATORS.id là UUID backend sinh, device_id là DEVICES.id UUID, capability_id là taskingCapabilityId phần cứng (JSON number nguyên dương trong miền safe integer 1..9007199254740991). Ba định danh khác nhau. Unique theo (device_id, capability_id), không unique global capability; Inactive giữ cặp. id/device_id/capability_id/purpose bất biến, không hard-delete/chuyển Device. Name trim 1..80 ký tự; status Active/Inactive là khả dụng metadata, không On/Off/online. Chỉ name/status được sửa; không thêm actuator_type/state/auth_token.
 
-Actuator có `purpose`:
-
-``` text
+Người dùng xác nhận **một bơm chung có capability riêng cần bật/tắt bằng lệnh riêng, hai van tưới/phun**, và chấp nhận mở rộng purpose:
+```text
 Watering
 Spraying
+Shared
 ```
+Van tưới Watering, van phun Spraying, bơm chung Shared, mỗi thiết bị một bản ghi/capability riêng. Khi có bơm riêng, bơm và van cùng chức năng có thể cùng purpose; purpose không unique. Hai ERD lúc đầu session còn Watering/Spraying; người dùng đã cập nhật XML/JSON thêm Shared trong lúc triển khai, đối chiếu lần cuối khớp code. Module này không sửa/stage file ERD riêng.
 
-Không thêm `actuator_type` nếu ERD không có.
+Create proposals không reserve capability; approve recheck unique/context/capacity. Một Pending Update/Actuator, version chặn stale proposal; audit snapshot before/after và commit RAM đồng bộ. API/limits/kiểm thử/tái lập trong ACTUATORS_IMPLEMENTATION.md, thiết kế cuối ACTUATORS_WORKFLOW_DESIGN.md, Postman literal JSON 24 requests.
 
-Hardware có thể điều khiển pump + valve như một bundle. Backend chỉ cần
-chọn các actuator phù hợp theo `purpose` và tạo command.
+MQTT/control/bundle recipe/ACTUATOR_TASKS/ACK/timeout chưa triển khai. Việc chọn Shared + purpose chỉ là cơ sở dữ liệu để thiết kế điều khiển tiếp theo; không suy tự động bật/tắt, trình tự bơm–van hoặc xử lý đồng thời/lỗi đã được chốt. Giữ topic/protocol hiện có; cần thảo luận MQTT core trước code.
 
 ------------------------------------------------------------------------
 

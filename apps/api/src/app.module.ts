@@ -14,6 +14,7 @@ import { TreesModule } from './trees/trees.module';
 import { TreeHarvestsModule } from './tree-harvests/tree-harvests.module';
 import { DevicesModule } from './devices/devices.module';
 import { SensorsModule } from './sensors/sensors.module';
+import { ActuatorsModule } from './actuators/actuators.module';
 
 @Module({})
 export class AppModule {
@@ -41,6 +42,7 @@ export class AppModule {
         treesModule,
         devicesModule,
         SensorsModule.forMock(authModule, farmsModule, zonesModule, devicesModule),
+        ActuatorsModule.forMock(authModule, farmsModule, zonesModule, devicesModule),
         TreeHarvestsModule.forMock(authModule, usersModule, farmsModule, zonesModule, treesModule),
         AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );
