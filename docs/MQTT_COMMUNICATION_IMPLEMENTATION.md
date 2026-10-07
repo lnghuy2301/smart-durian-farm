@@ -1,5 +1,7 @@
 # MQTT communication — triển khai và tái lập
 
+Cập nhật nhánh kế thừa feat/iot-telemetries 2026-10-07: receiver đã nối Telemetry RAM FIFO10.000 readings và API latest/history,147 tests đạt. .env/protocol/firmware giữ nguyên. Xem [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md); các đoạn134 tests/chưa history phía dưới ghi phạm vi commit MQTT gốc d10ebd2, không phải phần cần viết lại.
+
 Nhánh **feat/mqtt-communication**, base metadata **939c350** trên feat/iot-core-metadata-update, kế thừa Actuators95c15fc/Sensorsc9d0940/Devices09cb1da/mainc71820d. Chỉ commit local, chưa push/merge. Đọc cùng [metadata](IOT_METADATA_UPDATE_IMPLEMENTATION.md) và [handoff](MODULE_HANDOFF.md).
 
 Đã đọc đầy đủ ERD_DIAGRAM.xml, IOT_CORE_TABLES_SPEC.md, MQTT_HARDWARE_PROTOCOL_VERIFIED.md. Ba file nguồn mới và các sửa/xóa riêng của người dùng được giữ ngoài commit. Quy tắc cần tái lập được ghi dưới đây; không phụ thuộc các guide IoT cũ đã bị người dùng xóa. File source mới nếu còn untracked ở session khác phải được bảo vệ trước checkout.

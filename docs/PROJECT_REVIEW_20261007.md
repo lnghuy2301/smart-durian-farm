@@ -1,5 +1,7 @@
 # Rà soát toàn dự án — 2026-10-07
 
+Cập nhật sau mốc rà soát: **IOT_TELEMETRIES đã triển khai** trên feat/iot-telemetries,147/147 tests + lint/typecheck/build đạt. Latest/history RAM FIFO10.000, Farmer hết assignment không đọc lịch sử IoT, measured_at packet arrival server/received_at store write. Quyết định và tái lập theo [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md); các số136 và phát hiện dưới đây ghi lượt review trước module. Còn4 collections + QR, persistence vẫn chưa triển khai.
+
 Tài liệu này là mốc hiện tại cho session tiếp theo. Các kết quả theo nhánh cũ trong handoff/notes là lịch sử; không coi module đã hoàn tất là việc cần viết lại.
 
 ## Phạm vi và bằng chứng
@@ -23,15 +25,15 @@ Rà soát và test không chứng minh không còn lỗi. Chưa kiểm thử to�
 | Cây/thu hoạch | TREES, TREE_HARVESTS | API, mã cây backend, thu hoạch/duyệt/chỉnh sửa đã có; chỉ xóa Draft chưa từng Confirmed |
 | Danh mục | AGRICULTURAL_MATERIALS, FARMING_STANDARDS, STANDARD_MATERIALS | API và quy tắc danh mục/liên kết đã có |
 | Metadata IoT | DEVICES, SENSORS, ACTUATORS | API, quyền như Device, Admin proposal/owner approval, identity/unique, shared RAM stores đã có |
-| MongoDB — chưa có module | IOT_TELEMETRIES | Chưa có lưu lịch sử, latest/history API; FIFO diagnostics MQTT không thay thế collection |
+| MongoDB shape — đã có module RAM | IOT_TELEMETRIES | Latest/history RAM FIFO10.000, nối MQTT shared store; chưa ghi MongoDB |
 | MongoDB — chưa có module | ACTUATOR_TASKS | Chưa có task workflow, HTTP control, confirmation/timeout hay phối hợp bơm/van |
 | MongoDB — chưa có module | CULTIVATION_EVENTS | Chưa có nhật ký, details, locking/correction/hash chain |
 | MongoDB — chưa có module | AI_DISEASE_DIAGNOSTICS | Chưa có upload/AI inference/feedback |
 | MongoDB — chưa có module | CHATBOT_CONVERSATIONS | Chưa có conversation/RAG |
 
-**13/13 bảng PostgreSQL đã có logic nghiệp vụ trong RAM; 5/5 collection MongoDB chưa có module.** Chưa tạo business tables, migrations hay seed cho 13 bảng; cũng chưa ghi dữ liệu nghiệp vụ vào MongoDB. Có kết nối database và readiness không đồng nghĩa đã có persistence.
+**13/13 bảng PostgreSQL và1/5 collection MongoDB đã có logic trong RAM; còn4 collection chưa có module.** Chưa tạo business tables, migrations hay seed cho 13 bảng; cũng chưa ghi dữ liệu nghiệp vụ vào MongoDB. Có kết nối database và readiness không đồng nghĩa đã có persistence.
 
-QR traceability là tính năng/API/trang công khai, **không có bảng riêng**. Tính theo backend ERD và QR, còn **5 module collection + 1 tính năng QR**. Đây không phải số phần việc còn lại của toàn đồ án: persistence, hardening Auth, realtime, tích hợp phần cứng, web/mobile, lưu ảnh, AI/RAG và triển khai vẫn còn. apps/web, apps/mobile và ai hiện chỉ có .gitkeep.
+QR traceability là tính năng/API/trang công khai, **không có bảng riêng**. Tính theo backend ERD và QR, còn **4 module collection + 1 tính năng QR**. Đây không phải số phần việc còn lại của toàn đồ án: persistence, hardening Auth, realtime, tích hợp phần cứng, web/mobile, lưu ảnh, AI/RAG và triển khai vẫn còn. apps/web, apps/mobile và ai hiện chỉ có .gitkeep.
 
 MQTT communication là hạ tầng đã triển khai thêm ngoài 18 cấu trúc: connect/reconnect/SUBACK/shutdown, parser/routing, ánh xạ station sang Device UUID, presence, diagnostics chỉ đọc và publisher nội bộ.
 
@@ -77,7 +79,7 @@ Không chạy npm audit fix --force hoặc nâng toàn bộ package trong nhánh
 ### 5. Hạn chế chưa triển khai, không phải lỗi đã được sửa
 
 - Restart mất RAM nghiệp vụ, OTP/proof, proposals, grant và MQTT diagnostics; không có backup/migration/seed.
-- MQTT diagnostics chỉ FIFO 200, không phải lịch sử telemetry.
+- MQTT diagnostics chỉ FIFO 200; lịch sử Telemetry riêng đã có RAM FIFO10.000, chưa persistence.
 - Chưa điều khiển bơm/van từ HTTP, chưa xác nhận thực thi, chưa có task/cultivation/realtime.
 - MQTT station_id chỉ định danh; không phải auth token. Không sửa firmware/topic hoặc thêm token khi phần cứng hiện chưa hỗ trợ.
 - Test DB readiness và loopback không thay thế integration test database thực/hardware thực.
@@ -86,7 +88,7 @@ Không chạy npm audit fix --force hoặc nâng toàn bộ package trong nhánh
 ## Thứ tự đề xuất
 
 1. Xóa Draft harvest đã chốt đúng code; tiếp theo sửa dependency dev trên nhánh riêng, đối chiếu tài liệu còn lại trước khi dùng làm căn cứ triển khai.
-2. **IOT_TELEMETRIES**: nối receiver hiện có sang domain, latest/history API, phân trang và quyền đọc; giai đoạn RAM nếu persistence chưa được chốt. Đây là bước đơn giản hơn, tạo dữ liệu để kiểm thử core hardware.
+2. **IOT_TELEMETRIES đã làm**: receiver -> domain RAM FIFO10.000, latest/history API, phân trang/quyền đọc;147 tests đạt. Không viết lại; dùng để kiểm thử core hardware.
 3. **ACTUATOR_TASKS và control**: sau khi chốt ACK/confirmation, timeout, rights, liên động và mapping bơm/van. Kiểm thử adapter lỗi và hardware thật có kiểm soát trước mở control.
 4. **CULTIVATION_EVENTS**: chốt details, liên kết task/event, original assignment, lock/correction/hash chain. Không suy diễn task thành công từ publish hoặc short ACK.
 5. **QR traceability**: truy xuất từ cây/thu hoạch và nhật ký đã được phép công khai; không tạo bảng QR riêng.
@@ -96,13 +98,13 @@ Persistence phải có buổi chốt riêng về schema/transactions/migrations/
 
 ## Những quyết định cần chốt trước từng module
 
-### Telemetry — module nên thảo luận ngay
+### Telemetry — đã chốt và triển khai sau lượt review
 
-- Firmware đã kiểm chứng không cung cấp thời gian đo đáng tin cậy: measured_at dùng received_at khi thiếu timestamp, hay cần nullable/nguồn thời gian? Không sửa firmware ngầm.
-- ERD telemetry.unit varchar(8), Sensor.unit/parser hiện nhận tối đa 16 ký tự: thống nhất giới hạn, không cắt chuỗi hoặc đổi unit lịch sử.
-- Đề xuất quyền latest/history: chủ Farm, Admin, Manager đúng HTX và Farmer đúng scope assignment. Cần chốt riêng Farmer hết phân công được xem telemetry nào; không đánh đồng telemetry chung với nhật ký do chính Farmer tạo.
-- Chốt lưu gói trùng, gói đến trễ, retention/giới hạn RAM, latest và threshold khi unit mismatch. Đề xuất không tự convert unit và không đánh giá threshold sai đơn vị.
-- Chốt RAM trước hay mở phase MongoDB persistence riêng. Nhận message từ broker không tạo REST endpoint nhập telemetry công khai.
+- Lưu mọi reading hợp lệ, hardware gửi15 giây; RAM FIFO10.000 readings.
+- Farmer cần assignment Accepted đang hiệu lực; hết phân công không đọc IoT history. Chỉ đọc khoảng assignment hiện tại, không mở readings từ phân công cũ.
+- measured_at là giờ backend nhận/đọc MQTT; received_at là giờ ghi store RAM. Không thay firmware.
+- Raw unit tối đa16, giữ nguyên dù Sensor metadata đổi; ERD8 cần người dùng đồng bộ16.
+- Không dedup theo giá trị, chưa automatic thresholds/control/realtime/persistence. Latest/history/HTTP/loopback đã kiểm thử147/147 toàn suite.
 
 ### Task/control
 

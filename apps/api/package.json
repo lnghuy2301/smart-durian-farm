@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src test integration",
-    "test": "tsc --outDir .test-dist && node --test .test-dist/test",
+    "test": "tsc --outDir .test-dist && node --test --test-concurrency=2 .test-dist/test",
     "test:integration": "tsc --outDir .integration-dist && node --test .integration-dist/integration/database.integration.js"
   },
   "dependencies": {

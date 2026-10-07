@@ -1,0 +1,333 @@
+{
+  "info": {
+    "name": "IOT Telemetries - Local Test",
+    "description": "RAM FIFO 10000 readings. Literal URLs/JSON; copy JWT/UUID bằng tay, không scripts/environment. Tạo metadata bằng collections Farm/Zone/Devices/Sensors và phát packet qua broker test theo IOT_TELEMETRIES_IMPLEMENTATION.md. Không sửa firmware hoặc gửi control.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Login owner",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Sửa theo tài khoản local; copy access_token vào Bearer của request owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Sửa theo tài khoản local; copy JWT Admin.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Latest owner",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/latest",
+        "description": "Thay UUID Device. Giá trị mới nhất từng stream còn trong RAM, không phải thông tin online."
+      }
+    },
+    {
+      "name": "04 History owner",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history?limit=20&offset=0",
+        "description": "Lịch sử mới nhất trước; total chỉ readings được phép xem còn trong RAM."
+      }
+    },
+    {
+      "name": "05 Latest one stream",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/latest?data_stream_id=301",
+        "description": "301 là ví dụ; dùng stream metadata đúng Device."
+      }
+    },
+    {
+      "name": "06 History stream and time range",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history?data_stream_id=301&from=2026-10-07T00:00:00Z&to=2026-10-08T00:00:00Z",
+        "description": "Khoảng received_at [from,to), thay ngày theo dữ liệu; nếu dùng offset +07:00 trong URL phải encode dấu + thành %2B."
+      }
+    },
+    {
+      "name": "07 History pagination",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history?limit=2&offset=2",
+        "description": "Trang có thể dịch khi có packet mới/eviction; không phải snapshot/cursor."
+      }
+    },
+    {
+      "name": "08 History Admin",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history",
+        "description": "Admin Active đọc bất kỳ Device tồn tại."
+      }
+    },
+    {
+      "name": "09 Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Dùng tài khoản Manager Active đã duyệt/gắn HTX của bạn; phone chỉ mẫu, không seed sẵn.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 History Manager",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history",
+        "description": "200 khi Farm hiện thuộc HTX Manager; 404 khi ngoài HTX hoặc đã rời."
+      }
+    },
+    {
+      "name": "11 Login assigned Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Dùng Farmer đã đăng ký và nhận lời mời assignment; phone mẫu không seed sẵn.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000002\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "12 Latest assigned Farmer",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/latest",
+        "description": "200 khi Accepted và hiệu lực; không có reading kể từ start thì items rỗng."
+      }
+    },
+    {
+      "name": "13 History assigned Farmer",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history",
+        "description": "Chỉ readings nhận trong khoảng assignment đang hiệu lực. Hết assignment phải404, kể cả còn dữ liệu RAM."
+      }
+    },
+    {
+      "name": "14 History Farmer after assignment end",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history",
+        "description": "Kết thúc assignment bằng collection Assignments trước; kỳ vọng404. Chủ vẫn xem được lịch sử."
+      }
+    },
+    {
+      "name": "15 Missing JWT",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/latest",
+        "description": "Kỳ vọng401; không copy Authorization."
+      }
+    },
+    {
+      "name": "16 Invalid Device UUID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/not-uuid/latest",
+        "description": "Kỳ vọng400."
+      }
+    },
+    {
+      "name": "17 Invalid limit",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history?limit=0",
+        "description": "Kỳ vọng400."
+      }
+    },
+    {
+      "name": "18 Reversed time range",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history?from=2026-10-08T00:00:00Z&to=2026-10-07T00:00:00Z",
+        "description": "Kỳ vọng400."
+      }
+    },
+    {
+      "name": "19 Unknown query field",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history?station_id=DEMO_STATION",
+        "description": "Kỳ vọng400; API dùng UUID Device, không station_id."
+      }
+    },
+    {
+      "name": "20 No HTTP telemetry injection",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/telemetry/devices/11111111-1111-4111-8111-111111111111/history",
+        "description": "Kỳ vọng404; dữ liệu chỉ nhận từ receiver MQTT, không nhập HTTP.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"value\": 99,\n  \"unit\": \"C\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

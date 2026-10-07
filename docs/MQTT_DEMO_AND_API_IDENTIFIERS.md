@@ -61,4 +61,4 @@ node ../../node_modules/typescript/bin/tsc --outDir .test-dist
 node --test --test-reporter=spec .test-dist/test/users.test.js .test-dist/test/cooperatives.test.js
 ~~~
 
-Telemetry vẫn trên feat/iot-telemetries, chờ chốt tần suất lưu15 giây/15 phút, historical scope, timestamps/unit. Việc cấu hình demo này không chốt thay các quyết định đó.
+Telemetry đã được chốt và triển khai trên feat/iot-telemetries: lưu mọi reading hardware gửi15 giây, RAM FIFO10.000; Farmer hết assignment không xem history; measured_at lúc backend nhận/đọc, received_at lúc ghi store, không sửa firmware.147 tests đạt; xem IOT_TELEMETRIES_IMPLEMENTATION.md. Cấu hình demo vẫn không tự tạo metadata/persistence.

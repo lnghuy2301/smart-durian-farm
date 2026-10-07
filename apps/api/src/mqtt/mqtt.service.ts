@@ -2,6 +2,7 @@ import { ForbiddenException, Inject, Injectable, Logger, NotFoundException, OnMo
 import { MockUserStore } from '../auth/mock-user.store';
 import { DevicesService } from '../devices/devices.service';
 import { SensorsService } from '../sensors/sensors.service';
+import { TelemetryService } from '../telemetry/telemetry.service';
 import { FarmPageDto } from '../farms/farms.dto';
 import { MqttConfig, MQTT_CONFIG } from './mqtt.config';
 import { BrokerState, MqttTransport } from './mqtt.transport';
@@ -31,6 +32,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
     @Inject(MqttTransport) private readonly transport: MqttTransport,
     @Inject(DevicesService) private readonly devices: DevicesService,
     @Inject(SensorsService) private readonly sensors: SensorsService,
+    @Inject(TelemetryService) private readonly telemetry: TelemetryService,
     @Inject(MockUserStore) private readonly users: MockUserStore) {
     this.state = { enabled: config.enabled, connected: false, subscribed: false, last_error: null };
   }
@@ -60,7 +62,7 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
   }
   // Not an HTTP injection endpoint. This method is called only by the transport/fake adapter in tests.
   private receive(topic: string, payload: Buffer, retained: boolean): void {
-    const receivedAt = new Date().toISOString();
+    const receivedAt = new Date(Date.now()).toISOString();
     let deviceId: string | null = null;
     try {
       const stationId = stationFromTopic(topic);
@@ -92,6 +94,9 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         return { ...reading, sensor_id: sensor?.id ?? null, accepted: reason === null, reason, unit_mismatch: unitMismatch };
       });
       ++this.counts.telemetry;
+      // Chỉ readings đã map/Active đi vào domain. Diagnostics giữ timestamp nhận cũ;
+      // Telemetry tự lấy timestamp bước ghi, không dùng ACK hoặc đổi firmware.
+      this.telemetry.record(deviceId, readings.filter((reading) => reading.accepted), receivedAt);
       // Bounded transport diagnostics only. This is not an IOT_TELEMETRIES persistence/domain model.
       this.append({ received_at: receivedAt, device_id: deviceId, kind: 'Telemetry', reason: null, readings });
     } catch (error) {

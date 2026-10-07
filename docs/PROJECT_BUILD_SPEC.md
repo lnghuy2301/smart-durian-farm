@@ -1,5 +1,7 @@
 # SMART FARM DURIAN --- PROJECT BUILD SPECIFICATION
 
+Telemetry hoàn tất 2026-10-07 trên **feat/iot-telemetries** từ a656773 (kế thừa e1ad1a0/MQTT d10ebd2). Shared RAM store FIFO10.000 readings, nhận mọi packet hợp lệ theo chu kỳ hardware15 giây; GET latest/history có filter stream/received_at [from,to) và pagination. Farmer phải có assignment Accepted đang hiệu lực, hết phân công mất cả latest/history; chỉ xem readings trong khoảng assignment hiện tại. measured_at lúc backend nhận/đọc MQTT, received_at lúc ghi RAM, raw unit tối đa16; không sửa firmware/protocol/.env hoặc persistence. **147/147 tests + lint/typecheck/build đạt**, gồm10 domain/HTTP/fake tests và1 MQTT.js TCP -> App -> Telemetry -> HTTP mới; npm test giới hạn2 files đồng thời. Postman20 requests literal, đọc [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md) và [thiết kế cuối](IOT_TELEMETRIES_WORKFLOW_DESIGN.md). Còn4 collections chưa có module + QR không có bảng; tiếp theo thảo luận ACTUATOR_TASKS/safety, persistence riêng. Các ghi chú chờ Telemetry/136 tests phía dưới là lịch sử. Nhánh chỉ local, không push/merge; giữ file riêng.
+
 Rà soát 2026-10-07: 13 bảng đã có nghiệp vụ RAM, 5 collections chưa triển khai; QR là tính năng không có bảng. 136/136 tests + lint/typecheck/build sau sửa registration proof boundary. Thứ tự và câu hỏi cần chốt theo [PROJECT_REVIEW_20261007.md](PROJECT_REVIEW_20261007.md); telemetry/task/control dưới đây chưa phải quyết định đã duyệt.
 
 MQTT communication hoàn tất 2026-10-07 trên **feat/mqtt-communication**, base metadata **939c350** (feat/iot-core-metadata-update, 119 tests). Kết nối MQTT.js/reconnect/SUBACK/shutdown, parser station-topic, shared Device/Sensor mapping, presence và diagnostics API chỉ đọc đã có. **134/134 tests**, gồm 14 fake/unit/HTTP +1 MQTT.js broker TCP localhost; lint/typecheck/build đạt. ACK ngắn không xác nhận task/relay; publisher/builder chỉ adapter nội bộ, không HTTP control/automation. Diagnostic FIFO200 RAM, chưa IOT_TELEMETRIES/ACTUATOR_TASKS/persistence. .env.example thêm MQTT keys mặc định disabled; .env thật và file riêng giữ nguyên. Đọc [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md), Postman MQTT 12 request không scripts/env. Hai nhánh mới chỉ local, chưa push/merge. Các ghi chú module cũ phía dưới là lịch sử, enum/next-step hiện tại theo hai guide IoT mới.
@@ -490,7 +492,9 @@ ACTUATOR_TASKS status/timeout/confirmation và fail-safe cần thảo luận tr�
 
 ## 13. IoT telemetry storage
 
-MongoDB collection:
+Triển khai 2026-10-07 trên feat/iot-telemetries: RAM FIFO10.000 readings, GET /api/telemetry/devices/:id/latest và /history; filter stream/received_at [from,to), max100/trang. measured_at là lúc backend nhận/đọc packet, received_at là lúc ghi store; không đổi firmware hoặc coi RAM là database. Farmer phải Accepted/đang hiệu lực và chỉ đọc khoảng assignment hiện tại, hết phân công không xem history. Chủ/Admin/Manager đúng scope; unit raw16 thay8 cũ. 147 tests + lint/typecheck/build; Postman20 requests. Quyết định hiện hành theo IOT_TELEMETRIES_IMPLEMENTATION.md/IOT_TELEMETRIES_WORKFLOW_DESIGN.md, thay các đề xuất mở quyền Farmer cũ. Chưa thresholds/realtime/control hoặc persistence.
+
+Logical collection (shape dùng trong RAM hiện tại; MongoDB persistence chưa triển khai):
 
 ``` text
 IOT_TELEMETRIES
