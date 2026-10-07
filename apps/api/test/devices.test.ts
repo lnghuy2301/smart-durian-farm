@@ -8,7 +8,7 @@ import { TestDevice } from '../src/devices/devices.types';
 import { TreesService } from '../src/trees/trees.service';
 
 const page = { limit: 20, offset: 0 };
-const details = { station_id: 'E08CFE41DCAC', installed_at: '2026-10-06T08:00:00+07:00', cost: 1500000 };
+const details = { station_id: 'DEMO_STATION', installed_at: '2026-10-06T08:00:00+07:00', cost: 1500000 };
 
 async function fixture() {
   const f = await zoneFixture();
@@ -22,10 +22,10 @@ test('Devices HTTP validates hardware identity, installation fields and immutabl
     const owner = await f.login(f.owner.phone_number);
     assert.equal((await f.http('devices')).status, 401);
     for (const invalid of [{ station_id: '' }, { station_id: ' ' }, { station_id: 'x'.repeat(51) },
-      { station_id: null }, { station_id: 'a/b' }, { station_id: '+' }, { station_id: '#' }, { station_id: ' E08CFE41DCAC' },
+      { station_id: null }, { station_id: 'a/b' }, { station_id: '+' }, { station_id: '#' }, { station_id: ' DEMO_STATION' },
       { installed_at: '2026-02-30T00:00:00Z' }, { installed_at: '2026-10-06' }, { installed_at: '2026-10-06T08:00:00' },
       { installed_at: null }, { cost: -1 }, { cost: 100000000 }, { cost: 1.123 }, { cost: '100' }, { cost: null },
-      { zone_id: 'bad' }, { zone_id: null }, { status: 'Online' }, { status: 'Offline' }, { status: 'Maintenance' },
+      { zone_id: 'bad' }, { zone_id: null }, { status: 'Online' }, { status: 'Offline' },
       { status: null }, { auth_token: 'not-implemented' }, { tree_ids: [] }, { device_id: randomUUID() }, { id: randomUUID() }]) {
       assert.equal((await f.http('devices', 'POST', { ...f.inputDevice, ...invalid }, owner)).status, 400, JSON.stringify(invalid));
     }
@@ -37,7 +37,7 @@ test('Devices HTTP validates hardware identity, installation fields and immutabl
     assert.equal(device.station_id, details.station_id);
     assert.equal(device.installed_at, '2026-10-06T01:00:00.000Z');
     assert.equal(device.status, 'Active');
-    assert.deepEqual(Object.keys(device).sort(), ['id', 'zone_id', 'station_id', 'installed_at', 'cost', 'status'].sort());
+    assert.deepEqual(Object.keys(device).sort(), ['id', 'zone_id', 'station_id', 'installed_at', 'cost', 'status', 'last_seen_at'].sort());
     for (const patch of [{}, { cost: details.cost }, { station_id: 'OTHER' }, { zone_id: randomUUID() }, { id: randomUUID() },
       { cost: null }, { installed_at: null }, { status: null }, { auth_token: 'x' }]) {
       assert.equal((await f.http(`devices/${device.id}`, 'PATCH', patch, owner)).status, 400, JSON.stringify(patch));
@@ -220,7 +220,7 @@ test('Device filters, history and station query enforce bounds and return isolat
     const token = await f.login(f.owner.phone_number);
     const a = f.devices.create(f.owner.id, f.inputDevice);
     f.devices.create(f.owner.id, { ...f.inputDevice, station_id: 'OTHER', status: 'Inactive' });
-    assert.equal(f.devices.list(f.owner.id, { ...page, q: 'e08c', status: 'Active', zone_id: f.zone.id }).total, 1);
+    assert.equal(f.devices.list(f.owner.id, { ...page, q: 'demo_', status: 'Active', zone_id: f.zone.id }).total, 1);
     assert.equal(f.devices.list(f.owner.id, { limit: 1, offset: 1 }).total, 2);
     for (const query of ['limit=0', 'limit=101', 'offset=-1', 'offset=100001', 'status=Offline', 'zone_id=bad', 'q=' + 'a'.repeat(101), 'auth_token=x']) {
       assert.equal((await f.http(`devices?${query}`, 'GET', undefined, token)).status, 400, query);

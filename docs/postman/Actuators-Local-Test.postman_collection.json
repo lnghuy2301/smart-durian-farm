@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Smart Durian Farm - Actuators - Nhap JSON",
-    "description": "24 request JSON/URL literal, không scripts/environment/variables. Đọc ACTUATORS_IMPLEMENTATION.md và tạo Farm/Zone/Device trước. Watering/Spraying/Shared immutable; bơm riêng capability, 6/7/8 chỉ minh họa thay đúng firmware. UUID Device/Actuator/Request khác capability số. Metadata RAM, chưa MQTT. Login fixture mẫu, không secret thật.",
+    "description": "24 request JSON/URL literal, không scripts/environment/variables. Đọc ACTUATORS_IMPLEMENTATION.md và tạo Farm/Zone/Device trước. watering/spraying/shared immutable; bơm riêng capability, 6/7/8 chỉ minh họa thay đúng firmware. UUID Device/Actuator/Request khác capability số. Metadata RAM, chưa MQTT. Login fixture mẫu, không secret thật. Cập nhật 2026-10-07 theo ERD_DIAGRAM/IOT_CORE_TABLES_SPEC; các mã chỉ ví dụ cấu hình, không hằng số hệ thống.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -58,7 +58,7 @@
       }
     },
     {
-      "name": "03 Chủ tạo bơm chung Shared",
+      "name": "03 Chủ tạo bơm chung shared",
       "request": {
         "method": "POST",
         "header": [
@@ -81,7 +81,7 @@
         "description": "201. Thay Device UUID 1111... và capability 8 bằng mã bơm firmware thật. Bơm có capability riêng, không tự chạy theo van. Copy Actuator id thay 2222...",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"Shared\",\n  \"capability_id\": 8\n}",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 8\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -114,7 +114,7 @@
         "description": "201. Mã 6 minh họa; thay bằng capability firmware van tưới, khác mã bơm/van phun. Không phát lệnh.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Van tưới\",\n  \"purpose\": \"Watering\",\n  \"capability_id\": 6\n}",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Van tưới\",\n  \"purpose\": \"watering\",\n  \"capability_id\": 6\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -147,7 +147,7 @@
         "description": "201. Mã 7 minh họa, thay đúng firmware.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Van phun\",\n  \"purpose\": \"Spraying\",\n  \"capability_id\": 7\n}",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Van phun\",\n  \"purpose\": \"spraying\",\n  \"capability_id\": 7\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -172,7 +172,7 @@
           ]
         },
         "url": "http://localhost:3000/api/actuators?limit=20&offset=0",
-        "description": "200 đúng scope; thêm device_id/purpose/status/q khi cần. purpose Shared không unique."
+        "description": "200 đúng scope; thêm device_id/purpose/status/q khi cần. purpose shared không unique."
       }
     },
     {
@@ -319,10 +319,10 @@
           ]
         },
         "url": "http://localhost:3000/api/actuators/requests",
-        "description": "201 Pending/actuator_id=null, chưa đăng ký/reserve. ID 9 minh họa; copy request.id để owner duyệt. Nhiều actuator cùng Watering được phép.",
+        "description": "201 Pending/actuator_id=null, chưa đăng ký/reserve. ID 9 minh họa; copy request.id để owner duyệt. Nhiều actuator cùng watering được phép.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm tưới riêng thử nghiệm\",\n  \"purpose\": \"Watering\",\n  \"capability_id\": 9\n}",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm tưới riêng thử nghiệm\",\n  \"purpose\": \"watering\",\n  \"capability_id\": 9\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -492,7 +492,7 @@
         "description": "400 purpose bất biến, kể cả gửi giá trị cũ/qua proposal. Enum chỉ chọn khi tạo.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"purpose\": \"Watering\"\n}",
+          "raw": "{\n  \"purpose\": \"watering\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -558,7 +558,7 @@
         "description": "409 cùng Device/capability, kể cả Actuator Inactive. Không tạo bơm 2 lần dưới 2 purpose.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"Shared\",\n  \"capability_id\": 8\n}",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 8\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -591,7 +591,7 @@
         "description": "201 nếu Device khác tồn tại thuộc Farm chủ. Thay 4444... bằng Device UUID thật; capability 8 dùng được ở ESP32 khác.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"device_id\": \"44444444-4444-4444-8444-444444444444\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"Shared\",\n  \"capability_id\": 8\n}",
+          "raw": "{\n  \"device_id\": \"44444444-4444-4444-8444-444444444444\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 8\n}",
           "options": {
             "raw": {
               "language": "json"

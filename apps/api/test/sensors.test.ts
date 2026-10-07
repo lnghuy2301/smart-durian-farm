@@ -14,17 +14,17 @@ async function fixture() {
   const devices = f.app.get(DevicesService);
   const device = devices.create(f.owner.id, { zone_id: zone.id, station_id: 'ESP32-A',
     installed_at: '2026-10-06T08:00:00+07:00', cost: 0 });
-  const inputSensor = { device_id: device.id, name: 'Air sensor', sensor_type: 'Air_temperature' as const, unit: 'oC' as const, data_stream_id: '2' };
+  const inputSensor = { device_id: device.id, name: 'Air sensor', sensor_type: 'air_temperature' as const, unit: 'oC' as const, data_stream_id: '2' };
   return { ...f, zone, devices, device, inputSensor, sensors: f.app.get(SensorsService) };
 }
 
-test('Sensors HTTP validates enum choices, thresholds and immutable type/stream/Device identifiers', async () => {
+test('Sensors HTTP validates unit strings and enum choices, thresholds and immutable type/stream/Device identifiers', async () => {
   const f = await fixture();
   try {
     const token = await f.login(f.owner.phone_number);
     assert.equal((await f.http('sensors')).status, 401);
-    for (const patch of [{ name: '' }, { name: '   ' }, { name: 'x'.repeat(81) }, { name: null }, { unit: 'C' },
-      { unit: '°C' }, { unit: 'F' }, { unit: null }, { sensor_type: 'Temperature' }, { sensor_type: null },
+    for (const patch of [{ name: '' }, { name: '   ' }, { name: 'x'.repeat(81) }, { name: null }, { unit: '' },
+      { unit: ' ' }, { unit: 'x'.repeat(17) }, { unit: null }, { sensor_type: 'Temperature' }, { sensor_type: null },
       { device_id: f.device.station_id }, { device_id: null }, { data_stream_id: 2 }, { data_stream_id: null },
       { data_stream_id: ' ' }, { data_stream_id: 'a/b' }, { data_stream_id: '#' }, { data_stream_id: '+' },
       { data_stream_id: 'x'.repeat(51) }, { status: 'Offline' }, { status: null }, { id: randomUUID() },
@@ -33,7 +33,7 @@ test('Sensors HTTP validates enum choices, thresholds and immutable type/stream/
       { min_threshold: 1, max_threshold: 100000 }, { min_threshold: '1', max_threshold: 2 }]) {
       assert.equal((await f.http('sensors', 'POST', { ...f.inputSensor, ...patch }, token)).status, 400, JSON.stringify(patch));
     }
-    // Both enum units are valid for every immutable sensor_type; no type -> unit restriction.
+    // Unit là varchar(16), không ép mapping loại/đơn vị; loại sensor vẫn bất biến.
     const response = await f.http('sensors', 'POST', { ...f.inputSensor, name: ' Air sensor ', unit: '%' }, token);
     assert.equal(response.status, 201);
     const sensor = await response.json() as TestSensor;
@@ -43,8 +43,8 @@ test('Sensors HTTP validates enum choices, thresholds and immutable type/stream/
     assert.equal(sensor.max_threshold, null);
     assert.equal(sensor.status, 'Active');
     assert.deepEqual(Object.keys(sensor).sort(), ['id', 'device_id', 'name', 'sensor_type', 'unit', 'data_stream_id', 'min_threshold', 'max_threshold', 'status'].sort());
-    for (const patch of [{}, { unit: '%' }, { unit: 'outside-enum' }, { unit: null }, { name: null }, { status: null },
-      { sensor_type: 'Air_humidity' }, { sensor_type: sensor.sensor_type }, { device_id: randomUUID() },
+    for (const patch of [{}, { unit: '%' }, { unit: 'x'.repeat(17) }, { unit: null }, { name: null }, { status: null },
+      { sensor_type: 'air_humidity' }, { sensor_type: sensor.sensor_type }, { device_id: randomUUID() },
       { data_stream_id: '3' }, { id: randomUUID() }, { zone_id: f.zone.id }]) {
       assert.equal((await f.http(`sensors/${sensor.id}`, 'PATCH', patch, token)).status, 400, JSON.stringify(patch));
     }
@@ -54,7 +54,7 @@ test('Sensors HTTP validates enum choices, thresholds and immutable type/stream/
     const swaggerResponse = await fetch(`${await f.app.getUrl()}/api/docs-json`);
     assert.equal(swaggerResponse.status, 200);
     const swagger = await swaggerResponse.json() as { components: { schemas: Record<string, { properties: Record<string, { enum?: string[] }> }> } };
-    assert.deepEqual(swagger.components.schemas.UpdateSensorDto.properties.unit.enum, ['%', 'oC']);
+    assert.equal(swagger.components.schemas.UpdateSensorDto.properties.unit.enum, undefined);
     assert.equal(swagger.components.schemas.UpdateSensorDto.properties.sensor_type, undefined);
   } finally { await f.app.close(); }
 });
@@ -64,7 +64,7 @@ test('Sensor unit changes keep thresholds, immutable type and previous metadata 
   try {
     const sensor = f.sensors.create(f.owner.id, { ...f.inputSensor, min_threshold: -10, max_threshold: 40, status: 'Inactive' });
     const changed = f.sensors.update(f.owner.id, sensor.id, { unit: '%' });
-    assert.equal(changed.sensor_type, 'Air_temperature');
+    assert.equal(changed.sensor_type, 'air_temperature');
     assert.equal(changed.status, 'Inactive');
     assert.equal(changed.min_threshold, -10);
     assert.equal(changed.max_threshold, 40);
@@ -85,7 +85,7 @@ test('Sensor unit changes keep thresholds, immutable type and previous metadata 
     f.devices.update(f.owner.id, f.device.id, { status: 'Inactive' });
     assert.equal(f.sensors.get(f.owner.id, sensor.id).device_id, f.device.id);
     assert.equal(f.sensors.get(f.owner.id, sensor.id).status, 'Inactive');
-    assert.equal(f.sensors.create(f.owner.id, { ...f.inputSensor, data_stream_id: '3', sensor_type: 'Air_humidity', unit: 'oC' }).unit, 'oC');
+    assert.equal(f.sensors.create(f.owner.id, { ...f.inputSensor, data_stream_id: '3', sensor_type: 'air_humidity', unit: 'oC' }).unit, 'oC');
   } finally { await f.app.close(); }
 });
 
@@ -233,8 +233,8 @@ test('Sensor filtering, pair lookup and metadata history validate bounds and iso
   const f = await fixture();
   try {
     const sensor = f.sensors.create(f.owner.id, f.inputSensor);
-    f.sensors.create(f.owner.id, { ...f.inputSensor, data_stream_id: 'SOIL', name: 'Soil', sensor_type: 'Soil_moisture', unit: '%', status: 'Inactive' });
-    assert.equal(f.sensors.list(f.owner.id, { ...page, device_id: f.device.id, sensor_type: 'Air_temperature', q: 'AIR', status: 'Active' }).total, 1);
+    f.sensors.create(f.owner.id, { ...f.inputSensor, data_stream_id: 'SOIL', name: 'Soil', sensor_type: 'soil_moisture', unit: '%', status: 'Inactive' });
+    assert.equal(f.sensors.list(f.owner.id, { ...page, device_id: f.device.id, sensor_type: 'air_temperature', q: 'AIR', status: 'Active' }).total, 1);
     assert.equal(f.sensors.list(f.owner.id, { limit: 1, offset: 1 }).items[0].data_stream_id, 'SOIL');
     const token = await f.login(f.owner.phone_number);
     for (const q of ['limit=0', 'limit=101', 'offset=-1', 'offset=100001', 'device_id=bad', 'sensor_type=bad', 'status=Online', 'unit=F', 'q=' + 'a'.repeat(101)]) {

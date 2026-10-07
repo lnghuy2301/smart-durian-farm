@@ -1,5 +1,5 @@
 export const ACTUATOR_STATUSES = ['Active', 'Inactive'] as const;
-export const ACTUATOR_PURPOSES = ['Watering', 'Spraying', 'Shared'] as const;
+export const ACTUATOR_PURPOSES = ['watering', 'spraying', 'shared'] as const;
 export type ActuatorStatus = typeof ACTUATOR_STATUSES[number];
 export type ActuatorPurpose = typeof ACTUATOR_PURPOSES[number];
 

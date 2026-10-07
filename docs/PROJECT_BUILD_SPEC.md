@@ -1,5 +1,7 @@
 # SMART FARM DURIAN --- PROJECT BUILD SPECIFICATION
 
+Cập nhật ưu tiên 2026-10-07: ba tài liệu ERD_DIAGRAM.xml, IOT_CORE_TABLES_SPEC.md, MQTT_HARDWARE_PROTOCOL_VERIFIED.md thay thế các mô tả IoT cũ bên dưới. Device Maintenance/last_seen_at; installed_at/cost vẫn NOT NULL theo câu trả lời trực tiếp. Sensor lowercase type, unit varchar(16); Actuator lowercase purpose. Topic telemetry theo station, numeric streams, short ACK không taskId; không xác nhận tasks/relay từ ACK. Xem IOT_METADATA_UPDATE_IMPLEMENTATION.md. Persistence và hai collections IoT chưa được chốt.
+
 > Tài liệu này được dùng làm **context/instruction chính cho Codex** để
 > bắt đầu xây dựng dự án. Khi chạy Codex, đặt file này cùng với file
 > **`Sơ đồ ERD.xml`** (diagrams.net/draw.io).
@@ -444,13 +446,7 @@ DEVICES.station_id = third-party/hardware station identifier
 
 ### SENSORS
 
-Quyết định cuối và triển khai 2026-10-06: chủ Farm tạo/sửa trực tiếp, Admin đề xuất cần chủ duyệt; Manager HTX/Farmer có Accepted assignment còn hiệu lực chỉ đọc đúng scope Device → Zone → Farm. Sensor id backend UUID; device_id là DEVICES.id UUID, data_stream_id mã firmware exact, unique theo cặp (device_id, data_stream_id), không global. id/Device/stream/sensor_type bất biến, Inactive giữ cặp mã, không chuyển/hard-delete. Sensor_type Air_temperature/Air_humidity/Soil_moisture; unit được chọn/sửa giữa đúng hai enum % và oC cho mọi loại, không ép mapping loại → đơn vị; quyết định cuối thay thế mapping trước đó. Không thêm đơn vị ngoài enum/không tự chuyển ngưỡng hoặc telemetry lịch sử. Ngưỡng cùng null khi chưa cấu hình hoặc đủ hai số min < max; PATCH kiểm tra cặp sau ghép. Telemetry tương lai vẫn lưu Device UUID + stream và unit tại thời điểm đo. API/guide/final workflow/Postman đã hoàn tất trên feat/sensors-management từ Devices 09cb1da, 107 tests. Shared stores, snapshots/version/atomic RAM commit; chưa schema/constraint/migration/seed/ERD riêng. Xem SENSORS_IMPLEMENTATION.md, SENSORS_WORKFLOW_DESIGN.md; Actuators/MQTT riêng đợt sau.
-
-Sensor metadata dự kiến nằm PostgreSQL khi persistence được duyệt; bản hiện tại chỉ RAM.
-
-`data_stream_id` là identifier từ IoT/hardware side.
-
-Không dùng internal `sensor_id` để nhận MQTT telemetry.
+Cập nhật 2026-10-07: sensor_type enum air_temperature/air_humidity/soil_moisture bất biến; unit varchar(16) cấu hình, thay enum %/oC cũ, được sửa nhưng không chuyển ngưỡng hoặc unit dữ liệu đo. Identity Device UUID + stream giữ composite unique kể cả Inactive; metadata data_stream_id là chuỗi, gateway nhận numeric hardware ID rồi chuyển sang chuỗi. Threshold vẫn cùng null hoặc đủ hai min < max. Quyền/approval/version/store giữ như trước, RAM không PostgreSQL persistence. Nguồn mới IOT_CORE_TABLES_SPEC/ERD_DIAGRAM và IOT_METADATA_UPDATE_IMPLEMENTATION.md. Không dùng sensor_id làm telemetry FK; không đoán ý nghĩa302/303.
 
 ### ACTUATORS
 
@@ -466,7 +462,7 @@ Shared
 ```
 Van tưới Watering, van phun Spraying, bơm chung Shared, mỗi thiết bị một bản ghi/capability riêng. Khi có bơm riêng, bơm và van cùng chức năng có thể cùng purpose; purpose không unique. Hai ERD lúc đầu session còn Watering/Spraying; người dùng đã cập nhật XML/JSON thêm Shared trong lúc triển khai, đối chiếu lần cuối khớp code. Module này không sửa/stage file ERD riêng.
 
-Create proposals không reserve capability; approve recheck unique/context/capacity. Một Pending Update/Actuator, version chặn stale proposal; audit snapshot before/after và commit RAM đồng bộ. API/limits/kiểm thử/tái lập trong ACTUATORS_IMPLEMENTATION.md, thiết kế cuối ACTUATORS_WORKFLOW_DESIGN.md, Postman literal JSON 24 requests.
+Create proposals không reserve capability; approve recheck unique/context/capacity. Một Pending Update/Actuator, version chặn stale proposal; audit snapshot before/after và commit RAM đồng bộ. API/limits/kiểm thử/tái lập trong IOT_METADATA_UPDATE_IMPLEMENTATION.md, thiết kế cuối IOT_METADATA_UPDATE_IMPLEMENTATION.md, Postman literal JSON 24 requests.
 
 MQTT/control/bundle recipe/ACTUATOR_TASKS/ACK/timeout chưa triển khai. Việc chọn Shared + purpose chỉ là cơ sở dữ liệu để thiết kế điều khiển tiếp theo; không suy tự động bật/tắt, trình tự bơm–van hoặc xử lý đồng thời/lỗi đã được chốt. Giữ topic/protocol hiện có; cần thảo luận MQTT core trước code.
 

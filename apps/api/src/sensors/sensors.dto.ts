@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsIn, IsNumber, IsString, IsUUID, Matches, Max, MaxLength, Min, MinLength, ValidateIf } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { FarmListDto } from '../farms/farms.dto';
-import { SENSOR_STATUSES, SENSOR_TYPES, SENSOR_UNITS, SensorStatus, SensorType, SensorUnit } from './sensors.types';
+import { SENSOR_STATUSES, SENSOR_TYPES, SensorStatus, SensorType, SensorUnit } from './sensors.types';
 
 export const DATA_STREAM_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 
@@ -12,8 +12,9 @@ export class SensorDetailsDto {
   @IsString() @MinLength(1) @MaxLength(80)
   name!: string;
 
-  @ApiProperty({ enum: SENSOR_UNITS, description: 'Dropdown choices only; changing metadata does not convert values or thresholds' })
-  @IsIn(SENSOR_UNITS)
+  @ApiProperty({ maxLength: 16, description: 'Đơn vị kỳ vọng/configuration, không ghi đè đơn vị phần cứng trong dữ liệu lịch sử' })
+  @Transform(({ value }: { value: unknown }) => typeof value === 'string' ? value.trim() : value)
+  @IsString() @MinLength(1) @MaxLength(16)
   unit!: SensorUnit;
 
   @ApiPropertyOptional({ type: Number, nullable: true, minimum: -99999.99, maximum: 99999.99, description: 'Both thresholds null, or both numeric with min < max' })

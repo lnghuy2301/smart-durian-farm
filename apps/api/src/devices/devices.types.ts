@@ -1,4 +1,4 @@
-export const DEVICE_STATUSES = ['Active', 'Inactive'] as const;
+export const DEVICE_STATUSES = ['Active', 'Inactive', 'Maintenance'] as const;
 export type DeviceStatus = typeof DEVICE_STATUSES[number];
 
 export interface DeviceDetails {
@@ -14,6 +14,7 @@ export interface DeviceCreationDetails extends DeviceDetails {
 export interface TestDevice extends DeviceCreationDetails {
   id: string;
   zone_id: string;
+  last_seen_at: string | null;
 }
 
 // Metadata duyệt/version/audit chỉ trong RAM, không thêm bảng hoặc field vào ERD.

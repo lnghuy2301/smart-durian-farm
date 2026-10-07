@@ -1,9 +1,8 @@
 export const SENSOR_STATUSES = ['Active', 'Inactive'] as const;
-export const SENSOR_TYPES = ['Air_temperature', 'Air_humidity', 'Soil_moisture'] as const;
-export const SENSOR_UNITS = ['%', 'oC'] as const;
+export const SENSOR_TYPES = ['air_temperature', 'air_humidity', 'soil_moisture'] as const;
 export type SensorStatus = typeof SENSOR_STATUSES[number];
 export type SensorType = typeof SENSOR_TYPES[number];
-export type SensorUnit = typeof SENSOR_UNITS[number];
+export type SensorUnit = string;
 
 export interface SensorDetails {
   name: string;

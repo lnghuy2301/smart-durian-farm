@@ -22,11 +22,11 @@ export class CreateDeviceDto extends DeviceDetailsDto {
   @IsUUID('4')
   zone_id!: string;
 
-  @ApiProperty({ example: 'E08CFE41DCAC', maxLength: 50, description: 'Mã ESP32 duy nhất, bất biến; khác UUID nội bộ' })
+  @ApiProperty({ example: 'DEMO_STATION', maxLength: 50, description: 'Mã ESP32 duy nhất, bất biến; khác UUID nội bộ' })
   @IsString() @MinLength(1) @MaxLength(50) @Matches(STATION_ID_PATTERN)
   station_id!: string;
 
-  @ApiPropertyOptional({ enum: DEVICE_STATUSES, default: 'Active', description: 'Vòng đời lắp đặt; không chứng minh MQTT online' })
+  @ApiPropertyOptional({ enum: DEVICE_STATUSES, default: 'Active', description: 'Trạng thái quản trị Active/Inactive/Maintenance; không phải Online/Offline' })
   @ValidateIf((_object, value) => value !== undefined) @IsIn(DEVICE_STATUSES)
   status?: DeviceStatus;
 }
@@ -49,7 +49,7 @@ export class DeviceListDto extends FarmListDto {
 }
 
 export class DeviceStationParamDto {
-  @ApiProperty({ example: 'E08CFE41DCAC' })
+  @ApiProperty({ example: 'DEMO_STATION' })
   @IsString() @MinLength(1) @MaxLength(50) @Matches(STATION_ID_PATTERN)
   stationId!: string;
 }

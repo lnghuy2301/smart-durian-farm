@@ -73,6 +73,17 @@ export class DevicesService {
     return structuredClone(device);
   }
 
+  // Chỉ receiver nội bộ gọi với thời điểm server nhận, không nhận last_seen_at từ PATCH của client.
+  // Presence không đổi version metadata: telemetry mới không làm đề xuất Admin bị stale.
+  recordSeen(id: string, receivedAt: string): void {
+    const device = this.getRecord(id);
+    const time = Date.parse(receivedAt);
+    if (!Number.isFinite(time)) { throw new BadRequestException('Thời điểm nhận MQTT không hợp lệ'); }
+    if (!device.last_seen_at || time > Date.parse(device.last_seen_at)) {
+      this.devices.set(id, { ...device, last_seen_at: new Date(time).toISOString() });
+    }
+  }
+
   history(actorId: string, id: string, query: FarmPageDto) {
     this.get(actorId, id);
     return this.page(this.changes.filter((change) => change.device_id === id), query);
@@ -162,7 +173,7 @@ export class DevicesService {
     if (!before) { this.assertStationAvailable(details.station_id); }
     const id = before?.id ?? this.newDeviceId();
     const device: TestDevice = { id, zone_id: zoneId, station_id: before?.station_id ?? details.station_id,
-      installed_at: details.installed_at, cost: details.cost, status: details.status };
+      installed_at: details.installed_at, cost: details.cost, status: details.status, last_seen_at: before?.last_seen_at ?? null };
     const version = (this.versions.get(id) ?? 0) + 1;
     const history: DeviceMetadataHistory = { id: randomUUID(), device_id: id, action: before ? 'Update' : 'Create', actor_id: actorId,
       proposed_by: request?.proposed_by ?? null, request_id: request?.id ?? null, version,

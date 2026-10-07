@@ -2,7 +2,7 @@
   "info": {
     "name": "Smart Durian Farm - Devices - Nhap JSON",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "24 request thủ công. Chuẩn bị Farm Accepted/Zone bằng Farms/Zones; cây cùng Zone bằng Trees. Chỉ Active/Inactive, không MQTT hoặc auth_token/TREES.device_id. Thay UUID mẫu/JWT_OWNER/JWT_ADMIN/JWT_WORKER/JWT_MANAGER/mã ESP32 bằng tay. Không scripts, variables/environment. Số/mật khẩu ví dụ là fixture test, không phải secret thật. Restart mất dữ liệu RAM."
+    "description": "24 request thủ công. Chuẩn bị Farm Accepted/Zone bằng Farms/Zones; cây cùng Zone bằng Trees. Chỉ Active/Inactive, không MQTT hoặc auth_token/TREES.device_id. Thay UUID mẫu/JWT_OWNER/JWT_ADMIN/JWT_WORKER/JWT_MANAGER/mã ESP32 bằng tay. Không scripts, variables/environment. Số/mật khẩu ví dụ là fixture test, không phải secret thật. Restart mất dữ liệu RAM. Cập nhật 2026-10-07 theo ERD_DIAGRAM/IOT_CORE_TABLES_SPEC; các mã chỉ ví dụ cấu hình, không hằng số hệ thống."
   },
   "item": [
     {
@@ -69,7 +69,7 @@
         "description": "Farm Accepted và Zone đã tạo. Thay zone_id thật, station_id đúng mã ESP32. Copy id UUID Device; khác station_id. Mặc định Active.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"E08CFE41DCAC\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"DEMO_STATION\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -128,7 +128,7 @@
             "value": "Bearer JWT_OWNER"
           }
         ],
-        "url": "http://localhost:3000/api/devices/by-station/E08CFE41DCAC",
+        "url": "http://localhost:3000/api/devices/by-station/DEMO_STATION",
         "description": "Thay mã ESP32 chính xác hoa/thường; route vẫn cần JWT và scope."
       }
     },
@@ -511,7 +511,7 @@
         "description": "Thay Zone thật, giữ station_id đã đăng ký ở 03. Kỳ vọng 409 kể cả Device Inactive; không ghi thêm Device/audit.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"E08CFE41DCAC\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"DEMO_STATION\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
           "options": {
             "raw": {
               "language": "json"
