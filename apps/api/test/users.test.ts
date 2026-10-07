@@ -75,6 +75,72 @@ test('HTTP Farmer registration validates roles, uniqueness and fields; email is 
   } finally { await app.close(); }
 });
 
+test('Registration commits and consumes email proof atomically when the clock crosses its deadline', async () => {
+  const { app, proof } = await setup();
+  const now = Date.now;
+  try {
+    const email = app.get(EmailVerificationService);
+    const users = app.get(UsersService);
+    const store = app.get(MockUserStore);
+    const phone = '0900000002', gmail = 'boundary@example.net';
+    const token = await proof(phone, gmail);
+    const challenge = email.requireProof(phone, gmail, token);
+    const before = now();
+    challenge.expiresAt = before + 1;
+    let clock = before, checks = 0;
+    const original = email.requireProof.bind(email);
+    email.requireProof = (...args) => {
+      const result = original(...args);
+      // A real millisecond can pass during synchronous store.add. Simulate that boundary deterministically.
+      if (++checks === 2) { clock = challenge.expiresAt; }
+      return result;
+    };
+    Date.now = () => clock;
+    const registered = await users.register({ phone_number: phone, gmail, user_name: 'Boundary', role: 'Manager',
+      password, email_verification_token: token });
+    assert.equal(registered.user.status, 'Pending');
+    assert.equal(registered.user.gmail_verify, true);
+    assert.equal(store.findByPhone(phone)?.id, registered.user.id);
+    assert.equal(challenge.state, 'consumed');
+    assert.throws(() => original(phone, gmail, token));
+  } finally { Date.now = now; await app.close(); }
+});
+
+test('Proof expiry before final registration check or failed account creation cannot leave a partial registration', async () => {
+  const { app, proof } = await setup();
+  const now = Date.now;
+  try {
+    const email = app.get(EmailVerificationService);
+    const users = app.get(UsersService);
+    const store = app.get(MockUserStore);
+    const phone = '0900000002', gmail = 'expired@example.net';
+    const token = await proof(phone, gmail);
+    const challenge = email.requireProof(phone, gmail, token);
+    const before = now();
+    challenge.expiresAt = before + 1;
+    let clock = before, checks = 0;
+    const original = email.requireProof.bind(email);
+    email.requireProof = (...args) => {
+      if (++checks === 2) { clock = challenge.expiresAt; }
+      return original(...args);
+    };
+    Date.now = () => clock;
+    await assert.rejects(users.register({ phone_number: phone, gmail, user_name: 'Expired', role: 'Manager',
+      password, email_verification_token: token }), /Xác minh email/);
+    assert.equal(store.findByPhone(phone), undefined);
+    assert.equal(challenge.state, 'verified');
+    Date.now = now;
+    email.requireProof = original;
+    const otherPhone = '0900000003', otherEmail = 'conflict@example.net';
+    const otherToken = await proof(otherPhone, otherEmail);
+    assert.throws(() => email.consumeForRegistration(otherPhone, otherEmail, otherToken, () => {
+      throw new Error('Account creation rejected');
+    }), /Account creation rejected/);
+    assert.equal(email.requireProof(otherPhone, otherEmail, otherToken).state, 'verified');
+    assert.equal(store.findByPhone(otherPhone), undefined);
+  } finally { Date.now = now; await app.close(); }
+});
+
 test('Manager real-email contract, Pending access, Admin approval with HTX and rejection', async () => {
   const { app, sender, request, proof } = await setup();
   try {

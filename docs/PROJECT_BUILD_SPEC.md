@@ -1,5 +1,7 @@
 # SMART FARM DURIAN --- PROJECT BUILD SPECIFICATION
 
+Rà soát 2026-10-07: 13 bảng đã có nghiệp vụ RAM, 5 collections chưa triển khai; QR là tính năng không có bảng. 136/136 tests + lint/typecheck/build sau sửa registration proof boundary. Thứ tự và câu hỏi cần chốt theo [PROJECT_REVIEW_20261007.md](PROJECT_REVIEW_20261007.md); telemetry/task/control dưới đây chưa phải quyết định đã duyệt.
+
 MQTT communication hoàn tất 2026-10-07 trên **feat/mqtt-communication**, base metadata **939c350** (feat/iot-core-metadata-update, 119 tests). Kết nối MQTT.js/reconnect/SUBACK/shutdown, parser station-topic, shared Device/Sensor mapping, presence và diagnostics API chỉ đọc đã có. **134/134 tests**, gồm 14 fake/unit/HTTP +1 MQTT.js broker TCP localhost; lint/typecheck/build đạt. ACK ngắn không xác nhận task/relay; publisher/builder chỉ adapter nội bộ, không HTTP control/automation. Diagnostic FIFO200 RAM, chưa IOT_TELEMETRIES/ACTUATOR_TASKS/persistence. .env.example thêm MQTT keys mặc định disabled; .env thật và file riêng giữ nguyên. Đọc [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md), Postman MQTT 12 request không scripts/env. Hai nhánh mới chỉ local, chưa push/merge. Các ghi chú module cũ phía dưới là lịch sử, enum/next-step hiện tại theo hai guide IoT mới.
 
 Các phần IoT/control/collections thiết kế dự kiến bên dưới chưa được chốt lại theo hardware mới; contract communication hiện hành là topic publish/station/{stationId}, không observation/sensor, ACK không taskId, không suy ra Executed. Không triển khai các domain dự kiến đó chỉ từ mô tả cũ.
@@ -431,167 +433,58 @@ Mục đích:
 
 ## 11. IoT relational metadata
 
+Trạng thái triển khai hiện hành 2026-10-07 theo [IOT_METADATA_UPDATE_IMPLEMENTATION.md](IOT_METADATA_UPDATE_IMPLEMENTATION.md). Các guide Devices/Sensors/Actuators cũ đã được người dùng xóa; không phục hồi. Store dùng RAM, chưa tạo business schema/migrations/seed.
+
 ### DEVICES
 
-Thiết kế cuối triển khai 2026-10-06: chủ Farm tạo/sửa metadata trực tiếp, Admin đề xuất cần chủ duyệt; Manager HTX/Farmer có phân công hiệu lực chỉ đọc trong phạm vi. Chỉ Active/Inactive (đã lắp/đang dùng hoặc rút điện/tháo chưa kết nối lại), không trạng thái MQTT. UUID id là PK nội bộ; station_id là mã ESP32 bắt buộc/duy nhất/bất biến, khác UUID, không phải secret. Không chuyển Zone/hard-delete hoặc auth_token. Giữ subscribe/station/{station_id}, publish/station/{station_id}; lookup mã từ topic -> Device -> UUID device_id cho tham chiếu nội bộ. Người dùng đã rút yêu cầu TREES.device_id: tất cả cây cùng Zone chịu ảnh hưởng, không gắn cây riêng/hạn mức cố định; GET /devices/:id/trees đọc store Trees hiện tại theo Zone. MQTT/presence/control làm ở module sau metadata/Sensors/Actuators với kiểm thử hardware riêng. ERD riêng còn enum Active/Offline/Maintenance khi kiểm tra, cần đồng bộ theo quyết định này trước persistence; chưa sửa file riêng hoặc tạo migration. Xem DEVICES_IMPLEMENTATION.md và thiết kế cuối DEVICES_WORKFLOW_DESIGN.md; các phương án cũ không áp dụng.
-
-Một Device thuộc đúng một Zone.
-
-Một Zone có thể có nhiều Device.
-
-`station_id` là identifier dùng trong MQTT topic.
-
-Không nhầm:
-
-``` text
-DEVICES.id       = internal UUID
-DEVICES.station_id = third-party/hardware station identifier
-```
+- DEVICES.id là UUID nội bộ; station_id là mã ESP32 UNIQUE NOT NULL, bất biến, không phải secret/auth token.
+- Device thuộc một Zone, một Zone có thể có nhiều Device; không chuyển Zone. Cây chịu ảnh hưởng qua Zone, không có TREES.device_id/hạn mức cố định.
+- Chỉ đăng ký khi đã lắp: installed_at và cost bắt buộc NOT NULL theo quyết định trực tiếp; không đăng ký trước lắp.
+- Status metadata Active/Inactive/Maintenance, khác connectivity MQTT. last_seen_at nullable chỉ receiver cập nhật, không tăng version/audit metadata mỗi message.
+- Chủ Farm tạo/sửa trực tiếp; Admin đề xuất cần chủ duyệt; Manager HTX/Farmer assignment Accepted hiệu lực chỉ đọc đúng scope. Dùng chung module/store Farm/Zone/Assignment.
 
 ### SENSORS
 
-Cập nhật 2026-10-07: sensor_type enum air_temperature/air_humidity/soil_moisture bất biến; unit varchar(16) cấu hình, thay enum %/oC cũ, được sửa nhưng không chuyển ngưỡng hoặc unit dữ liệu đo. Identity Device UUID + stream giữ composite unique kể cả Inactive; metadata data_stream_id là chuỗi, gateway nhận numeric hardware ID rồi chuyển sang chuỗi. Threshold vẫn cùng null hoặc đủ hai min < max. Quyền/approval/version/store giữ như trước, RAM không PostgreSQL persistence. Nguồn mới IOT_CORE_TABLES_SPEC/ERD_DIAGRAM và IOT_METADATA_UPDATE_IMPLEMENTATION.md. Không dùng sensor_id làm telemetry FK; không đoán ý nghĩa302/303.
+- sensor_type air_temperature/air_humidity/soil_moisture bất biến.
+- Composite unique (device_id UUID, data_stream_id), kể cả Inactive; id/Device/stream không đổi. Numeric hardware stream chuyển thành chuỗi metadata, không dùng sensor_id làm telemetry FK.
+- Unit cấu hình varchar(16), được sửa, thay enum %/oC cũ; không tự convert ngưỡng/đơn vị dữ liệu đo. Threshold cùng null hoặc đủ hai min < max.
+- Quyền, proposals, snapshot/version và shared stores như Devices. Không suy ra nghĩa stream302/303.
+- Telemetry unit trong ERD hiện varchar(8): cần chốt thống nhất trước collection, không cắt chuỗi ngầm.
 
 ### ACTUATORS
 
-Triển khai metadata 2026-10-06 trên feat/actuators-management từ Sensors c9d0940, 116 tests. Chủ Farmer tạo/sửa name/status trực tiếp; Admin đề xuất cần chủ duyệt; Manager HTX/Farmer phân công Accepted hiệu lực chỉ đọc đúng scope Device → Zone → Farm. Shared Auth/Farms/Zones/Devices dynamic modules và RAM stores, chưa PostgreSQL persistence/schema/migration/seed.
-
-ACTUATORS.id là UUID backend sinh, device_id là DEVICES.id UUID, capability_id là taskingCapabilityId phần cứng (JSON number nguyên dương trong miền safe integer 1..9007199254740991). Ba định danh khác nhau. Unique theo (device_id, capability_id), không unique global capability; Inactive giữ cặp. id/device_id/capability_id/purpose bất biến, không hard-delete/chuyển Device. Name trim 1..80 ký tự; status Active/Inactive là khả dụng metadata, không On/Off/online. Chỉ name/status được sửa; không thêm actuator_type/state/auth_token.
-
-Người dùng xác nhận **một bơm chung có capability riêng cần bật/tắt bằng lệnh riêng, hai van tưới/phun**, và chấp nhận mở rộng purpose:
-```text
-Watering
-Spraying
-Shared
-```
-Van tưới Watering, van phun Spraying, bơm chung Shared, mỗi thiết bị một bản ghi/capability riêng. Khi có bơm riêng, bơm và van cùng chức năng có thể cùng purpose; purpose không unique. Hai ERD lúc đầu session còn Watering/Spraying; người dùng đã cập nhật XML/JSON thêm Shared trong lúc triển khai, đối chiếu lần cuối khớp code. Module này không sửa/stage file ERD riêng.
-
-Create proposals không reserve capability; approve recheck unique/context/capacity. Một Pending Update/Actuator, version chặn stale proposal; audit snapshot before/after và commit RAM đồng bộ. API/limits/kiểm thử/tái lập trong IOT_METADATA_UPDATE_IMPLEMENTATION.md, thiết kế cuối IOT_METADATA_UPDATE_IMPLEMENTATION.md, Postman literal JSON 24 requests.
-
-MQTT/control/bundle recipe/ACTUATOR_TASKS/ACK/timeout chưa triển khai. Việc chọn Shared + purpose chỉ là cơ sở dữ liệu để thiết kế điều khiển tiếp theo; không suy tự động bật/tắt, trình tự bơm–van hoặc xử lý đồng thời/lỗi đã được chốt. Giữ topic/protocol hiện có; cần thảo luận MQTT core trước code.
+- ACTUATORS.id UUID, device_id UUID tham chiếu DEVICES.id; capability_id là numeric taskingCapabilityId riêng của phần cứng.
+- Unique (device_id, capability_id), kể cả Inactive. id/Device/capability/purpose bất biến, không chuyển Device/hard delete.
+- Purpose lowercase watering/spraying/shared. Bơm chung có capability riêng, mỗi van có capability riêng và cần lệnh riêng; không đoán mapping IDs. Khi dùng bơm riêng, bơm và van có thể cùng purpose; purpose không unique.
+- Chỉ sửa name/status; status Active/Inactive là metadata khả dụng, không phải On/Off/online.
+- Chủ tạo/sửa trực tiếp, Admin proposal cần chủ duyệt, Manager/Farmer đọc đúng scope. Approval recheck uniqueness/context/version/capacity.
+- Metadata không tự điều khiển bơm/van hoặc chốt recipe/fail-safe/đồng thời tưới–phun.
 
 ------------------------------------------------------------------------
 
 ## 12. MQTT protocol
 
-Đây là behavior đã được kiểm chứng bằng prototype giao tiếp thành công
-với hardware.
+Contract hiện hành theo tài liệu người dùng MQTT_HARDWARE_PROTOCOL_VERIFIED.md và [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md). Không tự thay firmware, topics hoặc thêm auth_token.
 
-### Publish control command
+### Nhận và ánh xạ
 
-Topic:
+Backend subscribe publish/station/+; firmware trả sensorRecords hoặc short ACK trên publish/station/{stationId}. Topic quyết định station, rồi lookup DEVICES.station_id để lấy Device UUID; tham chiếu domain dùng device_id, không dùng station_id làm FK. Không subscribe observation/sensor hoặc đoán ý nghĩa stream302/303.
 
-``` text
-subscribe/station/{stationId}
-```
+Parser kiểm tra topic/payload/identity và metadata đăng ký, từ chối retained packet, unknown station và dữ liệu sai định dạng. Telemetry giữ nguyên raw unit; mismatch là diagnostics, không đổi unit lịch sử. Device/Sensor phải Active để nhận reading; không suy status metadata từ presence.
 
-Publish JSON payload với:
+Receiver cập nhật last_seen_at theo thời gian server; connectivity Unknown/Online/Offline tính theo tuổi message hợp lệ, mặc định stale30 phút, khác trạng thái kết nối broker. Diagnostics FIFO200 RAM và API chỉ đọc đã có; chưa có telemetry history/MongoDB collection.
 
-``` text
-targets[]
-taskingParameters
-errorMessage
-```
+### Gửi
 
-Mỗi target chứa:
+Adapter nội bộ gửi subscribe/station/{stationId}; builder giữ cấu trúc targets[].taskId/taskingCapabilityId và taskingParameters theo protocol. Lệnh numeric 0=OFF, 1=ON; bơm và van có capability/lệnh riêng. Publisher hiện QoS0, non-retained, không xếp offline queue để replay điều khiển cũ.
 
-``` text
-taskId
-taskingCapabilityId
-```
+TransportAccepted chỉ là kết quả chấp nhận gửi của adapter, không phải broker/hardware execution confirmation. Chưa có HTTP control, task workflow, automation hoặc phối hợp an toàn bơm–van.
 
-MQTT publish dùng QoS 1.
+### ACK và feedback
 
-**Broker publish callback thành công không có nghĩa hardware đã thực thi
-command.**
+Short ACK không có taskId; không correlate/xác nhận task hoặc relay, ngay cả khi chỉ một task pending hoặc gửi tuần tự. Full ACK có taskId và phản hồi physical-button/state chưa được tài liệu protocol mới kiểm chứng, không coi là capability hiện có.
 
-Hardware confirmation là bước riêng.
-
-### Station response
-
-Topic:
-
-``` text
-publish/station/{stationId}
-```
-
-Hardware thực tế có thể trả về hai dạng.
-
-#### Short ACK
-
-Ví dụ:
-
-``` json
-{
-  "status": "ACK"
-}
-```
-
-Prototype hiện tại từng xác nhận latest pending task của station khi
-nhận short ACK.
-
-Điều này có nguy cơ ambiguity nếu nhiều command pending cùng lúc.
-
-Vì vậy implementation ban đầu phải tránh gửi nhiều command đồng thời tới
-cùng một station nếu ACK không chứa taskId, hoặc phải serialize commands
-theo station.
-
-Không giả định short ACK có task correlation mà protocol không cung cấp.
-
-#### Full response
-
-Có thể chứa:
-
-``` text
-targets[]
-taskingParameters
-errorMessage
-```
-
-`targets[].taskId` dùng để correlate command/task.
-
-### Physical hardware button
-
-Hardware có thể gửi state từ nút bấm vật lý mà không có pending task
-tương ứng.
-
-Khi nhận full station payload nhưng không match pending task và không có
-error:
-
--   coi đây là hardware state synchronization;
--   cập nhật state cần thiết;
--   không tạo fake pending task.
-
-### Sensor telemetry
-
-Sensor message có:
-
-``` text
-sensorRecords[]
-resultTime
-```
-
-`resultTime` có thể thiếu. Khi thiếu, backend dùng thời điểm server nhận
-message làm fallback.
-
-Topic có thể là:
-
-``` text
-observation/sensor/{dataStreamId}
-```
-
-Ngoài ra `publish/station/{stationId}` trong hardware thực tế cũng có
-thể mang sensor telemetry.
-
-Do đó router phải kiểm tra **payload structure**, không chỉ topic.
-
-Nếu payload có:
-
-``` text
-sensorRecords
-```
-
-→ route vào sensor telemetry handler.
+ACTUATOR_TASKS status/timeout/confirmation và fail-safe cần thảo luận trước triển khai. Phần thiết kế collection/control phía dưới là dự kiến, không được dùng để vượt hạn chế feedback phần cứng hiện tại.
 
 ------------------------------------------------------------------------
 
@@ -1012,12 +905,12 @@ public trace endpoint does not expose secrets
 
 ``` text
 sensorRecords routed correctly
-missing resultTime gets fallback
+measurement timestamp policy must be agreed before telemetry storage
 publish/station sensor payload routed as telemetry
-short ACK handled safely
-full ACK correlated using taskId
+short ACK never confirms task or relay without correlation
+retained/unknown station/identity mismatch packets rejected
 broker publish != hardware confirmed
-physical-button payload does not become fake command
+future full feedback/physical-button behavior requires verified protocol and separate tests
 ```
 
 ------------------------------------------------------------------------
