@@ -48,7 +48,7 @@ Tham khảo API thư viện chính thức: [MQTT.js](https://github.com/mqttjs/M
 
 ## Cấu hình local, không ghi đè .env
 
-.env.example đã thêm khóa, .env thật **giữ nguyên**. Operator tự nhập local:
+.env.example đã thêm khóa. Theo yêu cầu bổ sung 2026-10-07, .env local đã được append các khóa MQTT còn thiếu, giữ nguyên nội dung/giá trị cũ, mặc định disabled. DEMO_DEVICE_STATION_ID chỉ ghi nhớ mã ESP32 để copy vào POST /api/devices; không auto-register hoặc dùng làm global station/filter/auth token. Operator điền broker và mã demo thật; xem [cấu hình trình diễn và UUID/phân quyền](MQTT_DEMO_AND_API_IDENTIFIERS.md). Không commit .env.
 
 | Khóa | Giá trị / điều kiện |
 |---|---|
@@ -60,6 +60,7 @@ Tham khảo API thư viện chính thức: [MQTT.js](https://github.com/mqttjs/M
 | MQTT_OFFLINE_AFTER_MS | mặc định1800000, 1000..86400000; threshold UI cấu hình, không task timeout |
 | MQTT_RECONNECT_MS | mặc định3000, 1000..60000 |
 | MQTT_CONNECT_TIMEOUT_MS | mặc định10000, 1000..60000; connect/SUBACK/publish/shutdown transport timeout |
+| DEMO_DEVICE_STATION_ID | tham chiếu demo để operator copy vào body tạo Device; không đọc bởi MQTT router/config |
 
 Vì module nghiệp vụ hiện chỉ chạy trong mock mode, bật MQTT cần AUTH_MODE=mock và NODE_ENV development/test; production auth/persistence chưa có. Disabled không cần broker/credentials, không tạo network client. Env không hợp lệ fail startup bằng tên khóa, không in giá trị nhạy cảm. Không copy .env.example đè lên .env đã có.
 

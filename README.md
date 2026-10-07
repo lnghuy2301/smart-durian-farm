@@ -51,7 +51,7 @@ Business-module Postman collections use literal URLs/JSON: paste JWT/UUID/OTP ma
 
 ## MQTT communication
 
-MQTT defaults to disabled; add broker settings from .env.example manually to your existing .env before enabling it. Backend subscribes to publish/station/+ and resolves each station through Devices metadata. Telemetry retains hardware units, and short ACKs do not confirm any task or relay state. Global diagnostics require Admin; Device diagnostics use current Farm/HTX/assignment read scope.
+MQTT defaults to disabled; fill broker settings in your local .env before enabling it. Missing MQTT keys were appended locally at the user's request on 2026-10-07, preserving existing values. DEMO_DEVICE_STATION_ID is an operator reference to copy into Device registration, not a routing/authentication setting. See the [demo configuration and UUID authorization guide](docs/MQTT_DEMO_AND_API_IDENTIFIERS.md). Backend subscribes to publish/station/+ and resolves each station through Devices metadata. Telemetry retains hardware units, and short ACKs do not confirm any task or relay state. Global diagnostics require Admin; Device diagnostics use current Farm/HTX/assignment read scope.
 
 Import [MQTT manual Postman collection](docs/postman/MQTT-Communication-Local-Test.postman_collection.json) (12 requests); see the [MQTT guide](docs/MQTT_COMMUNICATION_IMPLEMENTATION.md) for setup, limits and packet examples. The outgoing builder/publisher is an internal adapter; no HTTP control, automation or MongoDB telemetry/tasks are implemented.
 
