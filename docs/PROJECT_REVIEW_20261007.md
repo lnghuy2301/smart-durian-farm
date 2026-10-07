@@ -1,5 +1,7 @@
 # Rà soát toàn dự án — 2026-10-07
 
+Lượt rà soát tiếp sau trao đổi ACTUATOR_TASKS và yêu cầu tìm hướng giữ tiến độ: [PROJECT_READINESS_REVIEW_20261007.md](PROJECT_READINESS_REVIEW_20261007.md). Baseline f20f6c1 chạy lại147/147 tests + lint/typecheck/build; nhánh docs/project-readiness-20261007. Có [sơ đồ hiện trạng](CURRENT_SYSTEM_DIAGRAMS.md) và [kế hoạch web/persistence](NEXT_DELIVERY_PLAN.md); chưa code frontend/migrations/control. Đọc bản mới để lấy findings và ưu tiên hiện hành; phần thứ tự/quyết định chờ task bên dưới ghi lượt review trước trao đổi timeout10 giây.
+
 Cập nhật sau mốc rà soát: **IOT_TELEMETRIES đã triển khai** trên feat/iot-telemetries,147/147 tests + lint/typecheck/build đạt. Latest/history RAM FIFO10.000, Farmer hết assignment không đọc lịch sử IoT, measured_at packet arrival server/received_at store write. Quyết định và tái lập theo [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md); các số136 và phát hiện dưới đây ghi lượt review trước module. Còn4 collections + QR, persistence vẫn chưa triển khai.
 
 Tài liệu này là mốc hiện tại cho session tiếp theo. Các kết quả theo nhánh cũ trong handoff/notes là lịch sử; không coi module đã hoàn tất là việc cần viết lại.
