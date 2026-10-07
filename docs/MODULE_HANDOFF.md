@@ -1,5 +1,7 @@
 # Bàn giao các module — đọc đầu session
 
+MQTT communication hoàn tất 2026-10-07 trên **feat/mqtt-communication**, base metadata **939c350** (feat/iot-core-metadata-update, 119 tests). Kết nối MQTT.js/reconnect/SUBACK/shutdown, parser station-topic, shared Device/Sensor mapping, presence và diagnostics API chỉ đọc đã có. **134/134 tests**, gồm 14 fake/unit/HTTP +1 MQTT.js broker TCP localhost; lint/typecheck/build đạt. ACK ngắn không xác nhận task/relay; publisher/builder chỉ adapter nội bộ, không HTTP control/automation. Diagnostic FIFO200 RAM, chưa IOT_TELEMETRIES/ACTUATOR_TASKS/persistence. .env.example thêm MQTT keys mặc định disabled; .env thật và file riêng giữ nguyên. Đọc [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md), Postman MQTT 12 request không scripts/env. Hai nhánh mới chỉ local, chưa push/merge. Các ghi chú module cũ phía dưới là lịch sử, enum/next-step hiện tại theo hai guide IoT mới.
+
 ## Trạng thái và nguyên tắc
 
 IoT metadata update 2026-10-07: feat/iot-core-metadata-update từ Actuators95c15fc đồng bộ ba tài liệu mới ERD_DIAGRAM/IOT_CORE_TABLES_SPEC/MQTT_HARDWARE_PROTOCOL_VERIFIED. Device Active/Inactive/Maintenance + last_seen_at nullable receiver-only, không version/audit mỗi message. Người dùng chốt chỉ đăng ký khi đã lắp: installed_at/cost bắt buộc NOT NULL, không đăng ký trước lắp. Sensor type và Actuator purpose chữ thường; Sensor.unit varchar(16), thay enum hai unit cũ. Identity/unique/ownership/approval/shared stores giữ nguyên, RAM không persistence. Đọc IOT_METADATA_UPDATE_IMPLEMENTATION.md; các guide Devices/Sensors/Actuators cũ người dùng đã xóa, không phục hồi. Protocol mới supersede MQTT cũ: topic publish/station/{id}, numeric301/302/303; ACK không taskId. Nhánh MQTT kế thừa metadata, chỉ communication/parser/routing, chưa IOT_TELEMETRIES/ACTUATOR_TASKS/control workflow. Hai nhánh chỉ local, chưa push/merge. Ba tài liệu nguồn mới và deletions/user Postman/.env ngoài commit.
@@ -56,12 +58,14 @@ Tất cả nghiệp vụ hiện lưu trong bộ nhớ. Chưa tạo bảng/seed/c
 | Trees / metadata và duyệt Admin | feat/trees-management ← HTX 2752454 | TREES_IMPLEMENTATION.md | Trees-Local-Test |
 | Tree Harvests / xác nhận và duyệt sửa | feat/tree-harvests-management ← Trees d39c5ce | TREE_HARVESTS_IMPLEMENTATION.md | Tree-Harvests-Local-Test |
 | Devices / metadata trạm, duyệt Admin | feat/devices-management ← main c71820d | IOT_METADATA_UPDATE_IMPLEMENTATION.md | Devices-Local-Test |
-| Sensors / stream, enum unit, thresholds, duyệt Admin | feat/sensors-management ← Devices 09cb1da | IOT_METADATA_UPDATE_IMPLEMENTATION.md | Sensors-Local-Test |
-| Actuators / bơm Shared, purpose bất biến, duyệt Admin | feat/actuators-management ← Sensors c9d0940 | IOT_METADATA_UPDATE_IMPLEMENTATION.md | Actuators-Local-Test |
+| Sensors / stream, configurable unit, thresholds, duyệt Admin | feat/sensors-management ← Devices 09cb1da | IOT_METADATA_UPDATE_IMPLEMENTATION.md | Sensors-Local-Test |
+| Actuators / bơm shared, purpose bất biến, duyệt Admin | feat/actuators-management ← Sensors c9d0940 | IOT_METADATA_UPDATE_IMPLEMENTATION.md | Actuators-Local-Test |
+| IoT metadata update | feat/iot-core-metadata-update 939c350 ← Actuators95c15fc | IOT_METADATA_UPDATE_IMPLEMENTATION.md | Devices/Sensors/Actuators đã cập nhật |
+| MQTT communication / diagnostics | feat/mqtt-communication ← metadata939c350 | MQTT_COMMUNICATION_IMPLEMENTATION.md | MQTT-Communication-Local-Test |
 
 Vật tư/Tiêu chuẩn có Admin tạo/sửa/Inactive và user Active đọc/search/pagination. Bridge có Admin gắn/bỏ gắn, user Active đọc theo tiêu chuẩn; kiểm tra FK/cặp duy nhất và dùng đúng cùng store catalogs. Không kho/tồn hàng. Tiêu chuẩn gắn Zone sau, không gắn Farm. Hai catalog không hard-delete, không tự tạo UNIQUE tên/code ngoài ERD. Farm dùng đúng cùng Auth/USERS/HTX store; membership không sửa trực tiếp qua update, không áp dụng dữ liệu khi còn Pending.
 
-Checkout feat/iot-core-metadata-update cho bản metadata mới (119 tests). MQTT sẽ kế thừa commit này; giữ các nhánh module gốc để review lịch sử. Guide metadata hợp nhất thay các guide IoT cũ người dùng đã xóa. Không checkout/rebase/stage-all làm mất sửa riêng, không push/merge.
+Checkout **feat/mqtt-communication** để có metadata mới + communication (134 tests); nhánh metadata riêng dừng ở939c350 (119 tests). Giữ module branches gốc để review lịch sử. Guide hợp nhất metadata và guide MQTT thay hướng dẫn IoT cũ đã xóa; không phục hồi/stage file riêng hoặc .env; chưa push/merge.
 
 ## Tái lập ở session khác
 

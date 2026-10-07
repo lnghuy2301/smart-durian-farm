@@ -2,6 +2,7 @@ import { normalizeVietnamPhone, SpeedSmsConfig } from '../auth/sms/speedsms.gate
 import { normalizeTwilioPhone, TwilioVerifyConfig } from '../auth/sms/twilio-verify.gateway';
 import { isEmail } from 'class-validator';
 import { SmtpConfig } from '../users/email/email.sender';
+import { MqttConfig, readMqttConfig } from '../mqtt/mqtt.config';
 
 export interface MockAuthConfig {
   mode: 'mock';
@@ -19,6 +20,7 @@ export interface Environment {
   corsOrigins: string[];
   database: { postgresUrl: string; mongoUri: string; timeoutMs: number };
   auth?: MockAuthConfig;
+  mqtt?: MqttConfig;
 }
 
 export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
@@ -143,5 +145,7 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
     }
     auth = { mode: 'mock', phoneNumber, password, jwtSecret, sms, admin, email, cooperativeSms };
   }
-  return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth };
+  const mqtt = readMqttConfig(env);
+  if (mqtt.enabled && !auth) { throw new Error('MQTT_ENABLED requires the current application metadata modules (AUTH_MODE=mock)'); }
+  return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth, mqtt };
 }

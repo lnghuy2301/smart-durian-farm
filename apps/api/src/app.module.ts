@@ -15,6 +15,8 @@ import { TreeHarvestsModule } from './tree-harvests/tree-harvests.module';
 import { DevicesModule } from './devices/devices.module';
 import { SensorsModule } from './sensors/sensors.module';
 import { ActuatorsModule } from './actuators/actuators.module';
+import { MqttModule } from './mqtt/mqtt.module';
+import { readMqttConfig } from './mqtt/mqtt.config';
 
 @Module({})
 export class AppModule {
@@ -31,6 +33,8 @@ export class AppModule {
       const zonesModule = ZonesModule.forMock(authModule, farmsModule, standardsModule);
       const treesModule = TreesModule.forMock(authModule, farmsModule, zonesModule);
       const devicesModule = DevicesModule.forMock(authModule, farmsModule, zonesModule, treesModule);
+      const sensorsModule = SensorsModule.forMock(authModule, farmsModule, zonesModule, devicesModule);
+      const actuatorsModule = ActuatorsModule.forMock(authModule, farmsModule, zonesModule, devicesModule);
       imports.push(
         usersModule,
         materialsModule,
@@ -41,8 +45,9 @@ export class AppModule {
         zonesModule,
         treesModule,
         devicesModule,
-        SensorsModule.forMock(authModule, farmsModule, zonesModule, devicesModule),
-        ActuatorsModule.forMock(authModule, farmsModule, zonesModule, devicesModule),
+        sensorsModule,
+        actuatorsModule,
+        MqttModule.register(config.mqtt ?? readMqttConfig({}), authModule, devicesModule, sensorsModule),
         TreeHarvestsModule.forMock(authModule, usersModule, farmsModule, zonesModule, treesModule),
         AssignmentsModule.forMock(authModule, farmsModule, zonesModule),
       );

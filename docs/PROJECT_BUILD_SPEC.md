@@ -1,5 +1,9 @@
 # SMART FARM DURIAN --- PROJECT BUILD SPECIFICATION
 
+MQTT communication hoàn tất 2026-10-07 trên **feat/mqtt-communication**, base metadata **939c350** (feat/iot-core-metadata-update, 119 tests). Kết nối MQTT.js/reconnect/SUBACK/shutdown, parser station-topic, shared Device/Sensor mapping, presence và diagnostics API chỉ đọc đã có. **134/134 tests**, gồm 14 fake/unit/HTTP +1 MQTT.js broker TCP localhost; lint/typecheck/build đạt. ACK ngắn không xác nhận task/relay; publisher/builder chỉ adapter nội bộ, không HTTP control/automation. Diagnostic FIFO200 RAM, chưa IOT_TELEMETRIES/ACTUATOR_TASKS/persistence. .env.example thêm MQTT keys mặc định disabled; .env thật và file riêng giữ nguyên. Đọc [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md), Postman MQTT 12 request không scripts/env. Hai nhánh mới chỉ local, chưa push/merge. Các ghi chú module cũ phía dưới là lịch sử, enum/next-step hiện tại theo hai guide IoT mới.
+
+Các phần IoT/control/collections thiết kế dự kiến bên dưới chưa được chốt lại theo hardware mới; contract communication hiện hành là topic publish/station/{stationId}, không observation/sensor, ACK không taskId, không suy ra Executed. Không triển khai các domain dự kiến đó chỉ từ mô tả cũ.
+
 Cập nhật ưu tiên 2026-10-07: ba tài liệu ERD_DIAGRAM.xml, IOT_CORE_TABLES_SPEC.md, MQTT_HARDWARE_PROTOCOL_VERIFIED.md thay thế các mô tả IoT cũ bên dưới. Device Maintenance/last_seen_at; installed_at/cost vẫn NOT NULL theo câu trả lời trực tiếp. Sensor lowercase type, unit varchar(16); Actuator lowercase purpose. Topic telemetry theo station, numeric streams, short ACK không taskId; không xác nhận tasks/relay từ ACK. Xem IOT_METADATA_UPDATE_IMPLEMENTATION.md. Persistence và hai collections IoT chưa được chốt.
 
 > Tài liệu này được dùng làm **context/instruction chính cho Codex** để

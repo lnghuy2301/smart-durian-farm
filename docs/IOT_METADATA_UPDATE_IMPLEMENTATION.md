@@ -1,5 +1,7 @@
 # IoT metadata — cập nhật theo tài liệu 2026-10-07
 
+Metadata commit **939c350** (119 tests). Nhánh **feat/mqtt-communication** kế thừa commit này, đã có receiver/diagnostics (134 tests); xem [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md). Các mô tả “đợt tiếp theo” dưới đây ghi phạm vi nhánh metadata, receiver đã có trên nhánh MQTT.
+
 Nhánh `feat/iot-core-metadata-update`, base Actuators `95c15fc`. Nguồn đã đọc đầy đủ: ERD_DIAGRAM.xml, IOT_CORE_TABLES_SPEC.md, MQTT_HARDWARE_PROTOCOL_VERIFIED.md. Tài liệu mới thay thế hướng dẫn Devices/Sensors/Actuators cũ; các file cũ người dùng đã xóa được giữ nguyên trạng thái, không phục hồi/stage.
 
 ## Quyết định cuối và thay đổi

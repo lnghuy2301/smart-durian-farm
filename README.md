@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Latest feature branch: **feat/iot-core-metadata-update**, from Actuators **95c15fc**, aligned with the new IoT documents. Devices add Maintenance/receiver-only last_seen_at; registration requires installation date and cost. Sensor types/Actuator purposes are lowercase; Sensor unit is varchar(16), replacing the old enum. Read [IoT metadata API and reproduction](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md). Data remains in RAM; MQTT communication is the next separate branch.
+Latest feature branch: **feat/mqtt-communication**, from metadata **939c350** on **feat/iot-core-metadata-update**. Device installation date/cost remain required; types/purposes are lowercase and Sensor unit is varchar(16). MQTT connection/parser/routing, shared-store mapping, receive presence and read-only diagnostics are implemented. **134/134 tests, lint/typecheck/build passed**, including a real MQTT.js TCP loopback test. Both new branches are local, not pushed/merged. Read [MQTT setup, API and reproduction](docs/MQTT_COMMUNICATION_IMPLEMENTATION.md) and [metadata rules](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md). Data remains in RAM; telemetry persistence and actuator task/control workflows need separate decisions.
 
 GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
 
@@ -47,9 +47,15 @@ npm run start --workspace @smart-durian/api
 
 Business-module Postman collections use literal URLs/JSON: paste JWT/UUID/OTP manually, with no scripts or environment. The older Foundation collection has an optional Local environment. Only implemented endpoints are included. Do not export real credentials or tokens to Git.
 
+## MQTT communication
+
+MQTT defaults to disabled; add broker settings from .env.example manually to your existing .env before enabling it. Backend subscribes to publish/station/+ and resolves each station through Devices metadata. Telemetry retains hardware units, and short ACKs do not confirm any task or relay state. Global diagnostics require Admin; Device diagnostics use current Farm/HTX/assignment read scope.
+
+Import [MQTT manual Postman collection](docs/postman/MQTT-Communication-Local-Test.postman_collection.json) (12 requests); see the [MQTT guide](docs/MQTT_COMMUNICATION_IMPLEMENTATION.md) for setup, limits and packet examples. The outgoing builder/publisher is an internal adapter; no HTTP control, automation or MongoDB telemetry/tasks are implemented.
+
 ## Structure
 
-- apps/api: REST API and future database/MQTT modules.
+- apps/api: REST API, MQTT communication and future database persistence.
 - apps/web: future React/Vite web.
 - apps/mobile: future React Native Android app.
 - ai: future AI/RAG work.

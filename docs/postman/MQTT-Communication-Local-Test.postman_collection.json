@@ -1,0 +1,258 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - MQTT Communication - Nhap JSON",
+    "description": "12 request literal URL/JSON, copy JWT/UUID bằng tay. Đọc MQTT_COMMUNICATION_IMPLEMENTATION.md. .env.example có cấu hình, .env thật giữ nguyên; mặc định MQTT_ENABLED=false. Chỉ chẩn đoán communication RAM, không task/relay control hay telemetry persistence. Không scripts/environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Đăng nhập Chủ Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Tài khoản demo; thay theo .env của bạn. Copy access_token bằng tay, không export JWT/secrets thật.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Đăng nhập Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Tài khoản Admin demo; thay theo .env local. Copy token vào các request ADMIN.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Admin: trạng thái broker",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_ADMIN_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/status",
+        "description": "200, global counters/connected/subscribed; mặc định MQTT disabled. Không trả broker credentials."
+      }
+    },
+    {
+      "name": "04 Chủ: trạng thái Device",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/devices/PASTE_DEVICE_UUID_HERE/status",
+        "description": "Thay UUID đã tạo. 200 Unknown/Online/Offline và status quản trị riêng. MQTT_OFFLINE_AFTER_MS cấu hình tuổi message."
+      }
+    },
+    {
+      "name": "05 Chủ: chẩn đoán packet",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/devices/PASTE_DEVICE_UUID_HERE/messages?limit=20&offset=0",
+        "description": "200 packet mới nhất trước; tối đa200 toàn gateway RAM, không phải lịch sử MongoDB. Copy Device UUID bằng tay."
+      }
+    },
+    {
+      "name": "06 Chủ: global status bị chặn",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/status",
+        "description": "403; chỉ Admin Active được đọc counters toàn hệ thống."
+      }
+    },
+    {
+      "name": "07 Thiếu JWT",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/mqtt/status",
+        "description": "401. Không cần MQTT bật."
+      }
+    },
+    {
+      "name": "08 UUID sai",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/devices/not-a-uuid/status",
+        "description": "400."
+      }
+    },
+    {
+      "name": "09 Pagination sai",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/devices/PASTE_DEVICE_UUID_HERE/messages?limit=0&offset=0",
+        "description": "Thay UUID; 400."
+      }
+    },
+    {
+      "name": "10 Manager: đọc Device trong HTX",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_MANAGER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/devices/PASTE_DEVICE_UUID_HERE/status",
+        "description": "Login Manager bằng Users/Auth collection. 200 nếu Farm hiện thuộc HTX mình; ngoài HTX404."
+      }
+    },
+    {
+      "name": "11 Farmer: đọc packet đang phân công",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_WORKER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/devices/PASTE_DEVICE_UUID_HERE/messages?limit=20&offset=0",
+        "description": "JWT Farmer Accepted assignment đang hiệu lực. 200 trong scope; chưa nhận việc/hết phân công404."
+      }
+    },
+    {
+      "name": "12 Không có endpoint publish",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/mqtt/publish",
+        "description": "404; chỉ kiểm tra route không tồn tại, không gửi hardware. Không có REST relay control/inject.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
