@@ -9,5 +9,6 @@ import '@fontsource/be-vietnam-pro/latin-600.css';
 import '@fontsource/be-vietnam-pro/latin-700.css';
 import '@brand/06_Web_Assets/brand.css';
 import './styles.css';
+import { App } from './App';
 
-createRoot(document.getElementById('root')!).render(<main className="standalone"><h1>Smart Durian</h1><p>Nền tảng web đang được tích hợp theo từng module.</p></main>);
+createRoot(document.getElementById('root')!).render(<App/>);
