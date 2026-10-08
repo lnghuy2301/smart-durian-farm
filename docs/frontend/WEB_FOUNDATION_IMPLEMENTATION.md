@@ -4,7 +4,7 @@ Cập nhật 2026-10-08. Frontend React + TypeScript + Vite tại `apps/web`, k�
 
 ## Phạm vi đã triển khai
 
-Auth phone/password → /auth/me, đăng ký Farmer Active/Manager email verified Pending, quên mật khẩu OTP, session JWT15m theo tab, logout và xóa dữ liệu theo phiên. Dashboard Farmer/Admin, shared resource list/detail, HTX Admin create/edit và duyệt/reject Manager. **Dashboard Manager chờ người dùng cung cấp mẫu riêng**, không lấy bản sao Admin làm thiết kế. Menu và trang dữ liệu Manager hoạt động theo quyền backend.
+Auth phone/password → /auth/me, đăng ký Farmer Active/Manager email verified Pending, quên mật khẩu OTP, session JWT15m theo tab, logout và xóa dữ liệu theo phiên. Dashboard Farmer/Admin/Manager, shared resource list/detail, HTX Admin create/edit và duyệt/reject Manager. Người dùng đã chốt mẫu Manager riêng ngày 2026-10-08: tổng hợp vườn/khu/cây/phân công và sản lượng Confirmed trong scope HTX, có bộ lọc vườn/ngày và trạng thái thiết bị. IoT chỉ đọc latest/history/presence, tự làm mới 15 giây; mất quyền thì xóa dữ liệu cũ.
 
 Không có React Native trong đợt này. Không có actuator control/publish task, Cultivation/AI/Blockchain/public QR hoặc chuyển business store sang database. Không mở mutation tài nguyên chỉ đọc khi chưa có mẫu nghiệp vụ. Không tự gửi email/SMS để demo; mọi yêu cầu gửi OTP phải do người dùng bấm.
 
@@ -40,8 +40,9 @@ Các branch là chuỗi phụ thuộc: branch sau kế thừa commit branch trư
 | feat/web-manager-approval | [MANAGER_APPROVAL](modules/MANAGER_APPROVAL.md) | Pending table, approve/reject và conflict check |
 | feat/web-dashboards | [DASHBOARDS](modules/DASHBOARDS.md) | Farmer/Admin dashboard, browser suite foundation |
 | feat/web-iot-monitoring | [IOT_MONITORING](modules/IOT_MONITORING.md) | Latest/history, raw unit, presence và poll; 21 browser scenarios + 6 unit tests |
+| feat/web-manager-dashboard | [MANAGER_DASHBOARD](modules/MANAGER_DASHBOARD.md) | Mẫu Manager riêng, scope HTX/filter/assignments/harvest; bộ kiểm tra cuối 22 browser scenarios + 8 unit tests |
 
-`feat/web-foundation` cũ là branch chuẩn bị trước mẫu; không phải branch chứa web hoàn chỉnh. Xem branch mới nhất trong handoff và git log trước khi chạy. Giữ các branch module để review diff theo từng bước; không xóa branch sau.
+`feat/web-manager-dashboard` là branch mới nhất chứa toàn bộ các module trên. `feat/web-foundation` cũ là branch chuẩn bị trước mẫu; không phải branch chứa web hoàn chỉnh. Xem handoff và git log trước khi chạy. Giữ các branch module để review diff theo từng bước; không xóa branch sau.
 
 ## Cấu trúc code
 
@@ -50,7 +51,8 @@ Các branch là chuỗi phụ thuộc: branch sau kế thừa commit branch trư
 - src/hooks/useResource.ts: key path+query, loading/empty/error/retry, abort và loại response cũ. useTask: mutation submit thủ công, khoá đồng thời, abort rời trang.
 - src/components: Brand trỏ shared kit, shell/nav/guard, form fields có nhãn trợ năng tường minh, table/pagination/notice/modal dùng chung.
 - src/pages: từng nhóm nghiệp vụ ở file riêng, field types theo response thật trong src/types/api.ts. Không suy schema từ Swagger khi thiếu response model.
-- test/client.test.ts/token.test.ts: các invariant session/client có ý nghĩa. test/e2e.mjs: backend thật + browser qua Vite proxy, provider giả chỉ ở harness.
+- src/api/collection.ts: thu thập đủ trang cho snapshot Manager, kiểm tra total/trùng ID/trang thiếu; không dùng trang đầu để giả tổng HTX. src/pages/managerOverview.ts: phép lọc/đếm độc lập và ngày Asia/Ho_Chi_Minh.
+- test/client.test.ts/token.test.ts/manager-overview.test.ts: các invariant session/client/collector/scope có ý nghĩa. test/e2e.mjs: backend thật + browser qua Vite proxy, provider giả chỉ ở harness.
 
 ## Tái lập kiểm tra và dữ liệu
 
@@ -66,7 +68,9 @@ Browser suite compile backend vào apps/api/.test-dist, tạo Nest ở port ng�
 
 Seed suite qua HTTP thật: login account test được backend config tạo, tạo materials/standard/farm-request, Admin approve farm, owner create zone/tree, Admin create HTX. Account mới đăng ký qua UI; email OTP đọc từ capture EmailSender trong process harness, không mở endpoint lấy email OTP trong sản phẩm. Password/OTP/token chỉ test process, report không ghi ra. Những số điện thoại/password trong file test là fixture cô lập, không phải thông tin đăng nhập backend đang chạy của người dùng.
 
-Foundation trước IoT đã đạt **13 browser scenarios + 5 unit tests**, lint/typecheck/build. Coverage: assets/login desktop, sai mật khẩu, Farmer total/restore, catalog server pagination/search/detail/empty, farm/zone/tree/standard/harvest đọc, network error/retry, mobile390/menu/no body overflow, Farmer register, Manager verify→Pending/login blocked, Admin HTX create/edit/unique409 giữ form, approve existing giữ UUID→Manager login/scope/guard/chờ mẫu, reject explicit confirm, server revoke→xóa session/protected data. Screenshot desktop1440x1000/mobile390x844 tại apps/web/test-results (ignored), report.json không chứa credentials. Mở PNG hoặc chạy lại suite để tái lập; không commit screenshot test có dữ liệu fixture vào nguồn thiết kế.
+Kết quả cuối trên branch Manager: **22 browser scenarios + 8 unit tests**, lint/typecheck/build đạt. Backend đã chạy lại **147/147 regression tests + lint/typecheck/build** ở module IoT; Manager không sửa backend. Coverage: assets/login/sai mật khẩu, Farmer total/restore, catalog server pagination/search/detail/empty, farm/zone/tree/standard/harvest đọc, network error/retry, mobile390/menu/no body overflow, Farmer register/reset SMS, Manager verify→Pending/login blocked, Admin HTX create/edit/unique409 giữ form, approve existing/create HTX và reject, approval409 đối soát, JWT hết hạn/server revoke→xóa session/protected data. IoT được kiểm tra MQTT.js TCP→Nest→REST→UI, raw unit không đổi, latest/history/pagination/filter/poll, sensor/device inactive và assignment hết hiệu lực xóa cache. Manager có hai Farm cùng HTX, một Zone đã phân công Accepted, bộ lọc Farm, sản lượng Confirmed và 404 khi ngoài scope.
+
+Mốc lịch sử: foundation 13 browser/5 unit, IoT 21 browser/6 unit, Manager 22 browser/8 unit. Screenshot desktop1440x1000/mobile390x844 tại apps/web/test-results (ignored), gồm login/farmer/admin/iot/manager desktop và login/farmer/manager mobile; report.json không chứa credentials. Mở PNG hoặc chạy lại suite để tái lập; không commit screenshot test có dữ liệu fixture vào nguồn thiết kế.
 
 Các trường hợp cần test thủ công trong môi trường thật: SMTP delivery/spam, SMS provider delivery/rate limits, credentials/port thực, database/broker/hardware, tài khoản hoặc quyền đổi giữa nhiều browser. Browser failure tests có route abort giả để kiểm tra UI lỗi; không dùng mock response cho happy path. Dữ liệu test không chứng minh hardware hay persistence production.
 

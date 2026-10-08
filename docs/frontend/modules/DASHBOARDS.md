@@ -8,6 +8,6 @@ Admin: GET cooperatives limit=6 (total và preview), farms limit=1, zones limit=
 
 Reload thủ công cả overview, loading/error thay dữ liệu cũ, không tự mutation hoặc mở rộng quyền. Không có tổng canh tác toàn hệ thống. IoT môi trường được tích hợp ở branch giám sát riêng sau khi foundation kiểm tra xong.
 
-Manager: chỉ hiện thông báo chờ mẫu riêng và menu dữ liệu đã có. Theo trả lời người dùng, không xây dashboard Manager từ bản sao Admin. Auth/role và scope dữ liệu Manager vẫn dùng API thật; không có nút duyệt hay editor HTX Admin.
+Tại commit `acc8efa` của module này, Manager còn chờ mẫu riêng theo yêu cầu người dùng. Mẫu mới sau đó đã được chốt và dashboard triển khai ở branch `feat/web-manager-dashboard`; xem [guide Manager](MANAGER_DASHBOARD.md). Branch mới nhất có đủ ba dashboard; Manager vẫn không có nút duyệt hay editor HTX Admin.
 
 Lint/typecheck/build chạy ở module; screenshots desktop/mobile và browser coverage được ghi trong tài liệu tổng.

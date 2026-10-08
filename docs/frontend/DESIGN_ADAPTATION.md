@@ -6,7 +6,7 @@ HTML/ảnh do người dùng cung cấp tại `references/stitch_smart_durian_fa
 
 Giữ sidebar desktop, topbar có tài khoản, bố cục thẻ thống kê, bảng bo góc, form và dialog của mẫu; chuyển thành React components và responsive navigation. Màu mẫu #003629/#1b4d3e và nền xanh nhạt được thay bằng brand #166534/action #15803D/background #F8FAFC đã được chọn trước đó. Không khẳng định đạt WCAG AAA chỉ từ DESIGN.md; kiểm keyboard, focus, overflow và kích thước chạm trong browser.
 
-**Manager:** người dùng chọn **chờ mẫu riêng** khi được hỏi ngày 2026-10-08. Không dựng dashboard Manager từ bản Admin trùng. Auth vẫn hỗ trợ tài khoản Manager; các trang dữ liệu chung chỉ dùng quyền backend hiện tại. Dashboard Manager giữ thông báo chờ thiết kế, không số liệu Admin hoặc tác vụ duyệt/tạo HTX Admin.
+**Manager:** sau khi yêu cầu chờ mẫu riêng, người dùng cung cấp HTML/ảnh mới và xác nhận **"Dùng mẫu mới này, triển khai Manager"** ngày 2026-10-08. Dashboard Manager được triển khai trên branch riêng, chỉ đọc scope HTX. Mẫu Manager có bộ lọc vườn, thống kê phân công và sản lượng; frontend tổng hợp đủ các trang từ API hiện tại. Không có directory tên chủ vườn, Cultivation/QR, khái niệm vụ hiện tại hoặc quyền Manager tự phân công: bỏ các mục này, giữ các liên kết đọc thật. Xem [guide Manager](modules/MANAGER_DASHBOARD.md).
 
 ## Bảng khác biệt và cách xử lý
 
@@ -32,7 +32,7 @@ Giữ sidebar desktop, topbar có tài khoản, bố cục thẻ thống kê, b�
 
 ## Phạm vi các module và thứ tự nhánh
 
-Mỗi nhánh mới kế thừa commit module trước để giữ backend và frontend dependencies; không merge/push. Chuỗi dự kiến: chuẩn bị → platform → auth → danh sách/chi tiết resources → HTX Admin → duyệt Manager Admin → dashboard Farmer/Admin → IoT chỉ đọc. Danh mục/Farm/Zone/Tree và thu hoạch ở phạm vi đọc; workflows ghi Farm/Zone/Tree/Harvest sẽ là module riêng có form/mẫu và nghiệm thu riêng. Không tự mở API chọn Farmer hoặc làm toàn bộ139 operations.
+Mỗi nhánh mới kế thừa commit module trước để giữ backend và frontend dependencies; không merge/push. Chuỗi đã triển khai: chuẩn bị → platform → auth → danh sách/chi tiết resources → HTX Admin → duyệt Manager Admin → dashboard Farmer/Admin → IoT chỉ đọc → dashboard Manager theo mẫu mới được chốt. Danh mục/Farm/Zone/Tree và thu hoạch ở phạm vi đọc; workflows ghi Farm/Zone/Tree/Harvest sẽ là module riêng có form/mẫu và nghiệm thu riêng. Không tự mở API chọn Farmer hoặc làm toàn bộ139 operations.
 
 Sau mỗi module kiểm lint/typecheck/build/unit phù hợp; sau chuỗi tích hợp kiểm browser desktop/mobile và luồng liên vai trò qua backend thật trong môi trường test với fake mail/SMS. Test fake delivery không chứng minh email/SMS thật hoặc hardware thật; kiểm demo local thực dùng API hiện hành và credentials của người dùng, không in/commit secrets.
 

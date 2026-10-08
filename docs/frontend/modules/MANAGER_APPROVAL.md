@@ -13,6 +13,6 @@ Không gửi cả hai field. Các field HTX dùng chung với editor, đúng gi�
 
 409, lỗi mạng hoặc 5xx có thể do trạng thái đã thay đổi hoặc kết quả mutation chưa rõ. UI giữ form, khóa gửi tiếp và yêu cầu bấm kiểm tra trạng thái mới nhất (GET lại pending + HTX). Tài khoản không còn Pending thì khóa thao tác, đóng để reload list; HTX đã gắn thì bỏ lựa chọn và yêu cầu chọn lại. Không tự gửi mutation lần hai. 400 giữ form để sửa. Đang xử lý khóa submit và đóng dialog; rời toàn trang/logout vẫn abort client và không ghi response vào phiên mới.
 
-AdminGuard bảo vệ route. Không cung cấp danh sách tất cả Active users hoặc số tài khoản toàn hệ thống vì backend chưa có API. Đây là module Admin độc lập; không dựng dashboard Manager khi chưa có mẫu riêng.
+AdminGuard bảo vệ route. Không cung cấp danh sách tất cả Active users hoặc số tài khoản toàn hệ thống vì backend chưa có API. Đây là module Admin độc lập; [dashboard Manager](MANAGER_DASHBOARD.md) theo mẫu riêng được triển khai sau trên branch riêng.
 
 Kiểm tra tái lập: lint/typecheck/build và browser test register Pending→approve→login Manager; cả nhánh chọn HTX và tạo mới; reject/409 reconciliation được ghi trong tài liệu tổng.

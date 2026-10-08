@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-primary":"#ffffff","primary-container":"#1b4d3e","inverse-surface":"#213145","secondary":"#1b6d24","on-tertiary-fixed-variant":"#604100","inverse-primary":"#9ed1bd","on-background":"#0b1c30","surface-dim":"#cbdbf5","surface-bright":"#f8f9ff","on-secondary-fixed":"#002204","on-surface-variant":"#404945","surface-container-low":"#eff4ff","tertiary-container":"#5e3f00","on-tertiary":"#ffffff","secondary-fixed":"#a3f69c","on-secondary-container":"#217128","on-secondary":"#ffffff","secondary-container":"#a0f399","outline":"#707974","surface":"#f8f9ff","background":"#f8f9ff","on-tertiary-fixed":"#281900","on-tertiary-container":"#e7a732","tertiary":"#412a00","surface-variant":"#d3e4fe","on-primary-fixed":"#002117","on-error-container":"#93000a","on-error":"#ffffff","surface-container-lowest":"#ffffff","surface-container-highest":"#d3e4fe","on-secondary-fixed-variant":"#005312","on-primary-container":"#8abda9","tertiary-fixed-dim":"#fdba45","error-container":"#ffdad6","surface-container-high":"#dce9ff","on-surface":"#0b1c30","tertiary-fixed":"#ffdeae","outline-variant":"#c0c9c3","secondary-fixed-dim":"#88d982","surface-tint":"#376757","surface-container":"#e5eeff","inverse-on-surface":"#eaf1ff","primary-fixed-dim":"#9ed1bd","primary-fixed":"#baeed9","primary":"#003629","error":"#ba1a1a","on-primary-fixed-variant":"#1d4f40"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-sm":"0.5rem","space-xs":"0.25rem","gutter":"1rem","gutter-desktop":"1.5rem","space-md":"1rem","margin-desktop":"2rem","space-xl":"2rem","margin":"1rem","space-lg":"1.5rem"},fontFamily:{"body-md":["Be Vietnam Pro"],"headline-md":["Be Vietnam Pro"],"body-lg":["Be Vietnam Pro"],"headline-xl-mobile":["Be Vietnam Pro"],"label-md":["Be Vietnam Pro"],"label-lg":["Be Vietnam Pro"],"headline-xl":["Be Vietnam Pro"],"data-metric":["Be Vietnam Pro"],"headline-lg-mobile":["Be Vietnam Pro"],"headline-lg":["Be Vietnam Pro"],"title-md":["Be Vietnam Pro"],"title-lg":["Be Vietnam Pro"]},fontSize:{"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"700"}],"data-metric":["32px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","fontWeight":"700"}],"headline-lg":["30px",{"lineHeight":"38px","fontWeight":"700"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"title-lg":["18px",{"lineHeight":"26px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed inset-y-0 left-0 w-72 bg-surface-container-low z-50 flex flex-col transition-transform duration-200 ease-in-out -translate-x-full lg:translate-x-0 shadow-[0_1px_8px_rgba(0,0,0,0.04)]" id="app-sidebar"><div class="p-space-lg flex flex-col gap-space-xs"><div class="flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[24px]">eco</span></div><div class="flex flex-col"><span class="font-headline-md text-title-lg text-primary tracking-tight">Smart Durian</span><span class="font-label-md text-label-md text-on-surface-variant">Hệ Thống Quản Lý</span></div></div><button class="lg:hidden p-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface" onclick="document.getElementById('app-sidebar').classList.add('-translate-x-full')" type="button"><span class="material-symbols-outlined text-[22px]">close</span></button></div><div class="mt-space-sm p-space-sm rounded-lg bg-surface flex flex-col gap-0.5"><span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Hợp tác xã trực thuộc</span><span class="font-title-md text-body-md text-primary truncate font-semibold">HTX Sầu riêng Bình Phước</span></div></div><div class="flex-1 overflow-y-auto px-space-md py-space-xs"><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary font-semibold shadow-[0_2px_4px_rgba(15,23,42,0.06)]"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-3 rounded-xl transition-colors bg-primary-container text-on-primary font-semibold shadow-[0_2px_4px_rgba(15,23,42,0.06)]" data-path="tong-quan" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span>Tổng quan</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="trang-trai" href="#"><span class="material-symbols-outlined text-[20px]">agriculture</span><span>Trang trại</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="khu-vuc-phan-cong" href="#"><span class="material-symbols-outlined text-[20px]">share_location</span><span>Khu vực &amp; phân công</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="cay-sau-rieng" href="#"><span class="material-symbols-outlined text-[20px]">park</span><span>Cây sầu riêng</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="thanh-vien" href="#"><span class="material-symbols-outlined text-[20px]">group</span><span>Thành viên</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="nhat-ky-canh-tac" href="#"><span class="material-symbols-outlined text-[20px]">menu_book</span><span>Nhật ký canh tác</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="giam-sat-iot" href="#"><span class="material-symbols-outlined text-[20px]">sensors</span><span>Giám sát IoT</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="thu-hoach" href="#"><span class="material-symbols-outlined text-[20px]">inventory_2</span><span>Thu hoạch</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-title-md text-body-md" data-path="thong-tin-htx" href="#"><span class="material-symbols-outlined text-[20px]">apartment</span><span>Thông tin HTX</span></a></nav></div><div class="p-space-md mt-auto bg-surface-container-low"><div class="p-space-sm rounded-xl bg-surface flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-sm min-w-0"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0"><span class="font-title-md text-label-lg text-on-surface truncate font-semibold">Trần Minh Trí</span><span class="font-label-md text-label-md text-secondary truncate">Trực tuyến</span></div></div><div class="flex items-center gap-1"><a aria-label="Cài đặt tài khoản" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="cai-dat" href="#"><span class="material-symbols-outlined text-[20px]">settings</span></a><button aria-label="Đăng xuất" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></div></aside><div class="lg:pl-72 flex flex-col min-h-screen"><header class="fixed top-0 right-0 left-0 lg:left-72 h-16 bg-surface/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-space-md lg:px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><button aria-label="Mở trình đơn" class="lg:hidden p-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="document.getElementById('app-sidebar').classList.toggle('-translate-x-full')" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><div class="flex flex-col"><span class="font-headline-md text-title-lg text-on-surface font-semibold leading-tight">Tổng quan HTX</span><span class="hidden sm:inline font-body-md text-label-md text-on-surface-variant">HTX Sầu riêng Bình Phước</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><div class="hidden sm:flex flex-col text-right"><span class="font-title-md text-label-lg text-on-surface font-semibold leading-tight">Trần Minh Trí</span><div class="inline-flex items-center justify-end"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container font-semibold tracking-wide">Quản lý HTX</span></div></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="flex-1 pt-16 bg-surface w-full px-space-md lg:px-space-lg py-space-md"><div class="flex flex-col w-full gap-space-lg pb-space-xl">
+<!-- Demo State Switcher (Interactive Preview Bar) -->
+<div class="w-full bg-surface-container-high/80 backdrop-blur rounded-xl p-space-sm flex flex-wrap items-center justify-between gap-space-sm shadow-sm">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px] text-primary">science</span>
+<span class="uppercase tracking-wider font-semibold">Chế độ mô phỏng dữ liệu:</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs" id="demo-controls">
+<button class="demo-btn active px-3 py-1.5 rounded-lg font-label-md text-label-md transition-colors bg-primary text-on-primary" onclick="setDemoState('default')" type="button">Mặc định (Đủ dữ liệu)</button>
+<button class="demo-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-colors bg-surface text-on-surface hover:bg-surface-container" onclick="setDemoState('all-assigned')" type="button">Khu vực: Đã đủ phân công</button>
+<button class="demo-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-colors bg-surface text-on-surface hover:bg-surface-container" onclick="setDemoState('no-harvest')" type="button">Kỳ này chưa có thu hoạch</button>
+<button class="demo-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-colors bg-surface text-on-surface hover:bg-surface-container" onclick="setDemoState('empty')" type="button">HTX mới (Trống dữ liệu)</button>
+<button class="demo-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-colors bg-surface text-on-surface hover:bg-surface-container text-error" onclick="setDemoState('error')" type="button">Lỗi tải dữ liệu</button>
+</div>
+</div>
+<!-- Error Banner (Hidden by default, triggered by demo state) -->
+<div class="hidden w-full bg-error-container text-on-error-container rounded-xl p-space-md shadow-sm flex items-start justify-between gap-space-md" id="error-banner">
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-[24px] text-error shrink-0">error</span>
+<div>
+<h4 class="font-title-md text-title-md font-bold text-on-error-container">Không thể tải dữ liệu thời gian thực</h4>
+<p class="font-body-md text-body-md mt-0.5 opacity-90">Hệ thống máy chủ giám sát IoT HTX tạm thời gián đoạn liên lạc. Vui lòng kiểm tra kết nối mạng và thử lại.</p>
+</div>
+</div>
+<button class="px-4 py-2 rounded-lg bg-surface text-error font-label-lg text-label-lg shadow-sm hover:bg-surface-bright shrink-0" onclick="setDemoState('default')" type="button">Thử lại</button>
+</div>
+<!-- 1. PHẦN ĐẦU NỘI DUNG (Header Controls) -->
+<section class="flex flex-col gap-space-md bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs text-secondary font-label-md text-label-md uppercase tracking-wider mb-1">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Trung tâm kiểm soát điều hành HTX</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Tổng quan hoạt động</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1">Theo dõi các trang trại và hoạt động canh tác trong hợp tác xã</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm self-start lg:self-auto">
+<div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container font-label-md text-label-md text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span>Cập nhật lúc: <strong class="text-on-surface font-semibold">10:45 hôm nay</strong> • Dữ liệu thời gian thực</span>
+</div>
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-sm hover:bg-primary-container active:scale-95 transition-all" id="refresh-btn" onclick="triggerRefresh()" type="button">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-500" id="refresh-icon">refresh</span>
+<span>Làm mới</span>
+</button>
+</div>
+</div>
+<!-- Filter Toolbar -->
+<div class="pt-space-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md bg-surface-container-low rounded-xl p-space-md">
+<div class="flex flex-wrap items-center gap-space-md">
+<!-- Farm Filter -->
+<div class="flex flex-col gap-1 min-w-[220px]">
+<label class="font-label-md text-label-md text-on-surface-variant font-semibold" for="filter-farm">Trang trại thành viên</label>
+<div class="relative">
+<select class="w-full h-11 pl-3 pr-9 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20" id="filter-farm">
+<option value="all">Tất cả trang trại</option>
+<option value="hoang-nong">Trang trại Hoàng Nông</option>
+<option value="bay-nui">Trang trại Bảy Núi</option>
+<option value="an-phu">Trang trại An Phú</option>
+<option value="doi-xanh">Trang trại Đồi Xanh</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Period Filter -->
+<div class="flex flex-col gap-1 min-w-[200px]">
+<label class="font-label-md text-label-md text-on-surface-variant font-semibold" for="filter-period">Khoảng thời gian (Nhật ký &amp; Thu hoạch)</label>
+<div class="relative">
+<select class="w-full h-11 pl-3 pr-9 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20" id="filter-period">
+<option value="today">Hôm nay</option>
+<option selected="" value="7days">7 ngày gần nhất</option>
+<option value="30days">30 ngày qua</option>
+<option value="season">Vụ mùa hiện tại</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 pointer-events-none text-on-surface-variant text-[20px]">calendar_month</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-label-md max-w-md">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0">info</span>
+<span>Số lượng trang trại, khu vực, cây trồng và trạng thái thiết bị phản ánh hiện trạng thực tế tức thời.</span>
+</div>
+</div>
+</section>
+<!-- 2. KHỐI THỐNG KÊ GỌN (4 Metric Cards đơn giản, số liệu thật) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md" id="metric-cards">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Trang trại thuộc HTX</span>
+<span class="font-data-metric text-data-metric text-on-surface mt-1" id="metric-farms">4</span>
+<span class="font-label-md text-label-md text-secondary mt-1">Đang hoạt động ổn định</span>
+</div>
+<div class="w-13 h-13 p-3 rounded-xl bg-surface-container-low text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]">cottage</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Khu vực phân lô</span>
+<span class="font-data-metric text-data-metric text-on-surface mt-1" id="metric-zones">14</span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-1">11 khu vực đã phân công</span>
+</div>
+<div class="w-13 h-13 p-3 rounded-xl bg-surface-container-high text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]">grid_goldenratio</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Tổng số cây sầu riêng</span>
+<span class="font-data-metric text-data-metric text-on-surface mt-1" id="metric-trees">2,450</span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-1">Đã gắn mã định danh QR</span>
+</div>
+<div class="w-13 h-13 p-3 rounded-xl bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]">potted_plant</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Khu vực chưa có người phụ trách</span>
+<span class="font-data-metric text-data-metric text-tertiary-container mt-1" id="metric-unassigned">3</span>
+<span class="font-label-md text-label-md text-on-tertiary-container mt-1 font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+          Cần HTX điều phối sớm
+        </span>
+</div>
+<div class="w-13 h-13 p-3 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]">person_alert</span>
+</div>
+</div>
+</section>
+<!-- 3. KHỐI CHÍNH: Trang trại trong HTX (Bảng quản lý & Điều phối) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Trang trại trong HTX</h2>
+<span class="px-2.5 py-0.5 rounded-full font-label-md text-label-md bg-primary-fixed text-on-primary-fixed font-semibold" id="farms-count-badge">4 trang trại thành viên</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="relative w-full sm:w-64">
+<input class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20" placeholder="Tìm theo tên trang trại..." type="text"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-on-surface-variant text-[20px]">search</span>
+</div>
+<a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary font-semibold hover:underline shrink-0" data-path="trang-trai" href="#">
+<span>Xem tất cả trang trại</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto rounded-lg bg-surface">
+<table class="w-full text-left font-body-md text-body-md min-w-[720px]">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<th class="py-3 px-space-md font-semibold">Tên trang trại</th>
+<th class="py-3 px-space-md font-semibold">Chủ trang trại</th>
+<th class="py-3 px-space-md font-semibold text-center">Số khu vực</th>
+<th class="py-3 px-space-md font-semibold text-right">Số cây</th>
+<th class="py-3 px-space-md font-semibold text-center">Chưa phân công</th>
+<th class="py-3 px-space-md font-semibold text-right">Thao tác</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low" id="farms-table-body">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-4 px-space-md font-title-md text-on-surface font-semibold">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">agriculture</span>
+<span>Trang trại Hoàng Nông</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-on-surface">Nguyễn Văn Hoàng</td>
+<td class="py-4 px-space-md text-center font-semibold text-on-surface">4 khu</td>
+<td class="py-4 px-space-md text-right font-semibold text-on-surface">850 cây</td>
+<td class="py-4 px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed font-semibold">1 khu</span>
+</td>
+<td class="py-4 px-space-md text-right">
+<a class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-colors font-semibold" data-path="trang-trai" href="#">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-4 px-space-md font-title-md text-on-surface font-semibold">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">agriculture</span>
+<span>Trang trại Bảy Núi</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-on-surface">Trần Văn Bảy</td>
+<td class="py-4 px-space-md text-center font-semibold text-on-surface">3 khu</td>
+<td class="py-4 px-space-md text-right font-semibold text-on-surface">520 cây</td>
+<td class="py-4 px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-md text-label-md bg-secondary-fixed text-on-secondary-fixed font-semibold">0 khu</span>
+</td>
+<td class="py-4 px-space-md text-right">
+<a class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-colors font-semibold" data-path="trang-trai" href="#">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-4 px-space-md font-title-md text-on-surface font-semibold">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">agriculture</span>
+<span>Trang trại An Phú</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-on-surface">Lê Thị An</td>
+<td class="py-4 px-space-md text-center font-semibold text-on-surface">4 khu</td>
+<td class="py-4 px-space-md text-right font-semibold text-on-surface">680 cây</td>
+<td class="py-4 px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed font-semibold">2 khu</span>
+</td>
+<td class="py-4 px-space-md text-right">
+<a class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-colors font-semibold" data-path="trang-trai" href="#">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-4 px-space-md font-title-md text-on-surface font-semibold">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">agriculture</span>
+<span>Trang trại Đồi Xanh</span>
+</div>
+</td>
+<td class="py-4 px-space-md text-on-surface">Đặng Quốc Dũng</td>
+<td class="py-4 px-space-md text-center font-semibold text-on-surface">3 khu</td>
+<td class="py-4 px-space-md text-right font-semibold text-on-surface">400 cây</td>
+<td class="py-4 px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-md text-label-md bg-secondary-fixed text-on-secondary-fixed font-semibold">0 khu</span>
+</td>
+<td class="py-4 px-space-md text-right">
+<a class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-colors font-semibold" data-path="trang-trai" href="#">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm pt-space-xs text-on-surface-variant font-label-md text-label-md">
+<span>Hiển thị 1-4 trên 4 trang trại</span>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-semibold" type="button">1</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 4. BỐ CỤC 2 CỘT DƯỚI: KHU VỰC CẦN PHÂN CÔNG & TÌNH TRẠNG IOT -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+<!-- KHỐI TRÁI: Khu vực cần phân công -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-sm">
+<div>
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Khu vực cần phân công</h2>
+<span class="px-2 py-0.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed font-semibold" id="unassigned-badge">3 khu vực</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Mỗi khu vực chỉ có một nông dân phụ trách tại một thời điểm.</p>
+</div>
+<a class="p-2 rounded-lg text-primary hover:bg-surface-container-low transition-colors" data-path="khu-vuc-phan-cong" href="#" title="Đi tới phân công">
+<span class="material-symbols-outlined text-[22px]">tune</span>
+</a>
+</div>
+<!-- List of unassigned zones -->
+<div class="flex flex-col gap-space-sm" id="unassigned-zones-list">
+<!-- Zone 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed/60 text-on-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">person_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Lô A3</span>
+<span class="font-body-md text-body-md text-on-surface-variant">(Giống Ri6 • 210 cây)</span>
+</div>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant font-label-md text-label-md">
+<span>Trang trại Hoàng Nông</span>
+<span>•</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-tertiary-container/20 text-on-tertiary-container font-semibold">Chưa phân công</span>
+</div>
+</div>
+</div>
+<a class="h-10 px-4 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-1.5 hover:bg-primary-container shadow-sm self-start sm:self-auto shrink-0 font-semibold" data-path="khu-vuc-phan-cong" href="#">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span>Phân công</span>
+</a>
+</div>
+<!-- Zone 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed/60 text-on-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">person_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Lô C1</span>
+<span class="font-body-md text-body-md text-on-surface-variant">(Giống Monthong • 180 cây)</span>
+</div>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant font-label-md text-label-md">
+<span>Trang trại An Phú</span>
+<span>•</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-tertiary-container/20 text-on-tertiary-container font-semibold">Chưa phân công</span>
+</div>
+</div>
+</div>
+<a class="h-10 px-4 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-1.5 hover:bg-primary-container shadow-sm self-start sm:self-auto shrink-0 font-semibold" data-path="khu-vuc-phan-cong" href="#">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span>Phân công</span>
+</a>
+</div>
+<!-- Zone 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed/60 text-on-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">person_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Lô C4</span>
+<span class="font-body-md text-body-md text-on-surface-variant">(Giống Musang King • 150 cây)</span>
+</div>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant font-label-md text-label-md">
+<span>Trang trại An Phú</span>
+<span>•</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-tertiary-container/20 text-on-tertiary-container font-semibold">Chưa phân công</span>
+</div>
+</div>
+</div>
+<a class="h-10 px-4 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-1.5 hover:bg-primary-container shadow-sm self-start sm:self-auto shrink-0 font-semibold" data-path="khu-vuc-phan-cong" href="#">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span>Phân công</span>
+</a>
+</div>
+</div>
+<!-- Empty state container (toggled via demo switcher) -->
+<div class="hidden p-space-xl rounded-xl bg-surface-container-low flex-col items-center justify-center text-center gap-space-sm" id="unassigned-empty">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">task_alt</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md font-bold text-on-surface">Tất cả các khu vực đã có nông dân phụ trách</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Hiện tại không có phân lô nào cần điều phối bổ sung.</p>
+</div>
+</div>
+</section>
+<!-- KHỐI PHẢI: Tình trạng thiết bị IoT -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Tình trạng thiết bị IoT</h2>
+<a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary font-semibold hover:underline" data-path="giam-sat-iot" href="#">
+<span>Xem giám sát IoT</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<!-- IoT Summary Badges -->
+<div class="grid grid-cols-3 gap-space-sm">
+<div class="p-space-sm rounded-lg bg-surface-container flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Tổng thiết bị</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold mt-0.5">18 trạm</span>
+</div>
+<div class="p-space-sm rounded-lg bg-secondary-fixed/50 flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-secondary-fixed-variant font-semibold">Trực tuyến</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-secondary-fixed font-bold mt-0.5">16 trạm</span>
+</div>
+<div class="p-space-sm rounded-lg bg-error-container/60 flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-md text-label-md text-on-error-container font-semibold">Mất kết nối</span>
+</div>
+<span class="font-headline-md text-headline-md text-error font-bold mt-0.5">2 trạm</span>
+</div>
+</div>
+<!-- Disconnected Devices List -->
+<div class="flex flex-col gap-space-sm mt-1">
+<div class="flex items-center justify-between text-on-surface-variant font-label-md text-label-md">
+<span class="font-semibold uppercase tracking-wider">Cần kiểm tra tín hiệu thực địa:</span>
+<span>Cập nhật qua Gateway LoRaWAN</span>
+</div>
+<!-- Device 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-error-container text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">sensors_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Trạm IoT-A3</span>
+<span class="font-body-md text-body-md text-on-surface-variant">(Cảm biến đất đa tầng)</span>
+</div>
+<div class="flex flex-wrap items-center gap-2 mt-1 text-on-surface-variant font-label-md text-label-md">
+<span>Trang trại Hoàng Nông</span>
+<span>•</span>
+<span>Khu vực: Lô A3</span>
+<span>•</span>
+<span>Lần nhận tin cuối: <strong class="text-on-surface">18 giờ trước</strong> (16:30 hôm qua)</span>
+</div>
+</div>
+</div>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-md text-label-md bg-error-container text-on-error-container font-semibold self-start sm:self-auto shrink-0">
+<span class="material-symbols-outlined text-[14px] mr-1">link_off</span>
+            Mất kết nối
+          </span>
+</div>
+<!-- Device 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-error-container text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">sensors_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Cảm biến vi khí hậu Trạm C2</span>
+</div>
+<div class="flex flex-wrap items-center gap-2 mt-1 text-on-surface-variant font-label-md text-label-md">
+<span>Trang trại An Phú</span>
+<span>•</span>
+<span>Khu vực: Lô C2</span>
+<span>•</span>
+<span>Lần nhận tin cuối: <strong class="text-on-surface">2 ngày trước</strong></span>
+</div>
+</div>
+</div>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-md text-label-md bg-error-container text-on-error-container font-semibold self-start sm:self-auto shrink-0">
+<span class="material-symbols-outlined text-[14px] mr-1">link_off</span>
+            Mất kết nối
+          </span>
+</div>
+</div>
+</section>
+</div>
+<!-- 5. KHỐI NHẬT KÝ CANH TÁC GẦN ĐÂY (Chế độ giám sát - Quyền chỉ xem) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Nhật ký canh tác gần đây</h2>
+<span class="px-2.5 py-0.5 rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container font-semibold">Chế độ giám sát</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manager có quyền giám sát và theo dõi toàn bộ nhật ký nông hộ trong HTX (chế độ chỉ xem).</p>
+</div>
+<a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary font-semibold hover:underline shrink-0" data-path="nhat-ky-canh-tac" href="#">
+<span>Xem tất cả nhật ký</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto rounded-lg bg-surface">
+<table class="w-full text-left font-body-md text-body-md min-w-[850px]">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<th class="py-3 px-space-md font-semibold">Thời gian</th>
+<th class="py-3 px-space-md font-semibold">Nông dân ghi</th>
+<th class="py-3 px-space-md font-semibold">Hoạt động canh tác</th>
+<th class="py-3 px-space-md font-semibold">Trang trại</th>
+<th class="py-3 px-space-md font-semibold">Khu vực / Cây</th>
+<th class="py-3 px-space-md font-semibold text-center">Trạng thái</th>
+<th class="py-3 px-space-md font-semibold text-right">Chi tiết</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low" id="logs-table-body">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-3.5 px-space-md font-label-md text-label-md text-on-surface font-semibold">09:30 hôm nay</td>
+<td class="py-3.5 px-space-md text-on-surface font-semibold">Nguyễn Văn An</td>
+<td class="py-3.5 px-space-md text-on-surface">Tưới nước nhỏ giọt &amp; châm phân đợt 3</td>
+<td class="py-3.5 px-space-md text-on-surface-variant">Trang trại Hoàng Nông</td>
+<td class="py-3.5 px-space-md font-label-md text-label-md text-primary font-semibold">Lô A1 - Cây SR-001 → SR-025</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed font-semibold" title="Còn 12 phút để nông dân chỉnh sửa">
+<span class="material-symbols-outlined text-[13px] animate-spin">timelapse</span>
+                Chờ khóa (12p)
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="p-1.5 rounded-lg text-primary hover:bg-surface-container transition-colors" onclick="openLogModal('Nguyễn Văn An', 'Tưới nước nhỏ giọt &amp; châm phân đợt 3', '09:30 hôm nay', 'Trang trại Hoàng Nông - Lô A1', 'Phân hữu cơ khoáng NPK 12-12-17 hòa tan qua béc tưới bù áp', 'Chờ khóa')" title="Xem chi tiết nhật ký" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-3.5 px-space-md font-label-md text-label-md text-on-surface font-semibold">08:15 hôm nay</td>
+<td class="py-3.5 px-space-md text-on-surface font-semibold">Lê Văn Bình</td>
+<td class="py-3.5 px-space-md text-on-surface">Phun chế phẩm sinh học trị rầy phấn</td>
+<td class="py-3.5 px-space-md text-on-surface-variant">Trang trại An Phú</td>
+<td class="py-3.5 px-space-md font-label-md text-label-md text-primary font-semibold">Lô C2 - Toàn khu</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-label-md text-label-md bg-surface-container-high text-on-surface-variant font-semibold">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                Đã khóa
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="p-1.5 rounded-lg text-primary hover:bg-surface-container transition-colors" onclick="openLogModal('Lê Văn Bình', 'Phun chế phẩm sinh học trị rầy phấn', '08:15 hôm nay', 'Trang trại An Phú - Lô C2', 'Sử dụng nấm ký sinh Metarhizium vi sinh an toàn sinh học', 'Đã khóa')" title="Xem chi tiết nhật ký" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-3.5 px-space-md font-label-md text-label-md text-on-surface font-semibold">16:45 hôm qua</td>
+<td class="py-3.5 px-space-md text-on-surface font-semibold">Phạm Thị Mai</td>
+<td class="py-3.5 px-space-md text-on-surface">Tỉa cành tạo tán sau thụ phấn</td>
+<td class="py-3.5 px-space-md text-on-surface-variant">Trang trại Bảy Núi</td>
+<td class="py-3.5 px-space-md font-label-md text-label-md text-primary font-semibold">Lô B1 - Cây SR-042</td>
+<td class="py-3.5 px-space-md text-center">
+<div class="inline-flex items-center gap-1">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-label-md text-label-md bg-surface-container-high text-on-surface-variant font-semibold">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                  Đã khóa
+                </span>
+<span class="px-1.5 py-0.2 rounded font-label-md text-[11px] bg-surface-variant text-on-surface-variant font-semibold">Đính chính</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="p-1.5 rounded-lg text-primary hover:bg-surface-container transition-colors" onclick="openLogModal('Phạm Thị Mai', 'Tỉa cành tạo tán sau thụ phấn', '16:45 hôm qua', 'Trang trại Bảy Núi - Lô B1', 'Đã tỉa bỏ cành tăm vượt, tỉa thưa 8 quả vẹo lệch hướng gió', 'Đã khóa (Đính chính)')" title="Xem chi tiết nhật ký" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="py-3.5 px-space-md font-label-md text-label-md text-on-surface font-semibold">14:20 hôm qua</td>
+<td class="py-3.5 px-space-md text-on-surface font-semibold">Trần Văn Hải</td>
+<td class="py-3.5 px-space-md text-on-surface">Bón phân hữu cơ vi sinh gốc</td>
+<td class="py-3.5 px-space-md text-on-surface-variant">Trang trại Hoàng Nông</td>
+<td class="py-3.5 px-space-md font-label-md text-label-md text-primary font-semibold">Lô A2 - Toàn khu</td>
+<td class="py-3.5 px-space-md text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-label-md text-label-md bg-surface-container-high text-on-surface-variant font-semibold">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                Đã khóa
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="p-1.5 rounded-lg text-primary hover:bg-surface-container transition-colors" onclick="openLogModal('Trần Văn Hải', 'Bón phân hữu cơ vi sinh gốc', '14:20 hôm qua', 'Trang trại Hoàng Nông - Lô A2', 'Liều lượng 5kg/gốc kết hợp xới nhẹ mặt đất bảo vệ rễ tơ', 'Đã khóa')" title="Xem chi tiết nhật ký" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 6. KHỐI THU HOẠCH TRONG KỲ (7 ngày gần nhất) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Thu hoạch trong kỳ (7 ngày gần nhất)</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Thống kê sản lượng thực thu từ các lô đã thu hoạch phục vụ truy xuất nguồn gốc.</p>
+</div>
+<a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary font-semibold hover:underline shrink-0" data-path="thu-hoach" href="#">
+<span>Xem chi tiết thu hoạch</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<!-- 3 Metrics in Period -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md" id="harvest-metrics">
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Tổng số quả cắt</span>
+<span class="font-data-metric text-data-metric text-on-surface block mt-1" id="harvest-fruits">1,420 quả</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">nutrition</span>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Tổng khối lượng thực tế</span>
+<span class="font-data-metric text-data-metric text-on-surface block mt-1" id="harvest-weight">4,180 kg</span>
+<span class="font-label-md text-label-md text-secondary font-semibold">Tương đương 4.18 tấn</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">scale</span>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">Số đợt thu hoạch</span>
+<span class="font-data-metric text-data-metric text-on-surface block mt-1" id="harvest-batches">3 đợt</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-semibold">3 lô thành viên</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">inventory</span>
+</div>
+</div>
+</div>
+<!-- Harvest Batch List -->
+<div class="flex flex-col gap-space-sm" id="harvest-list">
+<!-- Batch 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container flex flex-col items-center justify-center leading-none">
+<span class="font-headline-md text-headline-md font-bold">24</span>
+<span class="font-label-md text-[11px] uppercase">Th10</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Trang trại Bảy Núi</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-medium">(Lô B2)</span>
+<span class="px-2 py-0.5 rounded font-label-md text-label-md bg-secondary-fixed text-on-secondary-fixed font-semibold">Giống Ri6 loại 1</span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-on-surface-variant font-body-md text-body-md">
+<span>Mã lô thu hoạch: <strong class="text-on-surface">TH-2024-B2-01</strong></span>
+<span>•</span>
+<span>Thời điểm cân: 07:30 sáng</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-lg self-start md:self-auto text-right">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Số quả</span>
+<span class="font-title-lg text-title-lg font-bold text-on-surface">580 quả</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Khối lượng</span>
+<span class="font-title-lg text-title-lg font-bold text-primary">1,740 kg</span>
+</div>
+</div>
+</div>
+<!-- Batch 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container flex flex-col items-center justify-center leading-none">
+<span class="font-headline-md text-headline-md font-bold">22</span>
+<span class="font-label-md text-[11px] uppercase">Th10</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Trang trại Hoàng Nông</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-medium">(Lô A1)</span>
+<span class="px-2 py-0.5 rounded font-label-md text-label-md bg-primary-fixed text-on-primary-fixed font-semibold">Giống Monthong</span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-on-surface-variant font-body-md text-body-md">
+<span>Mã lô thu hoạch: <strong class="text-on-surface">TH-2024-A1-03</strong></span>
+<span>•</span>
+<span>Thời điểm cân: 06:45 sáng</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-lg self-start md:self-auto text-right">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Số quả</span>
+<span class="font-title-lg text-title-lg font-bold text-on-surface">460 quả</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Khối lượng</span>
+<span class="font-title-lg text-title-lg font-bold text-primary">1,320 kg</span>
+</div>
+</div>
+</div>
+<!-- Batch 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary-container text-on-secondary-container flex flex-col items-center justify-center leading-none">
+<span class="font-headline-md text-headline-md font-bold">20</span>
+<span class="font-label-md text-[11px] uppercase">Th10</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md font-bold text-on-surface">Trang trại Đồi Xanh</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-medium">(Lô D1)</span>
+<span class="px-2 py-0.5 rounded font-label-md text-label-md bg-secondary-fixed text-on-secondary-fixed font-semibold">Giống Ri6</span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-on-surface-variant font-body-md text-body-md">
+<span>Mã lô thu hoạch: <strong class="text-on-surface">TH-2024-D1-01</strong></span>
+<span>•</span>
+<span>Thời điểm cân: 08:15 sáng</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-lg self-start md:self-auto text-right">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Số quả</span>
+<span class="font-title-lg text-title-lg font-bold text-on-surface">380 quả</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Khối lượng</span>
+<span class="font-title-lg text-title-lg font-bold text-primary">1,120 kg</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty Harvest State (Hidden by default, triggered in demo) -->
+<div class="hidden p-space-xl rounded-xl bg-surface-container-low flex-col items-center justify-center text-center gap-space-sm" id="harvest-empty">
+<div class="w-12 h-12 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">inventory_2</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md font-bold text-on-surface">Chưa ghi nhận thu hoạch trong khoảng thời gian này</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Không có mẻ cắt sầu riêng nào được ghi nhận trong 7 ngày gần nhất.</p>
+</div>
+</div>
+</section>
+<!-- Modal Chi Tiết Nhật Ký Canh Tác (Chế độ Chỉ Xem) -->
+<div class="fixed inset-0 z-50 hidden flex items-center justify-center bg-inverse-surface/40 backdrop-blur-sm p-4" id="log-detail-modal">
+<div class="w-full max-w-lg bg-surface-container-lowest rounded-2xl shadow-xl flex flex-col overflow-hidden">
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">menu_book</span>
+<h3 class="font-headline-md text-title-lg font-bold text-on-surface">Chi tiết nhật ký canh tác</h3>
+</div>
+<button class="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface" onclick="closeLogModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-surface-container">
+<span class="font-label-md text-label-md text-on-surface-variant">Trạng thái hồ sơ:</span>
+<span class="px-2.5 py-0.5 rounded-full font-label-md text-label-md font-semibold bg-surface-container-high text-on-surface-variant" id="modal-log-status">Đã khóa</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm text-body-md">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Nông dân thực hiện</span>
+<strong class="text-on-surface font-title-md block mt-0.5" id="modal-log-author">--</strong>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Thời gian ghi</span>
+<strong class="text-on-surface font-title-md block mt-0.5" id="modal-log-time">--</strong>
+</div>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Khu vực / Cây canh tác</span>
+<strong class="text-primary font-semibold block mt-0.5" id="modal-log-location">--</strong>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">Hoạt động đã triển khai</span>
+<p class="text-on-surface font-semibold mt-0.5" id="modal-log-activity">--</p>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-low">
+<span class="font-label-md text-label-md text-on-surface-variant block mb-1">Chi tiết kỹ thuật &amp; vật tư sử dụng:</span>
+<p class="text-on-surface font-body-md" id="modal-log-details">--</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container text-on-surface-variant font-label-md text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">visibility</span>
+<span>Chế độ giám sát HTX: Bạn đang xem dữ liệu minh chứng thời gian thực của nông hộ viên.</span>
+</div>
+</div>
+<div class="px-space-lg py-space-md bg-surface-container-low flex justify-end">
+<button class="px-5 py-2.5 rounded-lg bg-surface text-on-surface font-label-lg text-label-lg shadow-sm hover:bg-surface-bright" onclick="closeLogModal()" type="button">Đóng cửa sổ</button>
+</div>
+</div>
+</div>
+<!-- Inline Script for Interactions & Demo State Switching -->
+<script>
+    function triggerRefresh() {
+      const icon = document.getElementById('refresh-icon');
+      if (icon) {
+        icon.classList.add('rotate-180');
+        setTimeout(() => {
+          icon.classList.remove('rotate-180');
+        }, 500);
+      }
+    }
+
+    function openLogModal(author, activity, time, location, details, status) {
+      document.getElementById('modal-log-author').textContent = author;
+      document.getElementById('modal-log-activity').textContent = activity;
+      document.getElementById('modal-log-time').textContent = time;
+      document.getElementById('modal-log-location').textContent = location;
+      document.getElementById('modal-log-details').textContent = details;
+      document.getElementById('modal-log-status').textContent = status;
+      document.getElementById('log-detail-modal').classList.remove('hidden');
+    }
+
+    function closeLogModal() {
+      document.getElementById('log-detail-modal').classList.add('hidden');
+    }
+
+    function setDemoState(state) {
+      // Update buttons style
+      const buttons = document.querySelectorAll('#demo-controls .demo-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-on-primary');
+        btn.classList.add('bg-surface', 'text-on-surface');
+      });
+
+      // Show/hide error banner
+      const errorBanner = document.getElementById('error-banner');
+      if (state === 'error') {
+        errorBanner.classList.remove('hidden');
+      } else {
+        errorBanner.classList.add('hidden');
+      }
+
+      const unassignedList = document.getElementById('unassigned-zones-list');
+      const unassignedEmpty = document.getElementById('unassigned-empty');
+      const unassignedBadge = document.getElementById('unassigned-badge');
+      const metricUnassigned = document.getElementById('metric-unassigned');
+
+      const harvestList = document.getElementById('harvest-list');
+      const harvestMetrics = document.getElementById('harvest-metrics');
+      const harvestEmpty = document.getElementById('harvest-empty');
+
+      const metricFarms = document.getElementById('metric-farms');
+      const metricZones = document.getElementById('metric-zones');
+      const metricTrees = document.getElementById('metric-trees');
+      const farmsCountBadge = document.getElementById('farms-count-badge');
+
+      if (state === 'default') {
+        // Reset unassigned
+        unassignedList.classList.remove('hidden');
+        unassignedEmpty.classList.add('hidden');
+        unassignedBadge.textContent = '3 khu vực';
+        metricUnassigned.textContent = '3';
+
+        // Reset harvest
+        harvestList.classList.remove('hidden');
+        harvestMetrics.classList.remove('hidden');
+        harvestEmpty.classList.add('hidden');
+
+        // Reset metrics
+        metricFarms.textContent = '4';
+        metricZones.textContent = '14';
+        metricTrees.textContent = '2,450';
+        farmsCountBadge.textContent = '4 trang trại thành viên';
+      } else if (state === 'all-assigned') {
+        // Zones all assigned
+        unassignedList.classList.add('hidden');
+        unassignedEmpty.classList.remove('hidden');
+        unassignedEmpty.classList.add('flex');
+        unassignedBadge.textContent = '0 khu vực';
+        metricUnassigned.textContent = '0';
+
+        // Keep harvest intact
+        harvestList.classList.remove('hidden');
+        harvestMetrics.classList.remove('hidden');
+        harvestEmpty.classList.add('hidden');
+      } else if (state === 'no-harvest') {
+        // Unassigned intact
+        unassignedList.classList.remove('hidden');
+        unassignedEmpty.classList.add('hidden');
+        unassignedBadge.textContent = '3 khu vực';
+        metricUnassigned.textContent = '3';
+
+        // Harvest empty
+        harvestList.classList.add('hidden');
+        harvestMetrics.classList.add('hidden');
+        harvestEmpty.classList.remove('hidden');
+        harvestEmpty.classList.add('flex');
+      } else if (state === 'empty') {
+        // Empty HTX
+        metricFarms.textContent = '0';
+        metricZones.textContent = '0';
+        metricTrees.textContent = '0';
+        metricUnassigned.textContent = '0';
+        farmsCountBadge.textContent = '0 trang trại';
+
+        unassignedList.classList.add('hidden');
+        unassignedEmpty.classList.remove('hidden');
+        unassignedEmpty.classList.add('flex');
+        unassignedBadge.textContent = '0 khu vực';
+
+        harvestList.classList.add('hidden');
+        harvestMetrics.classList.add('hidden');
+        harvestEmpty.classList.remove('hidden');
+        harvestEmpty.classList.add('flex');
+      }
+    }
+  </script>
+</div></main></div></body></html>

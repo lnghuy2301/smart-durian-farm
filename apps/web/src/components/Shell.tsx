@@ -156,19 +156,3 @@ export function AdminGuard() {
     </>
   );
 }
-export function ManagerAwaitingPage() {
-  return (
-    <>
-      <PageHeader
-        title="Không gian Manager"
-        subtitle="Quản lý dữ liệu hợp tác xã trong phạm vi được cấp quyền."
-      />
-      <div className="panel">
-        <Notice>
-          Dashboard Manager đang chờ mẫu giao diện riêng. Bạn có thể sử dụng các
-          trang dữ liệu trong menu.
-        </Notice>
-      </div>
-    </>
-  );
-}

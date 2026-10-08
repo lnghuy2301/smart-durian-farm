@@ -15,7 +15,7 @@ Branch: `feat/web-auth`, kế thừa `feat/web-platform`. Mẫu: `login_register
 
 ## UI và quyền
 
-Hero, bố cục hai cột, vai trò đăng ký, các field lấy từ mẫu và cân lại cho hợp đồng thực. Dùng logo/pattern của brand kit; không tải ảnh hay font từ CDN. Mobile chỉ hiện form và logo. Sidebar/topbar thống nhất, menu mobile đóng bằng backdrop, bàn phím có skip link và focus visible. Các trang Admin có guard riêng và backend vẫn kiểm tra quyền. Dashboard Manager chờ mẫu riêng theo xác nhận của người dùng.
+Hero, bố cục hai cột, vai trò đăng ký, các field lấy từ mẫu và cân lại cho hợp đồng thực. Dùng logo/pattern của brand kit; không tải ảnh hay font từ CDN. Mobile chỉ hiện form và logo. Sidebar/topbar thống nhất, menu mobile đóng bằng backdrop, bàn phím có skip link và focus visible. Các trang Admin có guard riêng và backend vẫn kiểm tra quyền. [Dashboard Manager](MANAGER_DASHBOARD.md) đã được triển khai sau khi người dùng chốt mẫu mới riêng.
 
 ## Kiểm tra tái lập
 

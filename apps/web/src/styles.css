@@ -1243,3 +1243,134 @@ fieldset {
     align-items: stretch;
   }
 }
+.manager-controls .toolbar {
+  background: #f1f7f3;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.manager-controls .toolbar .field {
+  flex-basis: 250px;
+}
+.manager-zone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #f7faf8;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.manager-zone > div {
+  flex: 1;
+  min-width: 0;
+}
+.manager-zone strong,
+.manager-device-list strong {
+  display: block;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.manager-zone small,
+.manager-device-list small {
+  display: block;
+  font-size: 10px;
+  color: var(--sd-muted);
+  overflow-wrap: anywhere;
+}
+.manager-zone .section-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.presence-counts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.presence-counts > div {
+  background: #f1f7f3;
+  border-radius: 10px;
+  padding: 12px;
+}
+.presence-counts strong {
+  display: block;
+  font-size: 25px;
+  line-height: 1.4;
+}
+.presence-counts span {
+  display: block;
+  font-size: 10px;
+  color: var(--sd-muted);
+}
+.manager-device-list > a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sd-text);
+  padding: 13px 0;
+  border-bottom: 1px solid var(--sd-border);
+}
+.manager-device-list > a > div {
+  flex: 1;
+  min-width: 0;
+}
+.harvest-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 22px;
+}
+.harvest-stats > div {
+  position: relative;
+  background: #f1f7f3;
+  border-radius: 12px;
+  padding: 18px;
+}
+.harvest-stats svg {
+  position: absolute;
+  right: 16px;
+  top: 19px;
+  color: var(--sd-brand);
+}
+.harvest-stats span {
+  display: block;
+  font-size: 11px;
+  color: var(--sd-muted);
+  margin-bottom: 10px;
+  padding-right: 25px;
+}
+.harvest-stats strong {
+  font-size: 28px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.harvest-stats strong > small {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sd-muted);
+}
+.page-heading h1 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .manager-zone {
+    flex-wrap: wrap;
+  }
+  .manager-zone .button {
+    width: 100%;
+  }
+  .harvest-stats {
+    grid-template-columns: 1fr;
+  }
+  .presence-counts {
+    grid-template-columns: 1fr;
+  }
+  .manager-controls .toolbar .field {
+    flex-basis: auto;
+  }
+  .manager-device-list > a {
+    flex-wrap: wrap;
+  }
+}

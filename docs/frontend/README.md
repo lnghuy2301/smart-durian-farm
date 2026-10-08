@@ -1,6 +1,6 @@
 # Tài nguyên thương hiệu và mẫu frontend
 
-Ngày 2026-10-08, người dùng chọn **Smart Durian — Brand Kit v1.0 / Durian Connect** cho toàn dự án. Nguồn chuẩn nằm tại [assets/brand/Smart_Durian_Brand_Kit/](../../assets/brand/Smart_Durian_Brand_Kit/); xem [quy ước tích hợp web/mobile](../../assets/brand/README.md). Chưa triển khai giao diện.
+Ngày 2026-10-08, người dùng chọn **Smart Durian — Brand Kit v1.0 / Durian Connect** cho toàn dự án. Nguồn chuẩn nằm tại [assets/brand/Smart_Durian_Brand_Kit/](../../assets/brand/Smart_Durian_Brand_Kit/); xem [quy ước tích hợp web/mobile](../../assets/brand/README.md). Web React/TypeScript/Vite đã có dashboard Farmer, Admin và Manager theo mẫu đã được xác nhận, nối API hiện có. Đọc [hướng dẫn chạy và tái lập](WEB_FOUNDATION_IMPLEMENTATION.md), [thích nghi thiết kế](DESIGN_ADAPTATION.md) và [module Manager](modules/MANAGER_DASHBOARD.md). React Native là đợt riêng sau này.
 
 | Thư mục | Nội dung |
 | --- | --- |

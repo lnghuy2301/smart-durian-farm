@@ -832,7 +832,7 @@ try {
     },
   );
   await check(
-    "approve existing HTX, preserves UUID and enables Manager with deferred dashboard",
+    "approve existing HTX, preserves UUID and enables scoped Manager dashboard",
     async () => {
       await visit("/pending-managers");
       const row = page.locator("tr").filter({ hasText: manager.user_name });
@@ -859,7 +859,7 @@ try {
       assert.equal(active.user.status, "Active");
       await logout();
       await login("0900000011", "BrowserOnly123!");
-      await heading("Không gian Manager");
+      await heading("Tổng quan hoạt động HTX");
       assert.equal(
         await page
           .getByRole("link", { name: "Duyệt Manager", exact: true })
@@ -916,6 +916,204 @@ try {
         app.get(MockUserStore).findById(rejected.id).status,
         "Reject",
       );
+    },
+  );
+  await check(
+    "Manager HTX overview, accepted assignments, farm filter and confirmed harvest totals",
+    async () => {
+      const managerToken = (
+        await http(
+          "auth/login",
+          "POST",
+          { phone_number: "0900000011", password: "BrowserOnly123!" },
+          undefined,
+          200,
+        )
+      ).access_token;
+      const secondRequest = await http(
+        "farms/requests",
+        "POST",
+        {
+          area_size: 1,
+          address: "Vườn thứ hai trong HTX",
+          certificate_number: "WEB-FARM-2",
+          longitude: 106,
+          latitude: 10,
+        },
+        ownerToken,
+      );
+      const secondFarm = await http(
+        `farm-requests/${secondRequest.id}/approve`,
+        "PATCH",
+        {},
+        adminToken,
+      );
+      const secondZone = await http(
+        "zones",
+        "POST",
+        {
+          farm_id: secondFarm.farm_id,
+          standard_id: standard.id,
+          zone_name: "Khu hai đã phân công",
+          area_size: 0.5,
+          longitude: 106,
+          latitude: 10,
+        },
+        ownerToken,
+      );
+      const secondTree = await http(
+        "trees",
+        "POST",
+        {
+          zone_id: secondZone.id,
+          variety: "Monthong kiểm thử",
+          plant_date: "2024-05-01T08:00:00+07:00",
+          longitude: 106,
+          latitude: 10,
+        },
+        ownerToken,
+      );
+      for (const id of [farmAccepted.farm_id, secondFarm.farm_id]) {
+        const join = await http(
+          `farms/${id}/join-requests`,
+          "POST",
+          { cooperative_id: coop.id },
+          ownerToken,
+        );
+        await http(`farm-requests/${join.id}/approve`, "PATCH", {}, adminToken);
+        await http(
+          `farm-requests/${join.id}/approve`,
+          "PATCH",
+          {},
+          managerToken,
+        );
+      }
+      const worker = await http(
+        "auth/login",
+        "POST",
+        { phone_number: "0900000010", password: "ResetBrowserOnly123!" },
+        undefined,
+        200,
+      );
+      const assignmentRequest = await http(
+        `zones/${secondZone.id}/assignment-requests`,
+        "POST",
+        { user_id: worker.user.id },
+        ownerToken,
+      );
+      await http(
+        `assignment-requests/${assignmentRequest.id}/approve`,
+        "PATCH",
+        {},
+        worker.access_token,
+      );
+      const today = new Date(Date.now() + 7 * 3600000)
+        .toISOString()
+        .slice(0, 10);
+      for (const [target, count, weight, batch] of [
+        [tree.id, 10, 30, "WEB-H-1"],
+        [secondTree.id, 20, 60, "WEB-H-2"],
+      ]) {
+        const harvest = await http(
+          "tree-harvests",
+          "POST",
+          {
+            tree_id: target,
+            season_name: "Mùa vụ kiểm thử Manager",
+            harvest_date: today,
+            fruit_count: count,
+            total_weight_kg: weight,
+            batch_code: batch,
+          },
+          ownerToken,
+        );
+        await http(
+          `tree-harvests/${harvest.id}/submit`,
+          "PATCH",
+          {},
+          ownerToken,
+        );
+      }
+      const outsideRequest = await http(
+        "farms/requests",
+        "POST",
+        {
+          area_size: 1,
+          address: "Vườn ngoài HTX",
+          certificate_number: "WEB-OUTSIDE",
+          longitude: 106,
+          latitude: 10,
+        },
+        worker.access_token,
+      );
+      const outside = await http(
+        `farm-requests/${outsideRequest.id}/approve`,
+        "PATCH",
+        {},
+        adminToken,
+      );
+      await logout();
+      await login("0900000011", "BrowserOnly123!");
+      await heading("Tổng quan hoạt động HTX");
+      await page.locator(".manager-stats").waitFor();
+      assert.deepEqual(
+        await page
+          .locator(".manager-stats .stat-card > strong")
+          .allTextContents(),
+        ["2", "2", "2", "1"],
+      );
+      assert(
+        (
+          await page.locator(".harvest-stats strong").nth(1).innerText()
+        ).includes("90"),
+      );
+      await page.screenshot({
+        path: `${screenshots}/manager-desktop.png`,
+        fullPage: true,
+      });
+      await page
+        .getByLabel("Vườn thành viên", { exact: true })
+        .selectOption(farmAccepted.farm_id);
+      await page.waitForFunction(
+        () =>
+          document.querySelector(".manager-stats .stat-card strong")
+            ?.textContent === "1",
+      );
+      assert(
+        (
+          await page.locator(".harvest-stats strong").nth(1).innerText()
+        ).includes("30"),
+      );
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForFunction(
+        () =>
+          document.querySelector(".sidebar").getBoundingClientRect().right <= 0,
+      );
+      assert.equal(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+        true,
+      );
+      await page.screenshot({
+        path: `${screenshots}/manager-mobile.png`,
+        fullPage: true,
+      });
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await visit(`/farms/${outside.farm_id}`);
+      await page
+        .getByRole("alert")
+        .filter({ hasText: "Không tìm thấy" })
+        .waitFor();
+      await page.route("**/api/zones?limit=100*", (route) => route.abort());
+      await visit("/");
+      await page.getByRole("alert").waitFor();
+      assert.equal(await page.locator(".manager-stats").count(), 0);
+      await page.unroute("**/api/zones?limit=100*");
+      await page.getByRole("button", { name: "Thử lại", exact: true }).click();
+      await page.locator(".manager-stats").waitFor();
+      await logout();
+      await login("0900000001", "LocalAdminOnly123!");
     },
   );
   await check(
@@ -1071,6 +1269,8 @@ try {
           "farmer-mobile.png",
           "admin-desktop.png",
           "iot-desktop.png",
+          "manager-desktop.png",
+          "manager-mobile.png",
         ],
       },
       null,

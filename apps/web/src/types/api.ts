@@ -122,6 +122,20 @@ export interface Sensor {
   sensor_type: "air_temperature" | "air_humidity" | "soil_moisture";
   data_stream_id: string;
 }
+export interface AssignmentHistory {
+  assignment: {
+    id: string;
+    user_id: string;
+    zone_id: string;
+    start_date: string;
+    end_date: string | null;
+  };
+  zone_snapshot: Zone;
+  accepted_at: string;
+  active: boolean;
+  correction_grace_days: number;
+  correction_deadline: string | null;
+}
 export interface DevicePresence {
   device_id: string;
   status: Device["status"];
