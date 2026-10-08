@@ -376,12 +376,29 @@ export function RegisterPage() {
             />
           </Field>
           <Password fresh value={password} onChange={setPassword} />
-          {role === "Manager" && (
-            <Notice>
-              Manager cần xác minh email và chờ Admin duyệt. Chưa có bước OTP
-              điện thoại trong luồng đăng ký hiện tại.
-            </Notice>
-          )}
+          <div className="registration-role-guidance">
+            <div
+              className="registration-role-message"
+              data-active={role === "Farmer"}
+              aria-hidden={role !== "Farmer"}
+            >
+              <Notice>
+                Tài khoản Farmer được kích hoạt ngay sau khi đăng ký thành công.
+                Bạn có thể đăng nhập để quản lý vườn và công việc được cấp
+                quyền.
+              </Notice>
+            </div>
+            <div
+              className="registration-role-message"
+              data-active={role === "Manager"}
+              aria-hidden={role !== "Manager"}
+            >
+              <Notice>
+                Xác minh email để gửi đăng ký Manager. Tài khoản được sử dụng
+                sau khi Admin duyệt và gắn hợp tác xã.
+              </Notice>
+            </div>
+          </div>
           {challenge && !proof && (
             <>
               <Field label="Mã xác minh email">

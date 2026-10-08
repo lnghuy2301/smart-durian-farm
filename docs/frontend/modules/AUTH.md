@@ -17,6 +17,16 @@ Branch: `feat/web-auth`, kế thừa `feat/web-platform`. Mẫu: `login_register
 
 Hero, bố cục hai cột, vai trò đăng ký, các field lấy từ mẫu và cân lại cho hợp đồng thực. Dùng logo/pattern của brand kit; không tải ảnh hay font từ CDN. Mobile chỉ hiện form và logo. Sidebar/topbar thống nhất, menu mobile đóng bằng backdrop, bàn phím có skip link và focus visible. Các trang Admin có guard riêng và backend vẫn kiểm tra quyền. [Dashboard Manager](MANAGER_DASHBOARD.md) đã được triển khai sau khi người dùng chốt mẫu mới riêng.
 
+### Chuyển vai trò đăng ký không làm nhảy khung
+
+Sửa ngày 2026-10-08 trên branch `fix/web-registration-role-transition`, kế thừa `feat/web-manager-dashboard`. Trước sửa, chọn Farmer→Manager thêm Notice vào flow và làm form/nút submit/khung desktop tăng đột ngột khoảng104–126px tùy viewport. Vùng `registration-role-guidance` hiện dùng CSS Grid: hai thông báo Farmer/Manager cùng một ô, chiều cao tự lấy nội dung lớn hơn theo bề rộng thực. Không đặt height cố định hoặc đo DOM bằng JavaScript; text wrap/zoom vẫn theo flow tự nhiên. Cả hai vai trò đều có hướng dẫn nghiệp vụ thực, không chừa khung trống.
+
+Thông báo hoạt động chuyển opacity trong180ms; thông báo còn lại `visibility:hidden` và `aria-hidden=true`, giữ chỗ nhưng không được screen reader đọc. Nút chọn role dùng cùng font-weight và chuyển màu/background/border nhẹ. `prefers-reduced-motion:reduce` tắt các transition này. Không đổi registration/email OTP API, việc xóa challenge/proof khi đổi role hoặc required của email Manager.
+
+Kiểm chứng trình duyệt Edge headless trên viewport1440×900,1440×1200,1280×720,900×900,390×844,320×700: đổi role hai chiều nhiều lần, đo vị trí/kích thước layout/hero/card/form/submit trong16 frame mỗi lần; chênh lệch tối đa **0px**, không overflow ngang. Kiểm tra giữ giá trị form, email required chỉ ở Manager, chỉ một hướng dẫn được cung cấp cho trợ năng, reduced motion tắt transition và bấm đổi role không gửi OTP/register request. Ảnh fixture `register-farmer-desktop.png`, `register-manager-desktop.png`, `register-farmer-mobile.png`, `register-manager-mobile.png` trong apps/web/test-results (ignored). Web lint và production build (bao gồm TypeScript) đạt.
+
+Tái lập thủ công: mở /register, đổi Farmer↔Manager ở desktop/mobile khi chưa gửi OTP; heading, các field, nút submit và cột giới thiệu giữ vị trí, nội dung hướng dẫn đổi nhẹ. Nhập các field rồi đổi role để kiểm tra giữ dữ liệu; email Farmer tùy chọn, Manager bắt buộc. Các bước nhập OTP sau khi chủ động gửi mã vẫn thêm field theo workflow đã có.
+
 ## Kiểm tra tái lập
 
 Chạy `npm run lint:web`, `npm run typecheck:web`, `npm run test:web`, `npm run build:web` từ root. Unit test kiểm tra expiry malformed, huỷ phiên/response trễ, 401 và không retry conflict. Kiểm tra trình duyệt end-to-end được ghi ở tài liệu tổng sau khi các module tích hợp. Test dùng account cô lập, không ghi mật khẩu thật hoặc token vào tài liệu.

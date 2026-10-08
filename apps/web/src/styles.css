@@ -566,12 +566,39 @@ fieldset {
   padding: 13px 10px;
   border-radius: 9px;
   color: var(--sd-muted);
+  font-weight: 600;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
 }
 .role-tabs button[aria-pressed="true"] {
   background: var(--sd-soft-green);
   color: var(--sd-brand);
   border-color: var(--sd-action);
-  font-weight: 600;
+}
+.registration-role-guidance {
+  display: grid;
+}
+.registration-role-message {
+  grid-area: 1 / 1;
+  display: flow-root;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 180ms ease,
+    visibility 180ms;
+}
+.registration-role-message[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+  .role-tabs button,
+  .registration-role-message {
+    transition: none;
+  }
 }
 .auth-mobile-brand {
   display: none;
