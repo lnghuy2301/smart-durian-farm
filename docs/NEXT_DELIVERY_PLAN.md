@@ -1,5 +1,9 @@
 # Kế hoạch giữ tiến độ từ nền tảng đã kiểm thử
 
+**Cập nhật 2026-10-08:** đợt web nền tảng và IoT chỉ đọc bên dưới đã hoàn thành theo mẫu được cung cấp, gồm dashboard Farmer/Admin và mẫu Manager riêng được chốt sau. Branch `feat/web-manager-dashboard` chứa toàn bộ frontend, **22 browser scenarios + 8 unit tests**, lint/typecheck/build/format đạt. Hướng dẫn chạy, API mapping, scope và nghiệm thu ở [WEB_FOUNDATION_IMPLEMENTATION](frontend/WEB_FOUNDATION_IMPLEMENTATION.md). Backend147 regression tests đã chạy lại ở module IoT; business/telemetry vẫn RAM. Nội dung đề xuất ngày 2026-10-07 bên dưới là lịch sử, không phải trạng thái chưa code hiện tại.
+
+Đợt tiếp theo có thể chọn một workflow ghi tài nguyên theo form/mẫu được xác nhận, thiết kế persistence, hoặc React Native; sửa HTX Manager email→SMS chưa có form trong mẫu dashboard. ACTUATOR_TASKS/control vẫn cần specification riêng. Chưa bắt đầu các đợt đó, chưa push/merge/deploy.
+
 Đề xuất ngày 2026-10-07, dựa trên code f20f6c1 và [báo cáo rà soát](PROJECT_READINESS_REVIEW_20261007.md). **Chưa bắt đầu frontend hoặc migration.** Người dùng yêu cầu tư vấn/chọn công việc khác trong khi ACTUATOR_TASKS còn rối; nhánh điều khiển giữ nguyên chưa triển khai.
 
 ## 1. Đợt nên làm tiếp: frontend foundation

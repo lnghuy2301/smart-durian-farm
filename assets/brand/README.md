@@ -21,20 +21,20 @@ Nguồn chuẩn duy nhất: [Smart_Durian_Brand_Kit/](Smart_Durian_Brand_Kit/). 
 
 **Icon 180px dùng chung:** [02_Favicon/apple-touch-icon.png](Smart_Durian_Brand_Kit/02_Favicon/apple-touch-icon.png) là nguồn duy nhất cho web và app cần kích thước này. Đã xóa `03_App_Icons/app-icon-180.png` sau khi xác nhận SHA-256 giống hoàn toàn. Các PNG kích thước khác, SVG, ICO, logo biến thể và pattern là tài nguyên có mục đích riêng, được giữ lại.
 
-## Quy ước tích hợp khi bắt đầu code
+## Tích hợp hiện tại và quy ước dùng chung
 
-Chưa có ứng dụng web/mobile chạy trong đợt sắp xếp này. Các hướng dẫn dưới đây là quy ước cho lần triển khai được người dùng yêu cầu tiếp theo, chưa phải tích hợp đã kiểm thử.
+Web tại `apps/web` đã tích hợp kit và được kiểm tra ngày 2026-10-08. Alias `@brand` trong Vite/TypeScript trỏ nguồn chung; Brand component import SVG logo màu/trắng, main.tsx import brand.css, trang auth import pattern. Favicon/apple-touch-icon được tham chiếu trực tiếp từ nguồn chung trong index.html và Vite xử lý vào build. Không nhân bản kit vào public. Xem [triển khai và tái lập](../../docs/frontend/WEB_FOUNDATION_IMPLEMENTATION.md). React Native chưa bắt đầu; các quy ước dưới đây áp dụng khi bổ sung nền tảng hoặc tài nguyên mới.
 
 - **React/Vite:** import logo/pattern từ nguồn chung qua module để bundler quản lý URL; import CSS tokens vào stylesheet đầu vào. Ví dụ từ file ngay trong `apps/web/src/`: `../../../assets/brand/Smart_Durian_Brand_Kit/06_Web_Assets/brand.css`. Tạo alias tập trung khi có cấu hình Vite/TypeScript, không rải đường dẫn tương đối sâu qua components.
-- **Favicon web:** chỉ sao chép các file thực sự dùng từ `02_Favicon/` vào `apps/web/public/` ở bước cấu hình/build đã được triển khai. Snippet gốc dùng `/favicon.svg`, `/favicon.ico`, `/apple-touch-icon.png`; phải khớp đường dẫn public và base path của web. Không copy cả kit hoặc HTML guideline vào public.
+- **Favicon web:** Vite hiện xử lý tham chiếu favicon.svg và apple-touch-icon.png trong index.html vào output build. Không sao chép file thủ công; snippet HTML gốc của kit là tham khảo và không đưa nguyên vào app. Nếu đổi base path hoặc bundler, kiểm tra URL favicon trong build tương ứng.
 - **React Native:** dùng JSON tokens để tạo theme và PNG qua static import/require trong một module tài nguyên chung của app. CSS không dùng trực tiếp trên React Native. Cấu hình resolver cho thư mục nguồn chung và chọn kích thước launcher icon theo Android/iOS khi khởi tạo app; chưa ghi file native trong đợt này.
 - **Tài liệu/slide:** lấy logo/pattern trực tiếp từ kit; không tạo bộ màu hoặc logo riêng khác với web/mobile.
-- **Bản sao phục vụ build:** nguồn vẫn là kit chung. Nếu nền tảng cần bản sao vào public/native thì phải có bước đồng bộ rõ ràng; không sửa bản sao độc lập. Chưa tạo bản sao hoặc script build khi apps chưa được triển khai.
+- **Bản sao phục vụ build:** nguồn vẫn là kit chung. Nếu nền tảng cần bản sao vào public/native thì phải có bước đồng bộ rõ ràng; không sửa bản sao độc lập. Web hiện để bundler tạo asset output từ nguồn chung, không có bản sao source.
 - **Cập nhật nhận diện:** thay đổi nguồn chung có chủ đích, đối chiếu `design-tokens.json`, `brand.css` và guideline để tránh lệch màu giữa nền tảng. Không mặc định hai file tokens hiện tự đồng bộ.
 
 ## Font và độ nhất quán
 
-Kit chỉ khai báo **Be Vietnam Pro** (400/500/600/700), fallback **Inter**; không kèm file font. Chưa tải font, thêm dependency hoặc gọi dịch vụ font bên ngoài. Khi triển khai, bổ sung font với nguồn/quyền sử dụng và cấu hình tải rõ ràng.
+Kit chỉ khai báo **Be Vietnam Pro** (400/500/600/700), fallback **Inter**; không kèm file font. Web dùng `@fontsource/be-vietnam-pro` 5.3.0, import subset Vietnamese/Latin ở đủ bốn weight trong main.tsx; font phục vụ local, không CDN runtime. License OFL nguyên văn được giữ tại [Be-Vietnam-Pro-OFL.txt](../../apps/web/public/licenses/Be-Vietnam-Pro-OFL.txt). Package-lock khóa phiên bản; `npm ci` và Vite build tái lập asset output. Không thay nguồn font trong kit hoặc tải Inter riêng.
 
 Wordmark SVG có phần chữ dạng `<text>`, vì vậy font cài/tải thực tế ảnh hưởng hình hiển thị. README gốc ghi PNG đã render bằng font fallback, có thể khác khoảng cách chữ. Giữ nguyên bản gốc; nếu cần phiên bản chữ chuyển thành path hoặc xuất lại PNG, xử lý riêng theo yêu cầu thiết kế, không âm thầm thay asset.
 

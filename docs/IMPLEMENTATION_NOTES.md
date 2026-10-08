@@ -1,5 +1,23 @@
 # Implementation notes
 
+Current web delivery 2026-10-08: `feat/web-manager-dashboard` contains the approved Manager dashboard and inherits all web modules. Farmer/Admin/Manager dashboards, auth/registration/reset, resource reads, Admin HTX create/edit, Manager approval and read-only IoT are connected to existing APIs. **22 browser scenarios + 8 unit tests**, web lint/typecheck/build/format checks passed. Backend **147/147 regression tests + lint/typecheck/build** were rerun during the IoT web module; no backend business source changed. Root `.env` and private ERD/MQTT/Postman edits remain outside commits. No push/merge/deployment. Read [reproduction](frontend/WEB_FOUNDATION_IMPLEMENTATION.md) and [Manager scope/pagination/date limitations](frontend/modules/MANAGER_DASHBOARD.md). Earlier wait-for-samples and placeholder-preservation notes below are historical.
+
+Local implementation commits, in dependency order:
+
+| Branch | Commit | Scope |
+|---|---|---|
+| chore/web-reference-preparation | 2f4a65b | Remove verified reference duplicates/empty placeholders |
+| feat/web-platform | e2d8118 | React/Vite workspace, shared brand, API client and UI |
+| feat/web-auth | 87fe2b3 | Auth/session, registration/reset, role navigation |
+| feat/web-resources | d947a3c | Scoped resource list/detail reads |
+| feat/web-cooperatives-admin | d25529c | HTX directory/Admin create-edit/notifications |
+| feat/web-manager-approval | 22954b7 | Approve/reject and conflict reconciliation |
+| feat/web-dashboards | acc8efa | Farmer/Admin dashboards and foundation browser suite |
+| feat/web-iot-monitoring | 177369f | Read-only IoT, MQTT browser coverage, formatting/font license |
+| feat/web-manager-dashboard | 685000b | Approved Manager template, scoped aggregation/filtering and final suite |
+
+Use the latest Manager branch to run the complete web. Documentation handoff updates follow its implementation commit on the same branch. Original accepted HTML/screens are in docs/frontend/references and never execute in the product; test fixture screenshots/report are ignored in apps/web/test-results. Backend business source and production data were not modified by this delivery.
+
 Frontend authorized 2026-10-08: user supplied Stitch reference screens and explicitly requested implementation. This supersedes earlier wait-for-samples instructions. Use current backend contracts/official brand kit; no new business APIs or fake production data. Prepare references/clean empty placeholders on a separate local branch, then branch per frontend module inheriting completed dependencies. Ask for unresolved business/design decisions while progressing independent work. No push/merge.
 
 Cleanup 2026-10-08 requested by user: remove the SHA-256-identical `03_App_Icons/app-icon-180.png`; use `02_Favicon/apple-touch-icon.png` as the shared 180px source. Kit now has 46 files. Remove redundant `docs/frontend/brand/` pointer documentation/placeholders and unused empty web public asset directories; preserve reference folders and app placeholders. No backend or frontend application changes.
