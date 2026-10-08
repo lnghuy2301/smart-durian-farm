@@ -1,12 +1,13 @@
 # Tài nguyên thương hiệu và mẫu frontend
 
-Các thư mục này chuẩn bị để nhận tài nguyên do người dùng cung cấp. Chưa triển khai giao diện hoặc chọn bộ nhận diện chính thức.
+Ngày 2026-10-08, người dùng chọn **Smart Durian — Brand Kit v1.0 / Durian Connect** cho toàn dự án. Nguồn chuẩn nằm tại [assets/brand/Smart_Durian_Brand_Kit/](../../assets/brand/Smart_Durian_Brand_Kit/); xem [quy ước tích hợp web/mobile](../../assets/brand/README.md). Chưa triển khai giao diện.
 
 | Thư mục | Nội dung |
 | --- | --- |
-| `apps/web/public/assets/logos/` | Logo và các biến thể được chọn để dùng trên web: SVG, PNG, WebP. |
+| `assets/brand/Smart_Durian_Brand_Kit/` | Nguồn chung của bộ nhận diện đã chọn: logo, favicon, icon app, pattern, guideline, tokens JSON/CSS. |
+| `apps/web/public/assets/logos/` | Dành cho bản xuất/sao chép phục vụ web nếu cần khi triển khai; không sửa độc lập với nguồn chung. Hiện chưa có bản sao. |
 | `apps/web/public/assets/images/` | Hình ảnh thương hiệu và hình minh họa được chọn để dùng trên web. |
-| `docs/frontend/brand/` | Brand guideline, bảng màu, quy định font chữ, tài liệu và file thiết kế gốc của bộ nhận diện. |
+| `docs/frontend/brand/` | Liên kết về bộ nhận diện chung và ghi chú tích hợp frontend. |
 | `docs/frontend/references/html/` | Mẫu HTML/CSS và tài nguyên đi kèm dùng để tham khảo giao diện. Mỗi mẫu có thể đặt trong một thư mục riêng để giữ đường dẫn tương đối. |
 | `docs/frontend/references/images/` | Ảnh chụp màn hình, mockup và mẫu bố cục tham khảo; có thể chia theo Admin, Manager, Farmer khi có mẫu. |
 
@@ -14,16 +15,17 @@ Các đường dẫn trong bảng tính từ thư mục gốc dự án. File `.g
 
 ## Cách đặt tài nguyên
 
-- Mẫu tham khảo và file thiết kế gốc đặt trong `docs/frontend/`, tách khỏi tài nguyên chạy của ứng dụng.
+- Mẫu giao diện tham khảo đặt trong `docs/frontend/references/`, tách khỏi tài nguyên chạy của ứng dụng. Tài nguyên thương hiệu gốc giữ tại `assets/brand/`.
 - Chỉ đặt logo/hình đã được chọn để sử dụng vào `apps/web/public/assets/`; nội dung ở đây sẽ được công khai khi web được build/host. Không đặt secrets hoặc tài liệu nội bộ ở đây.
 - Tài nguyên tạm đặt tên có hậu tố `-temporary` và ghi trạng thái tạm bên dưới; không coi là nhận diện chính thức.
 - Giữ nguyên file gốc được cung cấp. Với tài nguyên bên ngoài, ghi nguồn và quyền sử dụng; chưa rõ quyền thì chỉ ghi nhận làm tham khảo, chưa đưa vào ứng dụng.
 
 ## Ghi nhận tài nguyên
 
-Điền thêm một dòng khi đưa tài nguyên vào; chưa có tài nguyên nào được lựa chọn.
+Điền thêm một dòng khi đưa tài nguyên vào. Bộ kit được chuyển nguyên vẹn, không tạo lại hoặc đổi màu logo.
 
 | File/thư mục | Nguồn hoặc người cung cấp | Quyền sử dụng | Mục đích / màn hình | Trạng thái: tham khảo, tạm, chính thức |
 | --- | --- | --- | --- | --- |
+| `assets/brand/Smart_Durian_Brand_Kit/` | Người dùng cung cấp và xác nhận ngày 2026-10-08 | Người dùng chọn sử dụng trong toàn dự án; kit không kèm file font | Web, React Native, tài liệu/slide | Chính thức được chọn cho dự án |
 
 Chỉ bắt đầu code frontend sau khi người dùng cung cấp mẫu và yêu cầu tiến hành rõ ràng.

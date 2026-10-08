@@ -1,0 +1,16 @@
+:root {
+  --sd-brand: #166534;
+  --sd-action: #15803D;
+  --sd-accent: #EAB308;
+  --sd-soft-green: #F0FDF4;
+  --sd-app-background: #F8FAFC;
+  --sd-surface: #FFFFFF;
+  --sd-text: #0F172A;
+  --sd-muted: #64748B;
+  --sd-border: #E2E8F0;
+  --sd-success: #15803D;
+  --sd-warning: #B45309;
+  --sd-error: #DC2626;
+  --sd-info: #2563EB;
+  --sd-font: "Be Vietnam Pro", "Inter", sans-serif;
+}
