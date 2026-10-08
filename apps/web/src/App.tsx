@@ -4,6 +4,7 @@ import { AuthLayout, LoginPage, RegisterPage, ForgotPasswordPage } from './pages
 import { ProtectedLayout, AdminGuard, AwaitingPage } from './components/Shell';
 import { ResourcePage, materialDefinition, standardDefinition, farmDefinition, zoneDefinition, treeDefinition, harvestDefinition } from './pages/Resources';
 import { CooperativeList, CooperativeDetailPage, CooperativeEditor } from './pages/Cooperatives';
+import { PendingManagersPage } from './pages/ManagerApproval';
 export function App() {
   return <BrowserRouter><AuthProvider><Routes>
     <Route element={<AuthLayout/>}>
@@ -31,7 +32,7 @@ export function App() {
       <Route element={<AdminGuard/>}>
         <Route path="cooperatives/new" element={<CooperativeEditor/>}/>
         <Route path="cooperatives/:id/edit" element={<CooperativeEditor/>}/>
-        <Route path="pending-managers" element={<AwaitingPage title="Duyệt Manager"/>}/>
+        <Route path="pending-managers" element={<PendingManagersPage/>}/>
       </Route>
       <Route path="*" element={<div className="panel"><h1>Không tìm thấy trang</h1><Link to="/">Về tổng quan</Link></div>}/>
     </Route>
