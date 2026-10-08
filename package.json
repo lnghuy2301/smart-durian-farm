@@ -1,9 +1,15 @@
 {
   "name": "smart-durian-farm",
   "private": true,
-  "workspaces": ["apps/api"],
+  "workspaces": ["apps/api", "apps/web"],
   "scripts": {
     "dev:api": "npm run start:dev --workspace @smart-durian/api",
+    "dev:web": "npm run dev --workspace @smart-durian/web",
+    "build:web": "npm run build --workspace @smart-durian/web",
+    "lint:web": "npm run lint --workspace @smart-durian/web",
+    "typecheck:web": "npm run typecheck --workspace @smart-durian/web",
+    "test:web": "npm run test --workspace @smart-durian/web",
+    "test:web:e2e": "npm run test:e2e --workspace @smart-durian/web",
     "build": "npm run build --workspace @smart-durian/api",
     "lint": "npm run lint --workspace @smart-durian/api",
     "typecheck": "npm run typecheck --workspace @smart-durian/api",
