@@ -39,6 +39,7 @@ Các branch là chuỗi phụ thuộc: branch sau kế thừa commit branch trư
 | feat/web-cooperatives-admin | [COOPERATIVES_ADMIN](modules/COOPERATIVES_ADMIN.md) | HTX list/detail/Admin create/edit/notifications |
 | feat/web-manager-approval | [MANAGER_APPROVAL](modules/MANAGER_APPROVAL.md) | Pending table, approve/reject và conflict check |
 | feat/web-dashboards | [DASHBOARDS](modules/DASHBOARDS.md) | Farmer/Admin dashboard, browser suite foundation |
+| feat/web-iot-monitoring | [IOT_MONITORING](modules/IOT_MONITORING.md) | Latest/history, raw unit, presence và poll; 21 browser scenarios + 6 unit tests |
 
 `feat/web-foundation` cũ là branch chuẩn bị trước mẫu; không phải branch chứa web hoàn chỉnh. Xem branch mới nhất trong handoff và git log trước khi chạy. Giữ các branch module để review diff theo từng bước; không xóa branch sau.
 
