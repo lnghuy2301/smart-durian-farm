@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-background": "#0b1c30", "tertiary-fixed-dim": "#fdba45", "on-tertiary-fixed": "#281900", "surface": "#f8f9ff", "on-secondary-fixed-variant": "#005312", "on-primary": "#ffffff", "primary-fixed": "#baeed9", "primary": "#003629", "inverse-primary": "#9ed1bd", "on-error": "#ffffff", "on-primary-fixed": "#002117", "secondary-fixed": "#a3f69c", "on-tertiary-fixed-variant": "#604100", "on-tertiary-container": "#e7a732", "on-primary-container": "#8abda9", "background": "#f8f9ff", "on-secondary-fixed": "#002204", "on-error-container": "#93000a", "surface-tint": "#376757", "on-secondary-container": "#217128", "surface-container": "#e5eeff", "surface-variant": "#d3e4fe", "surface-container-lowest": "#ffffff", "tertiary-fixed": "#ffdeae", "secondary-container": "#a0f399", "error": "#ba1a1a", "on-primary-fixed-variant": "#1d4f40", "on-secondary": "#ffffff", "primary-container": "#1b4d3e", "error-container": "#ffdad6", "secondary": "#1b6d24", "surface-container-highest": "#d3e4fe", "on-surface": "#0b1c30", "on-tertiary": "#ffffff", "on-surface-variant": "#404945", "tertiary": "#412a00", "inverse-surface": "#213145", "surface-container-high": "#dce9ff", "primary-fixed-dim": "#9ed1bd", "outline": "#707974", "inverse-on-surface": "#eaf1ff", "secondary-fixed-dim": "#88d982", "surface-dim": "#cbdbf5", "surface-container-low": "#eff4ff", "tertiary-container": "#5e3f00", "outline-variant": "#c0c9c3", "surface-bright": "#f8f9ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2rem", "space-xs": "0.25rem", "margin-desktop": "2rem", "gutter-desktop": "1.5rem", "space-lg": "1.5rem", "margin": "1rem", "gutter": "1rem", "space-md": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg": ["Be Vietnam Pro"], "headline-xl-mobile": ["Be Vietnam Pro"], "data-metric": ["Be Vietnam Pro"], "headline-md": ["Be Vietnam Pro"], "title-lg": ["Be Vietnam Pro"], "headline-xl": ["Be Vietnam Pro"], "body-lg": ["Be Vietnam Pro"], "body-md": ["Be Vietnam Pro"], "label-lg": ["Be Vietnam Pro"], "label-md": ["Be Vietnam Pro"], "title-md": ["Be Vietnam Pro"], "headline-lg-mobile": ["Be Vietnam Pro"] }, "fontSize": { "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "700" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "data-metric": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest z-50 flex flex-col border-r border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20 bg-primary"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-primary-fixed"><span class="material-symbols-outlined text-[22px]">eco</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-primary font-bold leading-tight">Durian OS</span><span class="font-label-md text-label-md text-primary-fixed-dim uppercase tracking-wider">Nông Nghiệp Số</span></div></div><div class="flex-1 px-space-md py-space-lg overflow-y-auto"><div class="px-space-sm mb-space-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Điều hành hệ thống</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-title-md shadow-sm"><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="tong-quan" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span>Tổng quan</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-3 rounded-lg transition-colors bg-primary-container text-on-primary font-title-md shadow-sm" data-path="hop-tac-xa" href="#"><span class="material-symbols-outlined text-[20px]">corporate_fare</span><span>Hợp tác xã</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="tai-khoan" href="#"><span class="material-symbols-outlined text-[20px]">manage_accounts</span><span>Tài khoản</span></a><a class="flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="ho-so-manager" href="#"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-[20px]">badge</span><span>Hồ sơ Manager</span></div><span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-bold">3</span></a><div class="my-space-sm px-space-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Vận hành &amp; Canh tác</div><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="trang-trai" href="#"><span class="material-symbols-outlined text-[20px]">agriculture</span><span>Trang trại</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="nhat-ky-canh-tac" href="#"><span class="material-symbols-outlined text-[20px]">menu_book</span><span>Nhật ký canh tác</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="giam-sat-iot" href="#"><span class="material-symbols-outlined text-[20px]">sensors</span><span>Giám sát IoT</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-body-md text-body-md" data-path="thu-hoach" href="#"><span class="material-symbols-outlined text-[20px]">shopping_basket</span><span>Thu hoạch</span></a></nav></div><div class="p-space-md border-t border-outline-variant/30 bg-surface-container-low"><div class="flex items-center gap-space-md p-space-sm rounded-lg bg-surface-container-lowest border border-outline-variant/20"><div class="w-2.5 h-2.5 rounded-full bg-secondary"></div><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface font-semibold">Gateway Trạm Vườn</span><span class="font-label-md text-label-md text-on-surface-variant">Kết nối ổn định 100%</span></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md z-40 border-b border-outline-variant/30"><div class="h-16 w-full px-space-xl flex items-center justify-between gap-space-lg"><div class="flex-1 max-w-md relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span><input class="w-full h-10 pl-10 pr-4 bg-surface-container-low border border-outline-variant/30 rounded-lg text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Tìm kiếm hợp tác xã, mã lô, hộ nông dân..." type="text"/></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><button aria-label="Thông báo" class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span></button><button aria-label="Hỗ trợ kỹ thuật" class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">help</span></button></div><div class="h-6 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-md"><div class="flex flex-col text-right hidden sm:flex"><span class="font-title-md text-title-md text-on-surface font-semibold leading-tight">Lê Hoàng Nam</span><span class="font-label-md text-label-md text-on-surface-variant">Quản trị viên Hệ thống</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="relative pt-16 min-h-screen bg-surface"><div class="flex flex-col w-full">
+<!-- Demo Process Switcher (Top Interactive Bar) -->
+<header class="sticky top-0 z-30 bg-surface-container-lowest border-b border-outline-variant/30 px-space-md py-space-sm shadow-sm">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-on-primary">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold uppercase tracking-wider text-on-surface">Trình xem trước quy trình</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Chuyển đổi giao diện điều phối Hợp tác xã</span>
+</div>
+</div>
+<nav aria-label="Bộ chọn chế độ màn hình" class="flex flex-wrap items-center gap-1.5 p-1 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<button class="demo-tab-btn px-3 py-1.5 rounded text-label-md font-semibold transition-all bg-primary text-on-primary shadow-xs" id="btn-tab-list" onclick="switchView('tab-list')" type="button">
+          1. Danh sách HTX
+        </button>
+<button class="demo-tab-btn px-3 py-1.5 rounded text-label-md font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="btn-tab-detail-has-mgr" onclick="switchView('tab-detail-has-mgr')" type="button">
+          2. Chi tiết (Đã có Manager)
+        </button>
+<button class="demo-tab-btn px-3 py-1.5 rounded text-label-md font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="btn-tab-detail-no-mgr" onclick="switchView('tab-detail-no-mgr')" type="button">
+          3. Chi tiết (Chưa có Manager &amp; Vòng đời)
+        </button>
+<button class="demo-tab-btn px-3 py-1.5 rounded text-label-md font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="btn-tab-form-create" onclick="switchView('tab-form-create')" type="button">
+          4. Biểu mẫu: Tạo HTX mới
+        </button>
+<button class="demo-tab-btn px-3 py-1.5 rounded text-label-md font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" id="btn-tab-form-edit" onclick="switchView('tab-form-edit')" type="button">
+          5. Biểu mẫu: Chỉnh sửa HTX
+        </button>
+</nav>
+</div>
+</header>
+<!-- Main View Container -->
+<main class="w-full max-w-7xl mx-auto p-space-md md:p-space-xl flex flex-col gap-space-lg">
+<!-- ==================== TAB 1: DANH SÁCH HTX ==================== -->
+<section class="view-panel flex flex-col gap-space-lg" id="tab-list">
+<!-- Title & CTA Area -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-md">
+<div class="flex flex-col">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Hợp tác xã</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Quản lý thông tin và người quản lý các hợp tác xã</p>
+</div>
+<button class="inline-flex items-center justify-center gap-space-xs px-space-lg h-12 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-container transition-colors shadow-xs" onclick="switchView('tab-form-create')" type="button">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>+ Tạo HTX</span>
+</button>
+</div>
+<!-- Search Toolbar & Counter -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-space-md flex flex-col gap-space-md shadow-xs">
+<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-md">
+<div class="relative flex-1 max-w-xl">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full h-12 pl-10 pr-24 bg-surface-container-low border border-outline-variant/40 rounded-lg text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="searchInput" placeholder="Tìm theo tên HTX, người đại diện, số chứng nhận..." type="text" value=""/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-label-md font-label-md text-on-surface-variant hover:text-on-surface px-2 py-1 rounded hover:bg-surface-container transition-colors" onclick="document.getElementById('searchInput').value=''" type="button">
+              Xóa từ khóa
+            </button>
+</div>
+<div class="flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">dataset</span>
+<span>Hiển thị <strong>3</strong> hợp tác xã (Phân trang mặc định 20 mục/trang)</span>
+</div>
+</div>
+<!-- Table Data -->
+<div class="overflow-x-auto rounded-lg border border-outline-variant/20">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant/30 text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<th class="py-3.5 px-space-md" scope="col">Tên HTX</th>
+<th class="py-3.5 px-space-md" scope="col">Số chứng nhận</th>
+<th class="py-3.5 px-space-md" scope="col">Người đại diện</th>
+<th class="py-3.5 px-space-md" scope="col">Quản lý HTX</th>
+<th class="py-3.5 px-space-md" scope="col">Số liên hệ</th>
+<th class="py-3.5 px-space-md text-right" scope="col">Thao tác</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 bg-surface-container-lowest font-body-md text-body-md">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-4 px-space-md font-title-md text-title-md font-semibold text-on-surface">
+                  HTX Sầu riêng Bình Phước
+                </td>
+<td class="py-4 px-space-md text-on-surface font-mono font-medium">
+                  CN-BP-2023-018
+                </td>
+<td class="py-4 px-space-md text-on-surface">
+                  Trần Minh Trí
+                </td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    Trần Minh Trí (Đã cấp tài khoản)
+                  </span>
+</td>
+<td class="py-4 px-space-md text-on-surface">
+                  0918 234 567
+                </td>
+<td class="py-4 px-space-md text-right">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline-variant/40 hover:border-primary text-primary font-label-md text-label-md font-semibold hover:bg-primary-fixed/20 transition-all" onclick="switchView('tab-detail-has-mgr')" type="button">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors bg-surface-container-lowest">
+<td class="py-4 px-space-md font-title-md text-title-md font-semibold text-on-surface">
+                  HTX Sầu riêng Tiền Giang
+                </td>
+<td class="py-4 px-space-md text-on-surface font-mono font-medium">
+                  CN-TG-2024-005
+                </td>
+<td class="py-4 px-space-md text-on-surface">
+                  Lê Hoàng Khang
+                </td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md font-semibold border border-tertiary-fixed-dim/40">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                    Chưa có quản lý
+                  </span>
+</td>
+<td class="py-4 px-space-md text-on-surface">
+                  +84 903 889 123
+                </td>
+<td class="py-4 px-space-md text-right">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline-variant/40 hover:border-primary text-primary font-label-md text-label-md font-semibold hover:bg-primary-fixed/20 transition-all" onclick="switchView('tab-detail-no-mgr')" type="button">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-4 px-space-md font-title-md text-title-md font-semibold text-on-surface">
+                  HTX Nông nghiệp Krông Pắc
+                </td>
+<td class="py-4 px-space-md text-on-surface font-mono font-medium">
+                  CN-DL-2023-042
+                </td>
+<td class="py-4 px-space-md text-on-surface">
+                  Nguyễn Đức Long
+                </td>
+<td class="py-4 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md font-semibold border border-tertiary-fixed-dim/40">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                    Chưa có quản lý
+                  </span>
+</td>
+<td class="py-4 px-space-md text-on-surface">
+                  0988 321 654
+                </td>
+<td class="py-4 px-space-md text-right">
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline-variant/40 hover:border-primary text-primary font-label-md text-label-md font-semibold hover:bg-primary-fixed/20 transition-all" onclick="switchView('tab-detail-no-mgr')" type="button">
+<span>Xem chi tiết</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- ==================== TAB 2: CHI TIẾT HTX (ĐÃ CÓ MANAGER) ==================== -->
+<section class="view-panel hidden flex-col gap-space-lg" id="tab-detail-has-mgr">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-label-md font-label-md text-on-surface-variant">
+<button class="hover:text-primary transition-colors" onclick="switchView('tab-list')" type="button">Hợp tác xã</button>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">HTX Sầu riêng Bình Phước</span>
+</nav>
+<!-- Header & Action -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 shadow-xs">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">corporate_fare</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">HTX Sầu riêng Bình Phước</h2>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono">Mã chứng nhận: CN-BP-2023-018</span>
+</div>
+</div>
+<button class="inline-flex items-center justify-center gap-space-xs px-space-lg h-12 rounded-lg bg-surface-container-lowest border border-outline hover:border-primary text-on-surface hover:text-primary font-label-lg text-label-lg font-semibold transition-all" onclick="switchView('tab-form-edit')" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+<span>Chỉnh sửa thông tin</span>
+</button>
+</div>
+<!-- Detail Grid: 2 Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+<!-- Khối 1: Thông tin hợp tác xã -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 flex flex-col gap-space-md shadow-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">info</span>
+              Thông tin hợp tác xã
+            </h3>
+</div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Tên HTX</span>
+<span class="font-body-lg text-body-lg font-semibold text-on-surface">HTX Sầu riêng Bình Phước</span>
+</div>
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Người đại diện</span>
+<span class="font-body-lg text-body-lg text-on-surface">Trần Minh Trí</span>
+</div>
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Số chứng nhận</span>
+<span class="font-body-lg text-body-lg text-on-surface font-mono">CN-BP-2023-018</span>
+</div>
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Địa chỉ</span>
+<span class="font-body-md text-body-md text-on-surface">Đường ĐT 741, Xã Phước Long, Thị xã Phước Long, Tỉnh Bình Phước</span>
+</div>
+<div class="flex flex-col pt-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Số liên hệ</span>
+<span class="font-body-lg text-body-lg text-on-surface font-mono">0918 234 567</span>
+</div>
+</div>
+</div>
+<!-- Khối 2: Quản lý HTX (Đã có Manager) -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 flex flex-col gap-space-md shadow-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+              Quản lý HTX
+            </h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Đã gán Quản lý
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low border border-outline-variant/30 flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Trần Minh Trí</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Tài khoản quản lý được ủy quyền</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Email tài khoản:</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">tri.tran@durian-binhphuoc.vn</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Số điện thoại liên kết:</span>
+<span class="font-body-md text-body-md text-on-surface font-mono">0918 234 567</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Ngày kích hoạt vai trò:</span>
+<span class="font-body-md text-body-md text-on-surface font-mono">20/11/2023 14:32</span>
+</div>
+</div>
+<div class="mt-auto p-space-sm rounded-lg bg-surface-container flex items-start gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0">verified_user</span>
+<p class="font-label-md text-label-md">Tài khoản này chịu trách nhiệm giám sát toàn bộ hoạt động canh tác, truy xuất nguồn gốc và cấp quyền thành viên cho HTX Bình Phước.</p>
+</div>
+</div>
+</div>
+<!-- Khối 3: Mốc quản lý & Vòng đời HTX (Trường hợp đã có Manager) -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 flex flex-col gap-space-md shadow-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">history_edu</span>
+            Mốc quản lý &amp; Vòng đời HTX
+          </h3>
+<span class="px-3 py-1 rounded bg-surface-container text-on-surface-variant font-label-md text-label-md">
+            Trạng thái ổn định
+          </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low border border-outline-variant/20 text-on-surface-variant font-body-md text-body-md">
+<p><strong class="text-on-surface">Quy chuẩn hệ thống:</strong> HTX chưa có Manager được cảnh báo sau 7 ngày. Từ ngày thứ 30, hệ thống xét tự động xóa nếu vẫn chưa có Manager và không có dữ liệu tham chiếu.</p>
+<p class="mt-2 text-primary font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+            Cơ chế tự động xóa do thiếu Manager không còn áp dụng vì HTX đã được gán Quản lý hợp lệ.
+          </p>
+</div>
+<!-- Mốc dòng thời gian -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-xs">
+<div class="p-space-md rounded-lg bg-surface-container-low/60 border border-outline-variant/20 flex flex-col gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">1. Ngày tạo hồ sơ</span>
+<span class="font-title-md text-title-md font-bold text-on-surface font-mono">10/11/2023</span>
+<span class="font-label-md text-label-md text-secondary font-medium">Khởi tạo thành công</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low/60 border border-outline-variant/20 flex flex-col gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">2. Mốc cảnh báo 7 ngày</span>
+<span class="font-title-md text-title-md font-bold text-on-surface font-mono">17/11/2023</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Đã qua kiểm tra</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low/60 border border-outline-variant/20 flex flex-col gap-1">
+<span class="font-label-md text-label-md text-on-surface-variant">3. Mốc xét xóa (30 ngày)</span>
+<span class="font-title-md text-title-md font-bold text-on-surface font-mono">10/12/2023</span>
+<span class="font-label-md text-label-md text-secondary font-medium">Bỏ áp dụng (Đã có quản lý)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== TAB 3: CHI TIẾT HTX (CHƯA CÓ MANAGER & CẢNH BÁO VÒNG ĐỜI) ==================== -->
+<section class="view-panel hidden flex-col gap-space-lg" id="tab-detail-no-mgr">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-label-md font-label-md text-on-surface-variant">
+<button class="hover:text-primary transition-colors" onclick="switchView('tab-list')" type="button">Hợp tác xã</button>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">HTX Sầu riêng Tiền Giang</span>
+</nav>
+<!-- Header & Action -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 shadow-xs">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[28px]">warning</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">HTX Sầu riêng Tiền Giang</h2>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono">Mã chứng nhận: CN-TG-2024-005</span>
+</div>
+</div>
+<button class="inline-flex items-center justify-center gap-space-xs px-space-lg h-12 rounded-lg bg-surface-container-lowest border border-outline hover:border-primary text-on-surface hover:text-primary font-label-lg text-label-lg font-semibold transition-all" onclick="switchView('tab-form-edit')" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+<span>Chỉnh sửa thông tin</span>
+</button>
+</div>
+<!-- Detail Grid: 2 Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+<!-- Khối 1: Thông tin hợp tác xã -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 flex flex-col gap-space-md shadow-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">info</span>
+              Thông tin hợp tác xã
+            </h3>
+</div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Tên HTX</span>
+<span class="font-body-lg text-body-lg font-semibold text-on-surface">HTX Sầu riêng Tiền Giang</span>
+</div>
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Người đại diện</span>
+<span class="font-body-lg text-body-lg text-on-surface">Lê Hoàng Khang</span>
+</div>
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Số chứng nhận</span>
+<span class="font-body-lg text-body-lg text-on-surface font-mono">CN-TG-2024-005</span>
+</div>
+<div class="flex flex-col py-2 border-b border-outline-variant/10">
+<span class="font-label-md text-label-md text-on-surface-variant">Địa chỉ</span>
+<span class="font-body-md text-body-md text-on-surface">Ấp Phú Hòa, Xã Long Khánh, Thị xã Cai Lậy, Tỉnh Tiền Giang</span>
+</div>
+<div class="flex flex-col pt-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Số liên hệ</span>
+<span class="font-body-lg text-body-lg text-on-surface font-mono">+84 903 889 123</span>
+</div>
+</div>
+</div>
+<!-- Khối 2: Quản lý HTX (Chưa có Manager) -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 flex flex-col gap-space-md shadow-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+              Quản lý HTX
+            </h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+              HTX chưa có người quản lý
+            </span>
+</div>
+<div class="p-space-lg rounded-xl bg-tertiary-fixed/20 border border-tertiary-fixed-dim/40 flex flex-col gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-on-tertiary-container text-[22px] mt-0.5">notification_important</span>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Chưa kích hoạt quản trị viên phụ trách</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                  Hợp tác xã cần có ít nhất một Quản lý được chỉ định để phê duyệt nhật ký mùa vụ, cấp mã QR lô sầu riêng và nhận thông báo khẩn cấp từ Chi cục BVTV.
+                </p>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-tertiary-fixed-dim/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm">
+<span class="font-label-md text-label-md text-on-surface-variant">Gán thông qua quy trình xét duyệt:</span>
+<a class="inline-flex items-center justify-center gap-space-xs px-space-md h-10 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-container transition-all" data-path="ho-so-manager" href="#">
+<span>Đến danh sách Manager chờ duyệt</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low text-on-surface-variant font-label-md text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">lock_reset</span>
+<span>Quản trị viên hệ thống không thể tự ý gán thủ công hoặc gỡ Manager tại đây nhằm đảm bảo tính toàn vẹn hồ sơ.</span>
+</div>
+</div>
+</div>
+<!-- Khối 3: Mốc quản lý & Vòng đời HTX (KÈM CẢNH BÁO VÒNG ĐỜI) -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl border border-outline-variant/30 flex flex-col gap-space-md shadow-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-space-sm">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">history_edu</span>
+            Mốc quản lý &amp; Vòng đời HTX
+          </h3>
+<span class="px-3 py-1 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-semibold">
+            Đang trong chu kỳ giám sát 30 ngày
+          </span>
+</div>
+<!-- Giải thích cơ chế backend -->
+<div class="p-space-md rounded-lg bg-surface-container-low border border-outline-variant/30 flex flex-col gap-2">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">info</span>
+<div class="text-on-surface font-body-md text-body-md">
+<strong class="font-semibold">Cơ chế quản trị vòng đời hệ thống:</strong>
+              HTX chưa có Manager được cảnh báo sau 7 ngày. Từ ngày thứ 30, hệ thống xét tự động xóa nếu vẫn chưa có Manager và không có dữ liệu tham chiếu.
+            </div>
+</div>
+</div>
+<!-- Timeline 3 mốc -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="p-space-md rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">1. Ngày tạo</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">done</span>
+</div>
+<span class="font-title-lg text-title-lg font-bold text-on-surface font-mono">15/03/2024</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Hồ sơ HTX được lưu trữ vào hệ thống</span>
+</div>
+<div class="p-space-md rounded-xl bg-tertiary-fixed/20 border border-tertiary-fixed-dim/40 flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-tertiary-fixed-variant font-bold">2. Mốc cảnh báo thiếu Manager</span>
+<span class="material-symbols-outlined text-on-tertiary-container text-[18px]">warning</span>
+</div>
+<span class="font-title-lg text-title-lg font-bold text-on-surface font-mono">22/03/2024</span>
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-tertiary-fixed-variant font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+              Đã phát cảnh báo vòng đời
+            </span>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">3. Mốc xét tự động xóa</span>
+<span class="material-symbols-outlined text-outline text-[18px]">rule</span>
+</div>
+<span class="font-title-lg text-title-lg font-bold text-on-surface font-mono">14/04/2024</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Hệ thống sẽ kiểm tra điều kiện tham chiếu</span>
+</div>
+</div>
+<!-- Danh sách thông báo vòng đời mẫu -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Nhật ký thông báo vòng đời:</span>
+<div class="flex flex-col gap-2">
+<!-- Thông báo 1 -->
+<div class="p-space-md rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+<div class="flex items-start gap-space-sm">
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[11px] font-bold shrink-0 mt-0.5">ManagerMissing</span>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-semibold text-on-surface">Cảnh báo: HTX chưa có Quản lý sau 7 ngày kể từ lúc tạo hồ sơ</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Gửi tới trung tâm quản trị viên</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono whitespace-nowrap">22/03/2024 08:00</span>
+</div>
+<!-- Thông báo 2 -->
+<div class="p-space-md rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+<div class="flex items-start gap-space-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-mono text-[11px] font-bold shrink-0 mt-0.5">DeletionBlocked</span>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-semibold text-on-surface">Thông tin: Tự động xóa bị chặn vào ngày xét duyệt do phát hiện dữ liệu liên kết</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Mẫu lưu trữ lịch sử kiểm tra quy chuẩn</span>
+</div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono whitespace-nowrap">Lịch sử mẫu kiểm tra</span>
+</div>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant italic mt-1">
+            * Ghi chú: Cảnh báo cũ không đồng nghĩa HTX hiện vẫn thiếu Manager. Mọi hành động xóa đều phụ thuộc kết quả rà soát dữ liệu quan hệ tại thời điểm quét.
+          </p>
+</div>
+</div>
+</section>
+<!-- ==================== TAB 4: BIỂU MẪU TẠO HTX ==================== -->
+<section class="view-panel hidden flex-col gap-space-lg" id="tab-form-create">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-label-md font-label-md text-on-surface-variant">
+<button class="hover:text-primary transition-colors" onclick="switchView('tab-list')" type="button">Hợp tác xã</button>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">Tạo hợp tác xã mới</span>
+</nav>
+<div class="bg-surface-container-lowest p-space-lg md:p-space-xl rounded-xl border border-outline-variant/30 shadow-xs max-w-4xl mx-auto w-full flex flex-col gap-space-lg">
+<!-- Title & Subtitle -->
+<div class="flex flex-col gap-1 border-b border-outline-variant/20 pb-space-md">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Tạo hợp tác xã mới</h2>
+<div class="p-space-sm rounded-lg bg-surface-container-low text-on-surface-variant font-body-md text-body-md flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-primary text-[20px]">info</span>
+<span>HTX được tạo chưa có Manager. Bạn có thể gắn Manager qua luồng phê duyệt tài khoản sau đó.</span>
+</div>
+</div>
+<!-- Banner mẫu sau khi tạo thành công (Trạng thái mô phỏng) -->
+<div class="hidden p-space-md rounded-lg bg-secondary-fixed/40 border border-secondary flex items-center justify-between text-on-secondary-fixed-variant" id="createSuccessBanner">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<span class="font-title-md text-title-md font-semibold">Đã tạo hợp tác xã thành công • Trạng thái: Chưa có Manager</span>
+</div>
+<button class="text-on-secondary-fixed-variant hover:opacity-75" onclick="this.parentElement.classList.add('hidden')" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Form 5 trường -->
+<form class="flex flex-col gap-space-lg" id="createForm" onsubmit="event.preventDefault(); document.getElementById('createSuccessBanner').classList.remove('hidden');">
+<!-- Field 1: Tên HTX -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="create_name">Tên HTX <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_create_name">0 / 40</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="create_name" maxlength="40" oninput="updateCharCount(this, 'len_create_name', 40)" placeholder="VD: HTX Sầu riêng Krông Pắc" required="" type="text"/>
+</div>
+<!-- Field 2: Người đại diện -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="create_rep">Người đại diện <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_create_rep">0 / 40</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="create_rep" maxlength="40" oninput="updateCharCount(this, 'len_create_rep', 40)" placeholder="VD: Nguyễn Văn A" required="" type="text"/>
+</div>
+<!-- Field 3: Số chứng nhận -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="create_cert">Số chứng nhận (Duy nhất) <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_create_cert">0 / 24</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface uppercase font-mono focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="create_cert" maxlength="24" oninput="updateCharCount(this, 'len_create_cert', 24)" placeholder="VD: CN-TG-2024-009" required="" type="text"/>
+</div>
+<!-- Field 4: Địa chỉ -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="create_addr">Địa chỉ trụ sở <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_create_addr">0 / 255</span>
+</div>
+<textarea class="p-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="create_addr" maxlength="255" oninput="updateCharCount(this, 'len_create_addr', 255)" placeholder="Nhập địa chỉ trụ sở hợp tác xã..." required="" rows="3"></textarea>
+</div>
+<!-- Field 5: Số liên hệ -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="create_phone">Số liên hệ (9-13 số, cho phép dấu +) <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_create_phone">0 / 14</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface font-mono focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="create_phone" maxlength="14" oninput="updateCharCount(this, 'len_create_phone', 14)" pattern="^[+]?[0-9]{9,13}$" placeholder="VD: +84912345678" required="" type="tel"/>
+</div>
+<!-- Form Buttons -->
+<div class="flex items-center justify-end gap-space-md pt-space-md border-t border-outline-variant/20">
+<button class="px-space-lg h-12 rounded-lg border border-outline text-on-surface font-label-lg text-label-lg font-semibold hover:bg-surface-container transition-colors" onclick="switchView('tab-list')" type="button">
+              Hủy
+            </button>
+<button class="px-space-xl h-12 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-container transition-colors shadow-xs" type="submit">
+              Tạo HTX
+            </button>
+</div>
+</form>
+</div>
+</section>
+<!-- ==================== TAB 5: BIỂU MẪU CHỈNH SỬA HTX ==================== -->
+<section class="view-panel hidden flex-col gap-space-lg" id="tab-form-edit">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-label-md font-label-md text-on-surface-variant">
+<button class="hover:text-primary transition-colors" onclick="switchView('tab-list')" type="button">Hợp tác xã</button>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<button class="hover:text-primary transition-colors" onclick="switchView('tab-detail-no-mgr')" type="button">HTX Sầu riêng Tiền Giang</button>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">Chỉnh sửa</span>
+</nav>
+<div class="bg-surface-container-lowest p-space-lg md:p-space-xl rounded-xl border border-outline-variant/30 shadow-xs max-w-4xl mx-auto w-full flex flex-col gap-space-lg">
+<div class="flex flex-col gap-1 border-b border-outline-variant/20 pb-space-md">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Chỉnh sửa thông tin hợp tác xã</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Cập nhật thông tin định danh và địa chỉ trụ sở của HTX Sầu riêng Tiền Giang</p>
+</div>
+<form class="flex flex-col gap-space-lg" id="editForm" onsubmit="event.preventDefault(); alert('Đã lưu thay đổi thông tin hợp tác xã!'); switchView('tab-detail-no-mgr');">
+<!-- Field 1: Tên HTX -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="edit_name">Tên HTX <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_edit_name">24 / 40</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="edit_name" maxlength="40" oninput="updateCharCount(this, 'len_edit_name', 40); checkEditChanged();" required="" type="text" value="HTX Sầu riêng Tiền Giang"/>
+</div>
+<!-- Field 2: Người đại diện -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="edit_rep">Người đại diện <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_edit_rep">14 / 40</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="edit_rep" maxlength="40" oninput="updateCharCount(this, 'len_edit_rep', 40); checkEditChanged();" required="" type="text" value="Lê Hoàng Khang"/>
+</div>
+<!-- Field 3: Số chứng nhận (Cho phép Admin sửa) -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="edit_cert">Số chứng nhận (Admin có quyền điều chỉnh) <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_edit_cert">14 / 24</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface uppercase font-mono focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="edit_cert" maxlength="24" oninput="updateCharCount(this, 'len_edit_cert', 24); checkEditChanged();" required="" type="text" value="CN-TG-2024-005"/>
+</div>
+<!-- Field 4: Địa chỉ -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="edit_addr">Địa chỉ <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_edit_addr">63 / 255</span>
+</div>
+<textarea class="p-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="edit_addr" maxlength="255" oninput="updateCharCount(this, 'len_edit_addr', 255); checkEditChanged();" required="" rows="3">Ấp Phú Hòa, Xã Long Khánh, Thị xã Cai Lậy, Tỉnh Tiền Giang</textarea>
+</div>
+<!-- Field 5: Số liên hệ -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg font-bold text-on-surface" for="edit_phone">Số liên hệ <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono" id="len_edit_phone">15 / 14</span>
+</div>
+<input class="h-12 px-space-md bg-surface-container-low border border-outline-variant/40 rounded-lg font-body-md text-body-md text-on-surface font-mono focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="edit_phone" maxlength="14" oninput="updateCharCount(this, 'len_edit_phone', 14); checkEditChanged();" pattern="^[+]?[0-9]{9,13}$" required="" type="tel" value="+84903889123"/>
+</div>
+<!-- Khóa trường Quản lý HTX theo thiết kế -->
+<div class="p-space-md rounded-xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Người quản lý HTX:</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                Trường được khóa
+              </span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">
+              Người quản lý HTX được điều phối qua luồng duyệt tài khoản Manager, không chỉnh sửa trực tiếp tại biểu mẫu này.
+            </p>
+</div>
+<!-- Buttons -->
+<div class="flex items-center justify-end gap-space-md pt-space-md border-t border-outline-variant/20">
+<button class="px-space-lg h-12 rounded-lg border border-outline text-on-surface font-label-lg text-label-lg font-semibold hover:bg-surface-container transition-colors" onclick="switchView('tab-detail-no-mgr')" type="button">
+              Hủy
+            </button>
+<button class="px-space-xl h-12 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-container transition-colors shadow-xs" id="btnSaveEdit" type="submit">
+              Lưu thay đổi
+            </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<!-- Interactive JavaScript logic -->
+<script>
+    function switchView(tabId) {
+      // Ẩn tất cả các view-panel
+      document.querySelectorAll('.view-panel').forEach(function(el) {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+
+      // Hiển thị view được chọn
+      var target = document.getElementById(tabId);
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('flex');
+      }
+
+      // Đổi trạng thái active cho nút tab
+      document.querySelectorAll('.demo-tab-btn').forEach(function(btn) {
+        btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-xs', 'font-semibold');
+        btn.classList.add('text-on-surface-variant', 'font-medium');
+      });
+
+      var activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-on-surface-variant', 'font-medium');
+        activeBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-xs', 'font-semibold');
+      }
+
+      // Cuộn mượt lên trên cùng
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateCharCount(input, counterId, max) {
+      var counter = document.getElementById(counterId);
+      if (counter) {
+        counter.textContent = input.value.length + ' / ' + max;
+      }
+    }
+
+    function checkEditChanged() {
+      var btn = document.getElementById('btnSaveEdit');
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+      }
+    }
+  </script>
+</div></main></div></body></html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;min-height:100%;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error":"#ffffff","on-primary-container":"#8abda9","error-container":"#ffdad6","surface":"#f8f9ff","on-tertiary-fixed":"#281900","primary-container":"#1b4d3e","on-secondary":"#ffffff","on-tertiary-container":"#e7a732","tertiary":"#412a00","tertiary-fixed":"#ffdeae","on-secondary-container":"#217128","on-primary-fixed":"#002117","surface-dim":"#cbdbf5","outline":"#707974","secondary":"#1b6d24","on-tertiary-fixed-variant":"#604100","on-error-container":"#93000a","outline-variant":"#c0c9c3","secondary-container":"#a0f399","on-secondary-fixed":"#002204","primary-fixed":"#baeed9","tertiary-fixed-dim":"#fdba45","surface-container-highest":"#d3e4fe","surface-container-lowest":"#ffffff","on-primary":"#ffffff","inverse-on-surface":"#eaf1ff","surface-tint":"#376757","on-surface-variant":"#404945","secondary-fixed":"#a3f69c","surface-bright":"#f8f9ff","surface-container":"#e5eeff","background":"#f8f9ff","inverse-primary":"#9ed1bd","tertiary-container":"#5e3f00","secondary-fixed-dim":"#88d982","on-surface":"#0b1c30","on-primary-fixed-variant":"#1d4f40","primary":"#003629","error":"#ba1a1a","surface-container-low":"#eff4ff","inverse-surface":"#213145","on-tertiary":"#ffffff","on-background":"#0b1c30","surface-container-high":"#dce9ff","surface-variant":"#d3e4fe","primary-fixed-dim":"#9ed1bd","on-secondary-fixed-variant":"#005312"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"gutter":"1rem","space-sm":"0.5rem","margin":"1rem","space-md":"1rem","space-xl":"2rem","margin-desktop":"2rem","space-lg":"1.5rem","gutter-desktop":"1.5rem","space-xs":"0.25rem"},fontFamily:{"headline-xl":["Be Vietnam Pro"],"headline-lg-mobile":["Be Vietnam Pro"],"headline-lg":["Be Vietnam Pro"],"title-lg":["Be Vietnam Pro"],"label-md":["Be Vietnam Pro"],"data-metric":["Be Vietnam Pro"],"title-md":["Be Vietnam Pro"],"body-lg":["Be Vietnam Pro"],"headline-xl-mobile":["Be Vietnam Pro"],"headline-md":["Be Vietnam Pro"],"label-lg":["Be Vietnam Pro"],"body-md":["Be Vietnam Pro"]},fontSize:{"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","fontWeight":"700"}],"headline-lg":["30px",{"lineHeight":"38px","fontWeight":"700"}],"title-lg":["18px",{"lineHeight":"26px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"data-metric":["32px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-md":["20px",{"lineHeight":"28px","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}]}}}};</script></head><body class="min-h-full bg-background font-body-md text-body-md text-on-surface antialiased"><main class="min-h-screen w-full flex flex-col justify-stretch bg-background"><div class="flex flex-col w-full">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 lg:py-10 flex flex-col justify-center min-h-screen">
+<!-- State Preview Bar for QA / Demonstration (Demo Switcher) -->
+<section aria-label="Bộ điều khiển kịch bản thử nghiệm" class="mb-6 bg-surface-container-low rounded-xl p-3 sm:p-4 shadow-sm border border-outline-variant/30">
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">tune</span>
+<span class="font-label-lg text-label-lg text-primary font-semibold">Trình xem trước quy trình (Demo Switcher):</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant hidden sm:inline">Chọn trạng thái để xem nhanh giao diện &amp; quy trình</span>
+</div>
+<div class="flex flex-wrap items-center gap-2" id="state-selector-group"><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all shadow-sm bg-primary text-on-primary" id="btn-nav-login" onclick="switchMainView('login')" type="button">1. Đăng nhập</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-login-pending" onclick="switchMainView('login-pending')" type="button">2. Đăng nhập - Đang chờ duyệt (Pending)</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-login-reject" onclick="switchMainView('login-reject')" type="button">3. Đăng nhập - Bị từ chối (Reject)</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-manager-step1" onclick="switchMainView('manager-step1')" type="button">4. ĐK Manager: B1 - Thông tin</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-manager-step2" onclick="switchMainView('manager-step2')" type="button">5. ĐK Manager: B2 - Xác minh Email</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-manager-success" onclick="switchMainView('manager-success')" type="button">6. ĐK Manager: B3 - Hoàn tất chờ duyệt</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-reg-farmer" onclick="switchMainView('reg-farmer')" type="button">7. ĐK: Nông dân</button><button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all hover:bg-surface-variant bg-surface-container text-on-surface" id="btn-nav-reg-owner" onclick="switchMainView('reg-owner')" type="button">8. ĐK: Chủ trang trại</button></div>
+</div>
+</section>
+<!-- Main Split Grid Container (50/50 Desktop) -->
+<div class="grid grid-cols-1 gap-8 lg:gap-10 items-stretch lg:grid-cols-2">
+<!-- Left Column: Banner Tinh Tế & Vườn Sầu Riêng Chuẩn -->
+<section aria-labelledby="brand-heading" class="flex flex-col justify-between bg-surface-container-low rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden border border-outline-variant/20">
+<!-- Subtle ambient leaf background accents -->
+<div class="absolute -right-16 -top-16 w-72 h-72 bg-emerald-700/5 rounded-full pointer-events-none blur-3xl"></div>
+<div class="absolute -left-12 bottom-12 w-60 h-60 bg-secondary-container/20 rounded-full pointer-events-none blur-2xl"></div>
+<div class="relative z-10 flex flex-col h-full justify-between gap-6 sm:gap-8">
+<!-- Logo & Headline Section -->
+<div>
+<div class="flex items-center gap-3.5 mb-5 lg:mb-6">
+<div class="w-12 h-12 rounded-xl bg-[#1b4d3e] flex items-center justify-center text-on-primary shadow-sm flex-shrink-0">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-[#1b4d3e] tracking-tight font-bold">Smart Durian</span>
+<span class="font-label-md text-label-md text-secondary font-semibold">Hệ thống Nông nghiệp Số Chuyên sâu</span>
+</div>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary tracking-tight mb-3" id="brand-heading">
+      Chăm sóc thông minh.<br/>Nguồn gốc rõ ràng.
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mb-6 leading-relaxed">
+      Đồng hành cùng nhà vườn từ chăm sóc, giám sát đến truy xuất nguồn gốc sầu riêng.
+</p>
+<!-- Durian Orchard Visual: https://lh3.googleusercontent.com/aida/AEtjO1XTstiNvmeofw3VS4aWmDvKLHQ8MqMe4f4n1kNVGaGMKekliqAmSIfAV4NbUsN6nO19o8rJXgFyBC17mfayuRItXi0c8ViT1DDP46LawsVkR9prw1mS2kNFrqwe5DFJrgkCKGi5cSVtPR9XWBvOm1BEJmyGvtolEfIQYsAr9pb2V921NZOBfLskJqQMK9kWbJ2OIASTaotPj12k8FHFrHEd891jEE7HQD7tfAgw6Rg -->
+<div class="relative rounded-2xl overflow-hidden shadow-sm border border-emerald-950/10 group bg-surface-container-lowest">
+<img alt="Vườn sầu riêng canh tác bền vững công nghệ cao Smart Durian tại Việt Nam" class="w-full h-64 sm:h-72 lg:h-80 object-cover object-center transform transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1XTstiNvmeofw3VS4aWmDvKLHQ8MqMe4f4n1kNVGaGMKekliqAmSIfAV4NbUsN6nO19o8rJXgFyBC17mfayuRItXi0c8ViT1DDP46LawsVkR9prw1mS2kNFrqwe5DFJrgkCKGi5cSVtPR9XWBvOm1BEJmyGvtolEfIQYsAr9pb2V921NZOBfLskJqQMK9kWbJ2OIASTaotPj12k8FHFrHEd891jEE7HQD7tfAgw6Rg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#003629]/85 via-[#003629]/25 to-transparent flex flex-col justify-end p-5 sm:p-6 text-on-primary">
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed"></span>
+<span class="font-label-md text-label-md text-emerald-100 uppercase tracking-wider font-semibold">Nền tảng Nông nghiệp Số Toàn diện</span>
+</div>
+<p class="font-title-md text-title-md text-white font-medium">
+          Kết nối Nông dân • Chủ Trang Trại • Hợp Tác Xã trong chuỗi giá trị sầu riêng Việt Nam
+</p>
+</div>
+</div>
+</div>
+<!-- Subtle Ecosystem Footer Tagline -->
+<div class="pt-4 border-t border-outline-variant/30 flex flex-wrap items-center justify-between gap-3 text-on-surface-variant text-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-base">verified_user</span>
+<span class="font-label-md text-label-md">Smart Durian Ecosystem v2.4 • Canh tác chuẩn VietGAP &amp; GlobalGAP</span>
+</div>
+<div class="font-label-md text-label-md flex items-center gap-1.5 text-secondary font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+      Hạ tầng IoT &amp; AI Sẵn sàng
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Authentication & Flow Card -->
+<section aria-labelledby="form-section-heading" class="flex flex-col justify-center">
+<div class="w-full bg-surface-container-lowest rounded-2xl p-6 sm:p-8 lg:p-9 shadow-sm relative border border-outline-variant/20 min-h-[580px] flex flex-col justify-between max-w-lg mx-auto">
+<!-- ==================== VIEW 1: TRANG ĐĂNG NHẬP DÙNG CHUNG ==================== -->
+<div class="view-pane flex flex-col justify-between h-full" id="view-login">
+<div>
+<div class="mb-6">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container font-label-md text-label-md text-primary mb-3">
+<span class="material-symbols-outlined text-base">lock</span>
+        Cổng Đăng Nhập Tập Trung
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mb-2" id="form-section-heading">
+        Đăng nhập Smart Durian
+</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+        Chào mừng bạn quay lại hệ sinh thái quản lý và truy xuất nguồn gốc sầu riêng
+</p>
+</div>
+<!-- Form Đăng nhập (2 trường: SĐT và Mật khẩu) -->
+<div class="hidden mb-4 p-3.5 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-start gap-3 transition-all" id="login-alert-pending" role="alert"><span class="material-symbols-outlined text-amber-700 text-xl flex-shrink-0 mt-0.5">hourglass_top</span><div class="flex-1 text-sm leading-relaxed"><div class="font-semibold text-amber-900 mb-0.5">Tài khoản đang chờ Admin phê duyệt</div><div class="text-xs text-amber-800">Hồ sơ của bạn đã được tiếp nhận và đang trong quá trình xét duyệt. Bạn chưa thể đăng nhập trong thời gian này. Vui lòng kiểm tra email để cập nhật thông báo mới nhất.</div></div><button class="text-amber-800 hover:text-amber-900 cursor-pointer p-0.5" onclick="hideLoginAlerts()" type="button"><span class="material-symbols-outlined text-lg">close</span></button></div><div class="hidden mb-4 p-3.5 rounded-xl bg-error-container/60 border border-error/30 text-error flex items-start gap-3 transition-all" id="login-alert-reject" role="alert"><span class="material-symbols-outlined text-error text-xl flex-shrink-0 mt-0.5">cancel</span><div class="flex-1 text-sm leading-relaxed"><div class="font-semibold text-error mb-0.5">Đăng ký tài khoản đã bị từ chối</div><div class="text-xs text-on-surface-variant">Hồ sơ đăng ký tài khoản của bạn chưa đáp ứng yêu cầu hoặc bị từ chối bởi hội đồng Quản trị viên. Vui lòng liên hệ quản trị viên hoặc hotline hỗ trợ 1900 6868 để biết thêm chi tiết.</div></div><button class="text-error hover:text-on-surface cursor-pointer p-0.5" onclick="hideLoginAlerts()" type="button"><span class="material-symbols-outlined text-lg">close</span></button></div><form class="space-y-4" onsubmit="handleLogin(event)">
+<!-- Số điện thoại (VN) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="login-phone">Số điện thoại <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant">10 số chuẩn VN</span>
+</div>
+<div class="relative rounded-xl bg-surface-container-low transition-all">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-xl">phone_iphone</span>
+</div>
+<input class="w-full h-12 pl-11 pr-4 bg-transparent rounded-xl font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="login-phone" name="phone" pattern="^(0[3|5|7|8|9])[0-9]{8}$" placeholder="Ví dụ: 0912 345 678" required="" type="tel" value="0912345678"/>
+</div>
+</div>
+<!-- Mật khẩu (có nút mắt) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="login-pwd">Mật khẩu <span class="text-error">*</span></label>
+</div>
+<div class="relative rounded-xl bg-surface-container-low transition-all">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-xl">lock</span>
+</div>
+<input class="w-full h-12 pl-11 pr-12 bg-transparent rounded-xl font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="login-pwd" name="password" placeholder="Nhập mật khẩu" required="" type="password" value="Durian@2025"/>
+<button aria-label="Hiện hoặc ẩn mật khẩu" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer" onclick="toggleGenericPassword('login-pwd', 'login-pwd-eye')" type="button">
+<span class="material-symbols-outlined text-xl" id="login-pwd-eye">visibility</span>
+</button>
+</div>
+</div>
+<!-- Tiện ích: Ghi nhớ & Quên mật khẩu -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded text-[#1b4d3e] focus:ring-[#1b4d3e] accent-[#1b4d3e] cursor-pointer" name="remember" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface">Ghi nhớ đăng nhập</span>
+</label>
+<a class="font-label-lg text-label-lg text-primary hover:underline transition-colors font-medium" href="#forgot" onclick="event.preventDefault(); alert('Vui lòng liên hệ hotline hỗ trợ 1900 6868 hoặc quản trị viên trang trại để được hỗ trợ đặt lại mật khẩu.');">
+          Quên mật khẩu?
+</a>
+</div>
+<!-- Nút Đăng nhập -->
+<div class="pt-2">
+<button class="w-full h-12 bg-[#1b4d3e] hover:bg-[#153d31] text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer" type="submit">
+<span>Đăng nhập</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Chuyển sang Đăng ký -->
+<div class="text-center pt-4 border-t border-outline-variant/30 mt-6">
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Chưa có tài khoản? 
+        <button class="font-title-md text-title-md text-primary hover:underline ml-1 font-semibold cursor-pointer" onclick="switchMainView('reg-farmer')" type="button">
+          Đăng ký ngay
+        </button>
+</p>
+</div>
+</div>
+<!-- ==================== VIEW 2: KHU VỰC ĐĂNG KÝ (NÔNG DÂN / CHỦ TRANG TRẠI / HTX) ==================== -->
+<div class="view-pane hidden flex-col justify-between h-full" id="view-register">
+<div>
+<!-- Header Đăng ký -->
+<div class="mb-5">
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mb-1">
+        Đăng ký tài khoản mới
+</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Chọn vai trò của bạn trong chuỗi canh tác sầu riêng
+</p>
+</div>
+<!-- 3 Tab phân loại đăng ký: Nông dân | Chủ trang trại | Quản lý HTX -->
+<div class="grid grid-cols-3 gap-1.5 p-1 bg-surface-container rounded-xl mb-6">
+<button class="py-2 px-2 text-center rounded-lg font-label-md text-label-md transition-all cursor-pointer bg-primary text-on-primary font-semibold shadow-sm" id="role-tab-farmer" onclick="selectRegRole('farmer')" type="button">
+        Nông dân
+</button>
+<button class="py-2 px-2 text-center rounded-lg font-label-md text-label-md transition-all cursor-pointer text-on-surface hover:bg-surface-variant font-medium" id="role-tab-owner" onclick="selectRegRole('owner')" type="button">
+        Chủ trang trại
+</button>
+<button class="py-2 px-2 text-center rounded-lg font-label-md text-label-md transition-all cursor-pointer text-on-surface hover:bg-surface-variant font-medium" id="role-tab-manager" onclick="selectRegRole('manager')" type="button">
+        Quản lý HTX
+</button>
+</div>
+<!-- ================= FORM 1: NÔNG DÂN ================= -->
+<form class="space-y-4" id="form-farmer" onsubmit="handleRegisterSubmit(event, 'Nông dân')">
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="farmer-name">Họ và tên <span class="text-error">*</span></label>
+<input class="w-full h-11 px-4 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="farmer-name" placeholder="Ví dụ: Nguyễn Văn An" required="" type="text" value="Nguyễn Văn An"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="farmer-phone">Số điện thoại <span class="text-error">*</span></label>
+<input class="w-full h-11 px-4 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="farmer-phone" pattern="^(0[3|5|7|8|9])[0-9]{8}$" placeholder="0912 345 678" required="" type="tel" value="0933112233"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="farmer-pwd">Mật khẩu <span class="text-error">*</span></label>
+<div class="relative">
+<input class="w-full h-11 px-4 pr-11 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="farmer-pwd" placeholder="Tạo mật khẩu an toàn" required="" type="password" value="NongDan@2025"/>
+<button aria-label="Hiện hoặc ẩn mật khẩu" class="absolute inset-y-0 right-0 pr-3 flex items-center text-on-surface-variant hover:text-on-surface" onclick="toggleGenericPassword('farmer-pwd', 'farmer-pwd-eye')" type="button">
+<span class="material-symbols-outlined text-lg" id="farmer-pwd-eye">visibility</span>
+</button>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="farmer-area">Chọn khu vực / trang trại tham gia <span class="text-error">*</span></label>
+<span class="font-label-md text-label-md text-on-surface-variant">Chọn theo vùng</span>
+</div>
+<select class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="farmer-area">
+<option>Trang trại Sầu riêng Minh Tâm (Bù Đăng, Bình Phước)</option>
+<option>Nông trại Hoàng Gia (Krông Pắc, Đắk Lắk)</option>
+<option>Vườn Sầu riêng Chín Sớm (Cai Lậy, Tiền Giang)</option>
+<option>Vùng trồng sầu riêng Hữu cơ Bảo Lộc (Lâm Đồng)</option>
+</select>
+</div>
+<div class="pt-2">
+<button class="w-full h-12 bg-[#1b4d3e] hover:bg-[#153d31] text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" type="submit">
+<span>Đăng ký tài khoản Nông dân</span>
+<span class="material-symbols-outlined text-xl">how_to_reg</span>
+</button>
+</div>
+</form>
+<!-- ================= FORM 2: CHỦ TRANG TRẠI ================= -->
+<form class="space-y-4 hidden" id="form-owner" onsubmit="handleRegisterSubmit(event, 'Chủ trang trại')">
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="owner-name">Họ và tên <span class="text-error">*</span></label>
+<input class="w-full h-11 px-4 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="owner-name" placeholder="Ví dụ: Trần Quốc Tuấn" required="" type="text" value="Trần Quốc Tuấn"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="owner-farm">Tên trang trại sở hữu <span class="text-error">*</span></label>
+<input class="w-full h-11 px-4 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="owner-farm" placeholder="Ví dụ: Trang trại Sầu riêng Ri6 Hữu Cơ Bảo Lộc" required="" type="text" value="Trang trại Sầu riêng Hữu Cơ Bảo Lộc"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="owner-phone">Số điện thoại <span class="text-error">*</span></label>
+<input class="w-full h-11 px-4 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="owner-phone" pattern="^(0[3|5|7|8|9])[0-9]{8}$" placeholder="0912 345 678" required="" type="tel" value="0987654321"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="owner-address">Địa chỉ trang trại <span class="text-error">*</span></label>
+<input class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="owner-address" placeholder="Xã, Huyện, Tỉnh..." required="" type="text" value="Bù Đăng, Bình Phước"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold" for="owner-pwd">Mật khẩu <span class="text-error">*</span></label>
+<input class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="owner-pwd" placeholder="Mật khẩu" required="" type="password" value="TrangTrai@2025"/>
+</div>
+</div>
+<div class="pt-2">
+<button class="w-full h-12 bg-[#1b4d3e] hover:bg-[#153d31] text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" type="submit">
+<span>Đăng ký tài khoản Chủ trang trại</span>
+<span class="material-symbols-outlined text-xl">agriculture</span>
+</button>
+</div>
+</form>
+<!-- ================= FORM 3: QUẢN LÝ HTX (LUỒNG 4 BƯỚC ĐẦY ĐỦ) ================= -->
+<div class="hidden" id="form-manager-flow"><div class="mb-4 p-3 rounded-xl bg-surface-container-low border border-outline-variant/20"><div class="flex items-center justify-between text-xs font-semibold mb-2"><span class="text-primary flex items-center gap-1 font-semibold" id="step-badge-1"><span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[11px]">1</span> Thông tin</span><span class="text-outline flex items-center gap-1" id="step-badge-2"><span class="w-5 h-5 rounded-full bg-surface-variant text-on-surface flex items-center justify-center text-[11px]">2</span> Xác minh email</span><span class="text-outline flex items-center gap-1" id="step-badge-3"><span class="w-5 h-5 rounded-full bg-surface-variant text-on-surface flex items-center justify-center text-[11px]">3</span> Hoàn tất</span></div><div class="w-full bg-surface-variant h-1.5 rounded-full overflow-hidden"><div class="bg-[#1b4d3e] h-full transition-all duration-300 w-1/3" id="stepper-progress-bar"></div></div></div><div class="manager-step-pane space-y-3.5" id="htx-step-1"><div class="space-y-1"><label class="font-label-lg text-label-lg text-on-surface font-semibold" for="htx-input-name">Tên hiển thị <span class="text-error">*</span></label><input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="htx-input-name" placeholder="Ví dụ: Lê Văn Bình" required="" type="text" value="Lê Văn Bình"/></div><div class="space-y-1"><div class="flex items-center justify-between"><label class="font-label-lg text-label-lg text-on-surface font-semibold" for="htx-input-phone">Số điện thoại <span class="text-error">*</span></label><span class="font-label-md text-label-md text-on-surface-variant">Kiểm tra định dạng &amp; trùng số</span></div><input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="htx-input-phone" pattern="^(0[3|5|7|8|9])[0-9]{8}$" placeholder="Ví dụ: 0912 345 678" required="" type="tel" value="0912345678"/></div><div class="space-y-1"><div class="flex items-center justify-between"><label class="font-label-lg text-label-lg text-on-surface font-semibold" for="htx-input-email">Email <span class="text-error">*</span></label><span class="font-label-md text-label-md text-on-surface-variant">Chấp nhận mọi domain hợp lệ</span></div><input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="htx-input-email" oninput="updateMaskedEmailDisplay(this.value)" placeholder="Ví dụ: levanbinh@coop.vn, quanly@durian.vn" required="" type="email" value="levanbinh@coop.vn"/></div><div class="grid grid-cols-2 gap-3"><div class="space-y-1"><label class="font-label-lg text-label-lg text-on-surface font-semibold" for="htx-pwd">Mật khẩu <span class="text-error">*</span></label><input class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="htx-pwd" required="" type="password" value="QuanLyHTX@2025"/></div><div class="space-y-1"><label class="font-label-lg text-label-lg text-on-surface font-semibold" for="htx-pwd-confirm">Xác nhận mật khẩu <span class="text-error">*</span></label><input class="w-full h-11 px-3 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container border border-transparent focus:border-primary" id="htx-pwd-confirm" required="" type="password" value="QuanLyHTX@2025"/></div></div><div class="p-2.5 rounded-xl bg-surface-container flex items-start gap-2 text-xs text-on-surface-variant leading-relaxed"><span class="material-symbols-outlined text-secondary text-base flex-shrink-0 mt-0.5">verified_user</span><span>Hợp tác xã quản lý sẽ do Quản trị viên chỉ định khi xét duyệt hồ sơ. Mã xác minh sẽ được gửi qua email.</span></div><button class="w-full h-12 bg-[#1b4d3e] hover:bg-[#153d31] text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer mt-1" onclick="setHtxStep(2)" type="button"><span>Tiếp tục</span><span class="material-symbols-outlined text-lg">arrow_forward</span></button></div><div class="manager-step-pane space-y-4 hidden" id="htx-step-2"><div class="text-center"><div class="w-12 h-12 rounded-full bg-primary-container text-on-primary mx-auto flex items-center justify-center mb-2"><span class="material-symbols-outlined text-2xl">mark_email_read</span></div><h3 class="font-title-lg text-title-lg text-on-surface font-bold">Xác minh địa chỉ email</h3><p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">Mã xác minh OTP 6 số đã được gửi tới hộp thư:<br/><strong class="text-primary font-semibold" id="masked-email-display">l***h@coop.vn</strong></p></div><div class="space-y-2"><label class="font-label-md text-label-md text-on-surface-variant block text-center">Nhập mã xác minh email (6 số):</label><div class="flex justify-center gap-2" id="otp-input-container"><input class="w-10 h-12 text-center text-xl font-bold bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-transparent" maxlength="1" type="text" value="6"/><input class="w-10 h-12 text-center text-xl font-bold bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-transparent" maxlength="1" type="text" value="2"/><input class="w-10 h-12 text-center text-xl font-bold bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-transparent" maxlength="1" type="text" value="8"/><input class="w-10 h-12 text-center text-xl font-bold bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-transparent" maxlength="1" type="text" value="1"/><input class="w-10 h-12 text-center text-xl font-bold bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-transparent" maxlength="1" type="text" value="9"/><input class="w-10 h-12 text-center text-xl font-bold bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-transparent" maxlength="1" type="text" value="4"/></div><div class="text-center text-xs text-secondary font-medium hidden" id="otp-status-feedback"></div></div><div class="flex items-center justify-between text-xs text-on-surface-variant px-1"><button class="hover:underline text-primary font-medium cursor-pointer" onclick="setHtxStep(1)" type="button">Sửa email</button><button class="text-secondary font-medium hover:underline cursor-pointer" id="btn-resend-otp" onclick="handleResendOtp()" type="button">Gửi lại mã (<span id="otp-countdown">60s</span>)</button></div><div class="flex gap-2 text-xs justify-center pt-1"><button class="text-outline hover:text-error underline" onclick="simulateOtpState('wrong')" type="button">Thử mã sai</button><span class="text-outline">•</span><button class="text-outline hover:text-error underline" onclick="simulateOtpState('expired')" type="button">Thử hết hạn</button><span class="text-outline">•</span><button class="text-outline hover:text-secondary underline" onclick="simulateOtpState('valid')" type="button">Thử hợp lệ</button></div><button class="w-full h-12 bg-[#1b4d3e] hover:bg-[#153d31] text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" id="btn-confirm-email" onclick="verifyEmailAndComplete()" type="button"><span>Xác minh email</span><span class="material-symbols-outlined text-lg">check_circle</span></button></div></div>
+</div>
+<!-- Chuyển về Đăng nhập từ Register -->
+<div class="text-center pt-4 border-t border-outline-variant/30 mt-6">
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Đã có tài khoản? 
+        <button class="font-title-md text-title-md text-primary hover:underline ml-1 font-semibold cursor-pointer" onclick="switchMainView('login')" type="button">
+          Đăng nhập ngay
+        </button>
+</p>
+</div>
+</div>
+<!-- ==================== VIEW 3: SAU KHI GỬI HỒ SƠ HTX (CHỜ DUYỆT) ==================== -->
+<div class="view-pane hidden flex flex-col justify-between h-full py-4 text-center" id="view-manager-success"><div class="flex flex-col items-center my-auto"><div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mb-4 shadow-sm border border-amber-200"><span class="material-symbols-outlined text-4xl">hourglass_top</span></div><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 mb-3 border border-amber-300"><span class="w-2 h-2 rounded-full bg-amber-600 animate-pulse"></span>Chờ Admin phê duyệt</span><h2 class="font-headline-md text-headline-md text-primary font-bold tracking-tight mb-2">Đăng ký thành công — chờ phê duyệt</h2><p class="font-body-md text-body-md text-on-surface-variant max-w-sm leading-relaxed mb-6">Tài khoản Quản lý HTX của bạn đã được tạo và đang chờ Admin phê duyệt. Bạn chưa thể đăng nhập trong thời gian này.</p><div class="w-full max-w-sm bg-surface-container-low rounded-xl p-4 text-left text-xs text-on-surface-variant space-y-2 mb-6 border border-outline-variant/20"><div class="flex justify-between items-center"><span class="">Họ và tên:</span> <strong class="text-on-surface font-semibold" id="summary-mgr-name">Lê Văn Bình</strong></div><div class="flex justify-between items-center"><span class="">Số điện thoại:</span> <strong class="text-on-surface font-semibold" id="summary-mgr-phone">0912 345 678</strong></div><div class="flex justify-between items-center"><span class="">Email xác minh:</span> <strong class="text-primary font-semibold" id="summary-mgr-email">levanbinh@coop.vn</strong></div><div class="flex justify-between items-center"><span class="">Trạng thái tài khoản:</span> <strong class="text-amber-700 font-semibold">Đã tạo • Đang chờ duyệt</strong></div></div><button class="w-full max-w-sm h-12 bg-[#1b4d3e] hover:bg-[#153d31] text-on-primary font-label-lg text-label-lg rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer" onclick="switchMainView('login')" type="button"><span class="material-symbols-outlined text-xl">login</span><span>Về trang đăng nhập</span></button></div><div class="pt-4 border-t border-outline-variant/30 text-xs text-on-surface-variant">Smart Durian Ecosystem • Cần trợ giúp gấp? Hotline hỗ trợ: 1900 6868</div></div>
+</div>
+</section>
+</div>
+</div>
+</div>
+<script>
+  function toggleGenericPassword(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (!input || !icon) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.textContent = 'visibility_off';
+    } else {
+      input.type = 'password';
+      icon.textContent = 'visibility';
+    }
+  }
+
+  function resetNavButtons() {
+    const navBtns = document.querySelectorAll('.state-btn');
+    navBtns.forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+      btn.classList.add('bg-surface-container', 'text-on-surface');
+    });
+  }
+
+  function highlightNavBtn(id) {
+    resetNavButtons();
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.classList.remove('bg-surface-container', 'text-on-surface');
+      btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+    }
+  }
+
+  function selectRegRole(roleKey) {
+    const tabs = ['farmer', 'owner', 'manager'];
+    tabs.forEach(t => {
+      const btn = document.getElementById('role-tab-' + t);
+      if (btn) {
+        if (t === roleKey) {
+          btn.classList.remove('text-on-surface', 'hover:bg-surface-variant', 'font-medium');
+          btn.classList.add('bg-primary', 'text-on-primary', 'font-semibold', 'shadow-sm');
+        } else {
+          btn.classList.remove('bg-primary', 'text-on-primary', 'font-semibold', 'shadow-sm');
+          btn.classList.add('text-on-surface', 'hover:bg-surface-variant', 'font-medium');
+        }
+      }
+    });
+
+    const formFarmer = document.getElementById('form-farmer');
+    const formOwner = document.getElementById('form-owner');
+    const formManagerFlow = document.getElementById('form-manager-flow');
+
+    formFarmer?.classList.add('hidden');
+    formOwner?.classList.add('hidden');
+    formManagerFlow?.classList.add('hidden');
+
+    if (roleKey === 'farmer') {
+      formFarmer?.classList.remove('hidden');
+    } else if (roleKey === 'owner') {
+      formOwner?.classList.remove('hidden');
+    } else if (roleKey === 'manager') {
+      formManagerFlow?.classList.remove('hidden');
+      setHtxStep(1);
+    }
+  }
+
+  function setHtxStep(stepNumber) {
+    for (let i = 1; i <= 4; i++) {
+      const pane = document.getElementById('htx-step-' + i);
+      pane?.classList.add('hidden');
+
+      const badge = document.getElementById('step-badge-' + i);
+      const badgeCircle = badge ? badge.querySelector('span') : null;
+      if (badge && badgeCircle) {
+        if (i === stepNumber) {
+          badge.className = 'text-primary flex items-center gap-1 font-semibold';
+          badgeCircle.className = 'w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[11px]';
+        } else if (i < stepNumber) {
+          badge.className = 'text-secondary flex items-center gap-1 font-medium';
+          badgeCircle.className = 'w-5 h-5 rounded-full bg-secondary-container text-secondary flex items-center justify-center text-[11px]';
+        } else {
+          badge.className = 'text-outline flex items-center gap-1';
+          badgeCircle.className = 'w-5 h-5 rounded-full bg-surface-variant text-on-surface flex items-center justify-center text-[11px]';
+        }
+      }
+    }
+
+    const targetPane = document.getElementById('htx-step-' + stepNumber);
+    targetPane?.classList.remove('hidden');
+
+    const progress = document.getElementById('stepper-progress-bar');
+    if (progress) {
+      const widths = ['25%', '50%', '75%', '100%'];
+      progress.style.width = widths[stepNumber - 1];
+    }
+  }
+
+  function switchMainView(viewName) {
+    const viewLogin = document.getElementById('view-login');
+    const viewRegister = document.getElementById('view-register');
+    const viewManagerSuccess = document.getElementById('view-manager-success');
+
+    viewLogin?.classList.add('hidden');
+    viewRegister?.classList.add('hidden');
+    viewManagerSuccess?.classList.add('hidden');
+
+    if (viewName === 'login') {
+      viewLogin?.classList.remove('hidden');
+      highlightNavBtn('btn-nav-login');
+    } else if (viewName === 'reg-farmer') {
+      viewRegister?.classList.remove('hidden');
+      selectRegRole('farmer');
+      highlightNavBtn('btn-nav-reg-farmer');
+    } else if (viewName === 'reg-owner') {
+      viewRegister?.classList.remove('hidden');
+      selectRegRole('owner');
+      highlightNavBtn('btn-nav-reg-owner');
+    } else if (viewName === 'manager-step1') {
+      viewRegister?.classList.remove('hidden');
+      selectRegRole('manager');
+      setHtxStep(1);
+      highlightNavBtn('btn-nav-manager-step1');
+    } else if (viewName === 'manager-step2') {
+      viewRegister?.classList.remove('hidden');
+      selectRegRole('manager');
+      setHtxStep(2);
+      highlightNavBtn('btn-nav-manager-step2');
+    } else if (viewName === 'manager-step3') {
+      viewRegister?.classList.remove('hidden');
+      selectRegRole('manager');
+      setHtxStep(3);
+      highlightNavBtn('btn-nav-manager-step3');
+    } else if (viewName === 'manager-step4') {
+      viewRegister?.classList.remove('hidden');
+      selectRegRole('manager');
+      setHtxStep(4);
+      highlightNavBtn('btn-nav-manager-step4');
+    } else if (viewName === 'manager-success') {
+      viewManagerSuccess?.classList.remove('hidden');
+      highlightNavBtn('btn-nav-manager-success');
+    }
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const phone = document.getElementById('login-phone')?.value;
+    alert('Đăng nhập thành công với SĐT: ' + phone + ' vào hệ sinh thái Smart Durian.');
+  }
+
+  function handleRegisterSubmit(e, role) {
+    e.preventDefault();
+    alert('Đã gửi yêu cầu đăng ký cho vai trò: ' + role + '. Hệ thống đang chuyển hướng tới trang Đăng nhập...');
+    switchMainView('login');
+  }
+</script></main></body></html>

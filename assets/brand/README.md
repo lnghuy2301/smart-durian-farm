@@ -40,4 +40,4 @@ Wordmark SVG có phần chữ dạng `<text>`, vì vậy font cài/tải thực 
 
 ## Vị trí các tài nguyên khác
 
-`docs/frontend/references/` giữ các mẫu giao diện tham khảo; [docs/frontend/README.md](../../docs/frontend/README.md) chỉ dẫn nơi đặt mẫu. Đã bỏ `docs/frontend/brand/` vì chỉ lặp liên kết có sẵn và bỏ các thư mục `apps/web/public/assets/` rỗng chưa dùng. Khi triển khai web, tạo public assets cho những hình nội dung hoặc favicon thực sự cần; logo/pattern vẫn lấy từ nguồn chung. Giữ `.gitkeep` trong các thư mục app chưa khởi tạo và hai thư mục mẫu tham khảo để Git lưu cấu trúc cần thiết.
+`docs/frontend/references/` giữ các mẫu giao diện tham khảo; [docs/frontend/README.md](../../docs/frontend/README.md) chỉ dẫn nơi đặt mẫu. Đã bỏ `docs/frontend/brand/` vì chỉ lặp liên kết có sẵn và bỏ các thư mục `apps/web/public/assets/` rỗng chưa dùng. Khi triển khai web, tạo public assets cho những hình nội dung hoặc favicon thực sự cần; logo/pattern vẫn lấy từ nguồn chung. Theo yêu cầu dọn trước triển khai, các placeholder app/thư mục tham khảo rỗng cũng đã bỏ; mobile/ai tạo lại khi bắt đầu phần việc đó.

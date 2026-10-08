@@ -5,10 +5,9 @@ Ngày 2026-10-08, người dùng chọn **Smart Durian — Brand Kit v1.0 / Duri
 | Thư mục | Nội dung |
 | --- | --- |
 | `assets/brand/Smart_Durian_Brand_Kit/` | Nguồn chung của bộ nhận diện đã chọn: logo, favicon, icon app, pattern, guideline, tokens JSON/CSS. |
-| `docs/frontend/references/html/` | Mẫu HTML/CSS và tài nguyên đi kèm dùng để tham khảo giao diện. Mỗi mẫu có thể đặt trong một thư mục riêng để giữ đường dẫn tương đối. |
-| `docs/frontend/references/images/` | Ảnh chụp màn hình, mockup và mẫu bố cục tham khảo; có thể chia theo Admin, Manager, Farmer khi có mẫu. |
+| `docs/frontend/references/stitch_smart_durian_farmer_dashboard/` | HTML, ảnh và DESIGN do người dùng cung cấp; mỗi màn hình một thư mục, có manifest giải thích nguồn dùng chung. |
 
-Các đường dẫn trong bảng tính từ thư mục gốc dự án. File `.gitkeep` giữ lại các thư mục trống trong Git.
+Các đường dẫn trong bảng tính từ thư mục gốc dự án. Đã bỏ các thư mục/placeholder rỗng trước khi triển khai. Xem [manifest mẫu Stitch](references/stitch_smart_durian_farmer_dashboard/README.md).
 
 ## Cách đặt tài nguyên
 
@@ -25,4 +24,4 @@ Các đường dẫn trong bảng tính từ thư mục gốc dự án. File `.g
 | --- | --- | --- | --- | --- |
 | `assets/brand/Smart_Durian_Brand_Kit/` | Người dùng cung cấp và xác nhận ngày 2026-10-08 | Người dùng chọn sử dụng trong toàn dự án; kit không kèm file font | Web, React Native, tài liệu/slide | Chính thức được chọn cho dự án |
 
-Chỉ bắt đầu code frontend sau khi người dùng cung cấp mẫu và yêu cầu tiến hành rõ ràng.
+Người dùng đã cung cấp mẫu và yêu cầu triển khai ngày 2026-10-08. Chỉ tích hợp các API/nghiệp vụ đã xác nhận; module nào thiếu quyết định thì hỏi trước và tiếp tục các phần độc lập. Không push/merge.

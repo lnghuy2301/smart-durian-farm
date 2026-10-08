@@ -1,5 +1,7 @@
 # Implementation notes
 
+Frontend authorized 2026-10-08: user supplied Stitch reference screens and explicitly requested implementation. This supersedes earlier wait-for-samples instructions. Use current backend contracts/official brand kit; no new business APIs or fake production data. Prepare references/clean empty placeholders on a separate local branch, then branch per frontend module inheriting completed dependencies. Ask for unresolved business/design decisions while progressing independent work. No push/merge.
+
 Cleanup 2026-10-08 requested by user: remove the SHA-256-identical `03_App_Icons/app-icon-180.png`; use `02_Favicon/apple-touch-icon.png` as the shared 180px source. Kit now has 46 files. Remove redundant `docs/frontend/brand/` pointer documentation/placeholders and unused empty web public asset directories; preserve reference folders and app placeholders. No backend or frontend application changes.
 
 Brand selection 2026-10-08: user selected Smart Durian / Durian Connect Brand Kit v1.0 for the entire project. Shared original source: `assets/brand/Smart_Durian_Brand_Kit/`; see [integration conventions](../assets/brand/README.md). JSON/CSS colors match; font files are not supplied and SVG wordmarks contain editable text. No font downloads or app integration yet. **Wait for interface samples and an explicit user request before frontend coding.** Current work on `feat/web-foundation` only organizes assets/documentation; preserve private files and do not push/merge.
