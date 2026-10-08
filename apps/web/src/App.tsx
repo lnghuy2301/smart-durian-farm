@@ -5,6 +5,7 @@ import { ProtectedLayout, AdminGuard, AwaitingPage } from './components/Shell';
 import { ResourcePage, materialDefinition, standardDefinition, farmDefinition, zoneDefinition, treeDefinition, harvestDefinition } from './pages/Resources';
 import { CooperativeList, CooperativeDetailPage, CooperativeEditor } from './pages/Cooperatives';
 import { PendingManagersPage } from './pages/ManagerApproval';
+import { Dashboard } from './pages/Dashboards';
 export function App() {
   return <BrowserRouter><AuthProvider><Routes>
     <Route element={<AuthLayout/>}>
@@ -13,7 +14,7 @@ export function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
     </Route>
     <Route element={<ProtectedLayout/>}>
-      <Route index element={<AwaitingPage title="Tổng quan"/>}/>
+      <Route index element={<Dashboard/>}/>
       <Route path="materials" element={<ResourcePage definition={materialDefinition}/>}/>
       <Route path="materials/:id" element={<ResourcePage definition={materialDefinition}/>}/>
       <Route path="standards" element={<ResourcePage definition={standardDefinition}/>}/>

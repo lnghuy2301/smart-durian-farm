@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, type ReactElement, Children, cloneElement, isValidElement, useId, useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, Inbox, RefreshCw, X, AlertCircle } from 'lucide-react';
 import type { Resource } from '../hooks/useResource';
 
@@ -31,7 +31,10 @@ export function Modal({ title, children, onClose }: { title: string; children: R
   return <dialog ref={dialog} className="modal" onCancel={(event) => { event.preventDefault(); onClose(); }}><div className="modal-heading"><h2>{title}</h2><button className="icon-button" aria-label="Đóng" onClick={onClose}><X size={20}/></button></div>{children}</dialog>;
 }
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
-  return <label className="field"><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
+  const id = useId();
+  const control = Children.map(children, (child) => isValidElement(child) && typeof child.type === 'string' && ['input', 'select', 'textarea'].includes(child.type)
+    ? cloneElement(child as ReactElement<{ 'aria-labelledby': string }>, { 'aria-labelledby': id }) : child);
+  return <div className="field"><label className="field-label"><span id={id}>{label}</span>{control}</label>{hint && <small>{hint}</small>}</div>;
 }
 export const dateTime = (value: string | null) => value ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date(value)) : 'Chưa có';
 export const number = (value: number) => new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 3 }).format(value);
