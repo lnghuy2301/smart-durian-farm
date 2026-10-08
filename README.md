@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Brand selection 2026-10-08: **Smart Durian / Durian Connect v1.0**, supplied and selected by the user for web, mobile and project documents. Shared source: [assets/brand](assets/brand/README.md); frontend references: [docs/frontend](docs/frontend/README.md). The original kit is preserved in full. Frontend implementation is waiting for user-provided interface samples and an explicit instruction to proceed.
+Brand selection 2026-10-08: **Smart Durian / Durian Connect v1.0**, supplied and selected by the user for web, mobile and project documents. Shared source: [assets/brand](assets/brand/README.md); frontend references: [docs/frontend](docs/frontend/README.md). The kit has 46 files after removing one identical 180px icon; platforms share the remaining source. Frontend implementation is waiting for user-provided interface samples and an explicit instruction to proceed.
 
 Project review 2026-10-07: code f20f6c1 rechecked with **147/147 tests + lint/typecheck/build**. Read the [readiness review](docs/PROJECT_READINESS_REVIEW_20261007.md), [current system diagrams](docs/CURRENT_SYSTEM_DIAGRAMS.md) and [next delivery plan](docs/NEXT_DELIVERY_PLAN.md). Recommended next: web foundation for stable APIs, then read-only IoT monitoring; design persistence separately before migrations/repository conversion. No frontend or business persistence yet. ACTUATOR_TASKS discussion is temporarily paused; its branch contains no control implementation. ACK10 seconds per step is an agreed future setting, not a running timer/configuration.
 

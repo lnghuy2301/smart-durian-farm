@@ -11,6 +11,10 @@ Logo được chọn: Durian Connect, biểu tượng sầu riêng hình học v
 - `05_Guidelines/`: hướng dẫn thương hiệu và design-tokens.json.
 - `06_Web_Assets/`: CSS tokens cho React.
 
+## Icon dùng chung sau khi dọn cấu trúc
+
+Ngày 2026-10-08, theo yêu cầu làm sạch của người dùng: `03_App_Icons/app-icon-180.png` đã được xóa vì trùng hoàn toàn SHA-256 với [02_Favicon/apple-touch-icon.png](02_Favicon/apple-touch-icon.png). Dùng file còn lại khi web/mobile cần icon 180 × 180; các kích thước app icon khác giữ tại `03_App_Icons/`. Bộ kit hiện có 46 file.
+
 ## Màu chính thức
 - Brand #166534; Action #15803D; Accent #EAB308.
 - Background #F8FAFC; Soft green #F0FDF4; Card #FFFFFF.

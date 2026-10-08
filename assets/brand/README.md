@@ -2,7 +2,7 @@
 
 Ngày 2026-10-08, người dùng xác nhận **Smart Durian — Brand Kit v1.0 / Durian Connect** là bộ nhận diện sử dụng cho toàn dự án Smart Durian Farm.
 
-Nguồn chuẩn duy nhất: [Smart_Durian_Brand_Kit/](Smart_Durian_Brand_Kit/). Bộ kit do người dùng cung cấp, được chuyển nguyên vẹn từ `docs/frontend/brand/Smart_Durian_Brand_Kit/`; giữ nguyên tên, nội dung và cấu trúc 47 file. Web, React Native và tài liệu sử dụng cùng bộ kit này. Đây là xác nhận lựa chọn thiết kế của dự án; không xác nhận đăng ký nhãn hiệu hoặc cấp quyền phân phối font bên ngoài.
+Nguồn chuẩn duy nhất: [Smart_Durian_Brand_Kit/](Smart_Durian_Brand_Kit/). Bộ kit do người dùng cung cấp, ban đầu được chuyển nguyên vẹn với 47 file; sau lượt dọn cấu trúc theo yêu cầu còn **46 file**, bỏ một PNG trùng hoàn toàn. Web, React Native và tài liệu sử dụng cùng bộ kit này. Đây là xác nhận lựa chọn thiết kế của dự án; không xác nhận đăng ký nhãn hiệu hoặc cấp quyền phân phối font bên ngoài.
 
 ## Cấu trúc và mục đích
 
@@ -18,6 +18,8 @@ Nguồn chuẩn duy nhất: [Smart_Durian_Brand_Kit/](Smart_Durian_Brand_Kit/). 
 | `06_Web_Assets/brand.css` | CSS custom properties `--sd-*` cho web, tương ứng JSON tokens. |
 
 Đọc [README gốc](Smart_Durian_Brand_Kit/README.md) và [brand guide](Smart_Durian_Brand_Kit/05_Guidelines/brand-guide.html) trước khi sử dụng. Không đổi màu, bóp méo hoặc thêm hiệu ứng vào logo. Dùng logo trắng trên nền xanh thương hiệu; vùng nhỏ dùng biểu tượng độc lập. Giữ khoảng trống ít nhất 25% chiều cao biểu tượng và chiều cao biểu tượng của logo ngang ít nhất 24px, khuyến nghị 32px.
+
+**Icon 180px dùng chung:** [02_Favicon/apple-touch-icon.png](Smart_Durian_Brand_Kit/02_Favicon/apple-touch-icon.png) là nguồn duy nhất cho web và app cần kích thước này. Đã xóa `03_App_Icons/app-icon-180.png` sau khi xác nhận SHA-256 giống hoàn toàn. Các PNG kích thước khác, SVG, ICO, logo biến thể và pattern là tài nguyên có mục đích riêng, được giữ lại.
 
 ## Quy ước tích hợp khi bắt đầu code
 
@@ -38,4 +40,4 @@ Wordmark SVG có phần chữ dạng `<text>`, vì vậy font cài/tải thực 
 
 ## Vị trí các tài nguyên khác
 
-`docs/frontend/references/` giữ các mẫu giao diện tham khảo. `docs/frontend/brand/` chỉ giữ ghi chú tích hợp web và liên kết về nguồn chuẩn, không giữ bản kit thứ hai. `apps/web/public/assets/images/` dành cho hình nội dung được chọn; thư mục `logos/` đã tạo chỉ dùng nếu có nhu cầu xuất/sao chép có kiểm soát khi làm web.
+`docs/frontend/references/` giữ các mẫu giao diện tham khảo; [docs/frontend/README.md](../../docs/frontend/README.md) chỉ dẫn nơi đặt mẫu. Đã bỏ `docs/frontend/brand/` vì chỉ lặp liên kết có sẵn và bỏ các thư mục `apps/web/public/assets/` rỗng chưa dùng. Khi triển khai web, tạo public assets cho những hình nội dung hoặc favicon thực sự cần; logo/pattern vẫn lấy từ nguồn chung. Giữ `.gitkeep` trong các thư mục app chưa khởi tạo và hai thư mục mẫu tham khảo để Git lưu cấu trúc cần thiết.

@@ -5,9 +5,6 @@ Ngày 2026-10-08, người dùng chọn **Smart Durian — Brand Kit v1.0 / Duri
 | Thư mục | Nội dung |
 | --- | --- |
 | `assets/brand/Smart_Durian_Brand_Kit/` | Nguồn chung của bộ nhận diện đã chọn: logo, favicon, icon app, pattern, guideline, tokens JSON/CSS. |
-| `apps/web/public/assets/logos/` | Dành cho bản xuất/sao chép phục vụ web nếu cần khi triển khai; không sửa độc lập với nguồn chung. Hiện chưa có bản sao. |
-| `apps/web/public/assets/images/` | Hình ảnh thương hiệu và hình minh họa được chọn để dùng trên web. |
-| `docs/frontend/brand/` | Liên kết về bộ nhận diện chung và ghi chú tích hợp frontend. |
 | `docs/frontend/references/html/` | Mẫu HTML/CSS và tài nguyên đi kèm dùng để tham khảo giao diện. Mỗi mẫu có thể đặt trong một thư mục riêng để giữ đường dẫn tương đối. |
 | `docs/frontend/references/images/` | Ảnh chụp màn hình, mockup và mẫu bố cục tham khảo; có thể chia theo Admin, Manager, Farmer khi có mẫu. |
 
@@ -16,13 +13,13 @@ Các đường dẫn trong bảng tính từ thư mục gốc dự án. File `.g
 ## Cách đặt tài nguyên
 
 - Mẫu giao diện tham khảo đặt trong `docs/frontend/references/`, tách khỏi tài nguyên chạy của ứng dụng. Tài nguyên thương hiệu gốc giữ tại `assets/brand/`.
-- Chỉ đặt logo/hình đã được chọn để sử dụng vào `apps/web/public/assets/`; nội dung ở đây sẽ được công khai khi web được build/host. Không đặt secrets hoặc tài liệu nội bộ ở đây.
+- Logo, favicon, icon app, pattern và tokens giữ tại nguồn chung `assets/brand/`. Chỉ tạo thư mục public trong app khi có tài nguyên thực sự cần dùng; bản sao phục vụ build phải có cách đồng bộ với nguồn chung.
 - Tài nguyên tạm đặt tên có hậu tố `-temporary` và ghi trạng thái tạm bên dưới; không coi là nhận diện chính thức.
 - Giữ nguyên file gốc được cung cấp. Với tài nguyên bên ngoài, ghi nguồn và quyền sử dụng; chưa rõ quyền thì chỉ ghi nhận làm tham khảo, chưa đưa vào ứng dụng.
 
 ## Ghi nhận tài nguyên
 
-Điền thêm một dòng khi đưa tài nguyên vào. Bộ kit được chuyển nguyên vẹn, không tạo lại hoặc đổi màu logo.
+Điền thêm một dòng khi đưa tài nguyên vào. Kit còn 46 file sau khi bỏ PNG 180px trùng hoàn toàn; nguồn icon 180px là [apple-touch-icon.png](../../assets/brand/Smart_Durian_Brand_Kit/02_Favicon/apple-touch-icon.png). Không tạo lại hoặc đổi màu logo.
 
 | File/thư mục | Nguồn hoặc người cung cấp | Quyền sử dụng | Mục đích / màn hình | Trạng thái: tham khảo, tạm, chính thức |
 | --- | --- | --- | --- | --- |
