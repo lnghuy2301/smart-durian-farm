@@ -1,0 +1,89 @@
+.auth-story.auth-intro-panel {
+  background: #232923;
+  /* Preserve the previous panel's intrinsic minimum so short login viewports
+     keep the opposite column's size and scroll geometry exactly as before. */
+  min-block-size: 705.359375px;
+}
+.auth-story.auth-intro-panel::before {
+  content: none;
+}
+.auth-intro-panel .auth-intro-photo,
+.auth-intro-panel .auth-intro-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.auth-intro-panel .auth-intro-photo {
+  object-fit: cover;
+  object-position: 62% center;
+}
+.auth-intro-panel .auth-intro-overlay {
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 30%) 0%,
+    rgb(0 0 0 / 10%) 38%,
+    rgb(0 0 0 / 18%) 52%,
+    rgb(0 0 0 / 58%) 82%,
+    rgb(0 0 0 / 65%) 100%
+  );
+}
+.auth-story.auth-intro-panel > .brand-logo {
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 35%));
+}
+.auth-intro-panel .auth-intro-copy {
+  margin-top: auto;
+  padding-block: 32px;
+  max-width: 500px;
+  flex-shrink: 0;
+}
+.auth-intro-panel .auth-intro-label {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgb(255 255 255 / 85%);
+}
+.auth-intro-panel .auth-intro-title {
+  font-size: clamp(36px, 3vw, 48px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #fff;
+}
+.auth-intro-panel .auth-intro-description {
+  margin: 20px 0 0;
+  max-width: 420px;
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.6;
+  color: rgb(255 255 255 / 88%);
+}
+.auth-intro-panel .auth-intro-footer {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: rgb(255 255 255 / 65%);
+}
+@media (max-width: 1100px) {
+  .auth-story.auth-intro-panel {
+    min-block-size: 671.015625px;
+  }
+}
+/* Match the old headline's wrapping ranges, without changing column widths. */
+@media (min-width: 901px) and (max-width: 913px) {
+  .auth-story.auth-intro-panel {
+    min-block-size: 715.453125px;
+  }
+}
+@media (min-width: 1101px) and (max-width: 1194px) {
+  .auth-story.auth-intro-panel {
+    min-block-size: 759.96875px;
+  }
+}
+@media (min-width: 901px) and (min-height: 680px) {
+  .auth-layout-registration .auth-story.auth-intro-panel {
+    min-block-size: 0;
+  }
+}

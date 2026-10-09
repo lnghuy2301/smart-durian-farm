@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
-import {
-  ArrowRight,
-  Leaf,
-  ShieldCheck,
-  Radio,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { ArrowRight, Leaf, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../auth/session";
 import { publicApi, ApiError } from "../api/client";
 import { useTask } from "../hooks/useTask";
 import { Brand } from "../components/Brand";
+import { AuthIntroPanel } from "../components/AuthIntroPanel";
 import { Field, Notice } from "../components/ui";
 import type { User } from "../types/api";
 
@@ -110,36 +104,7 @@ export function AuthLayout() {
     <main
       className={`auth-layout${pathname === "/register" ? " auth-layout-registration" : ""}`}
     >
-      <section className="auth-story">
-        <Brand light />
-        <div className="auth-story-body">
-          <span className="eyebrow">NỀN TẢNG QUẢN LÝ NÔNG NGHIỆP</span>
-          <h1>
-            Chăm vườn thông minh.
-            <br />
-            <em>Vững mùa bội thu.</em>
-          </h1>
-          <p>
-            Kết nối nông hộ, hợp tác xã và dữ liệu tại vườn trên cùng một nền
-            tảng.
-          </p>
-          <div className="story-points">
-            <span>
-              <Leaf />
-              Quản lý vườn và từng cây
-            </span>
-            <span>
-              <Radio />
-              Theo dõi môi trường từ cảm biến
-            </span>
-            <span>
-              <ShieldCheck />
-              Phân quyền theo nhiệm vụ
-            </span>
-          </div>
-        </div>
-        <small>SMART DURIAN · Đồng hành cùng nhà vườn</small>
-      </section>
+      <AuthIntroPanel />
       <section className="auth-form-side">
         <div className="auth-mobile-brand">
           <Brand />

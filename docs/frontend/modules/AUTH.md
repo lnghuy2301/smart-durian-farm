@@ -4,6 +4,8 @@ Branch: `feat/web-auth`, kế thừa `feat/web-platform`. Mẫu: `login_register
 
 Bản UI mới nhất ngày 2026-10-09: `fix/web-registration-spacing`, kế thừa `fix/web-registration-role-transition` dcfe54e và toàn bộ các module web.
 
+Panel trái được cập nhật riêng tiếp trên `feat/web-auth-orchard-panel`: ảnh vườn người dùng chọn, logo trắng và nội dung giới thiệu mới. Cột phải và hiệu ứng giữ nguyên; xem [asset, phạm vi và21 đối chiếu trước/sau](AUTH_INTRO_PANEL.md).
+
 ## Hợp đồng và hành vi
 
 - Đăng nhập POST `/api/auth/login` với `phone_number`, `password`; sau đó GET `/api/auth/me`. Chỉ user Active và role Admin/Manager/Farmer được mở shell. Role do server trả, không có bộ chọn role đăng nhập.
