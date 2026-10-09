@@ -36,7 +36,7 @@
 .auth-intro-panel .auth-intro-copy {
   margin-top: auto;
   padding-block: 32px;
-  max-width: 500px;
+  max-width: 560px;
   flex-shrink: 0;
 }
 .auth-intro-panel .auth-intro-label {
