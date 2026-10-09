@@ -11,6 +11,8 @@ Các đường dẫn trong bảng tính từ thư mục gốc dự án. Đã b�
 
 ## Cách đặt tài nguyên
 
+Cỡ chữ web và cân đối responsive sau khi thiết kế được duyệt: [hướng dẫn thay đổi và kiểm tra](UI_READABILITY.md).
+
 - Mẫu giao diện tham khảo đặt trong `docs/frontend/references/`, tách khỏi tài nguyên chạy của ứng dụng. Tài nguyên thương hiệu gốc giữ tại `assets/brand/`.
 - Logo, favicon, icon app, pattern và tokens giữ tại nguồn chung `assets/brand/`. Chỉ tạo thư mục public trong app khi có tài nguyên thực sự cần dùng; bản sao phục vụ build phải có cách đồng bộ với nguồn chung.
 - Tài nguyên tạm đặt tên có hậu tố `-temporary` và ghi trạng thái tạm bên dưới; không coi là nhận diện chính thức.

@@ -1,5 +1,7 @@
 # Panel giới thiệu xác thực — ảnh vườn sầu riêng
 
+Ghi chú cập nhật: phần bên dưới ghi nhận lần triển khai panel trái ban đầu. Đợt [tăng cỡ chữ toàn web](../UI_READABILITY.md) được người dùng yêu cầu sau đó điều chỉnh cả typography và khung form; các minimum và chiều rộng mô tả cũ không còn là giá trị hiện tại. Khối tiêu đề đã được nới lên 560 px, giữ tiêu đề 36–48 px.
+
 Ngày 2026-10-09, branch `feat/web-auth-orchard-panel`, kế thừa `fix/web-registration-spacing` 1e74435. Phạm vi chỉ panel trái dùng chung của AuthLayout; toàn bộ markup/logic LoginPage, RegisterPage, ForgotPasswordPage, cột phải và stylesheet chung giữ nguyên.
 
 ## Asset và component

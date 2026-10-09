@@ -1,8 +1,7 @@
 .auth-story.auth-intro-panel {
   background: #232923;
-  /* Preserve the previous panel's intrinsic minimum so short login viewports
-     keep the opposite column's size and scroll geometry exactly as before. */
-  min-block-size: 705.359375px;
+  /* Keep content in normal flow when larger supporting text needs more height. */
+  min-block-size: 720px;
 }
 .auth-story.auth-intro-panel::before {
   content: none;
@@ -42,7 +41,7 @@
 .auth-intro-panel .auth-intro-label {
   display: block;
   margin-bottom: 16px;
-  font-size: 11px;
+  font-size: var(--sd-font-sm);
   font-weight: 600;
   letter-spacing: 2px;
   color: rgb(255 255 255 / 85%);
@@ -56,30 +55,19 @@
 }
 .auth-intro-panel .auth-intro-description {
   margin: 20px 0 0;
-  max-width: 420px;
-  font-size: clamp(16px, 1.2vw, 18px);
+  max-width: 460px;
+  font-size: clamp(17px, 1.2vw, 19px);
   line-height: 1.6;
   color: rgb(255 255 255 / 88%);
 }
 .auth-intro-panel .auth-intro-footer {
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: var(--sd-font-sm);
   color: rgb(255 255 255 / 65%);
 }
 @media (max-width: 1100px) {
   .auth-story.auth-intro-panel {
-    min-block-size: 671.015625px;
-  }
-}
-/* Match the old headline's wrapping ranges, without changing column widths. */
-@media (min-width: 901px) and (max-width: 913px) {
-  .auth-story.auth-intro-panel {
-    min-block-size: 715.453125px;
-  }
-}
-@media (min-width: 1101px) and (max-width: 1194px) {
-  .auth-story.auth-intro-panel {
-    min-block-size: 759.96875px;
+    min-block-size: 700px;
   }
 }
 @media (min-width: 901px) and (min-height: 680px) {
