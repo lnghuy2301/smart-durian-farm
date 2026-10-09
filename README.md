@@ -1,6 +1,6 @@
 # Smart Durian Farm
 
-Latest UI fix 2026-10-08: local branch `fix/web-registration-role-transition` inherits the complete Manager/web delivery below. Registration role switching now keeps the form and surrounding frames stable, with a short guidance fade and reduced-motion support. See [Auth UI and verification](docs/frontend/modules/AUTH.md).
+Latest UI fix 2026-10-09: local branch `fix/web-registration-spacing` inherits the complete Manager/web delivery and previous role-transition fix. Registration now has balanced bottom spacing and a compact Farmer form without email; Manager email opens/collapses smoothly with reduced-motion support. All22 browser scenarios, web lint/build (including TypeScript) and formatting checks passed. See [Auth UI and verification](docs/frontend/modules/AUTH.md).
 
 Current delivery 2026-10-08: **React + TypeScript + Vite web for Farmer, Admin and Manager** is implemented on the local branch `feat/web-manager-dashboard`, which inherits all frontend module branches. Approved Stitch screens use the official brand kit and existing APIs: authentication, resource list/detail, Admin cooperative create/edit, Manager approval/rejection, three dashboards and read-only IoT latest/history/presence. **22 browser scenarios + 8 unit tests + web lint/typecheck/build/format checks passed**; backend regression remains **147/147 tests**, rechecked during the IoT web module. No backend business changes or persistence migrations were added.
 

@@ -2,6 +2,8 @@
 
 Cập nhật 2026-10-08. Frontend React + TypeScript + Vite tại `apps/web`, kế thừa backend f20f6c1 và review 4a8bdd7; không tạo backend/API mới. Bộ nhận diện dùng nguyên nguồn `assets/brand/Smart_Durian_Brand_Kit`. Mẫu tham khảo chỉ nằm ở docs, không có demo script trong runtime. [Quyết định thích nghi mẫu](DESIGN_ADAPTATION.md) ghi rõ chỗ lệch hợp đồng.
 
+Bản UI mới nhất 2026-10-09 tại `fix/web-registration-spacing`, kế thừa toàn bộ module Manager và fix chuyển role. Form Farmer không có email; Manager mở/thu email mượt, cột đăng ký có khoảng đệm dưới và bố cục gọn hơn. Lint/build/format và22 browser scenarios đã chạy lại đạt. Xem [guide Auth và cách kiểm chứng](modules/AUTH.md). Các branch foundation/module và test counts bên dưới giữ mốc lịch sử tương ứng.
+
 ## Phạm vi đã triển khai
 
 Auth phone/password → /auth/me, đăng ký Farmer Active/Manager email verified Pending, quên mật khẩu OTP, session JWT15m theo tab, logout và xóa dữ liệu theo phiên. Dashboard Farmer/Admin/Manager, shared resource list/detail, HTX Admin create/edit và duyệt/reject Manager. Người dùng đã chốt mẫu Manager riêng ngày 2026-10-08: tổng hợp vườn/khu/cây/phân công và sản lượng Confirmed trong scope HTX, có bộ lọc vườn/ngày và trạng thái thiết bị. IoT chỉ đọc latest/history/presence, tự làm mới 15 giây; mất quyền thì xóa dữ liệu cũ.

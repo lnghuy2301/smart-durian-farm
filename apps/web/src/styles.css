@@ -530,6 +530,49 @@ fieldset {
   margin-top: 25px;
   text-align: center;
 }
+.auth-layout-registration .auth-form-side {
+  min-height: 100dvh;
+  padding: clamp(40px, 6dvh, 64px) clamp(24px, 5vw, 72px)
+    clamp(64px, 8dvh, 88px);
+}
+.auth-layout-registration .auth-card {
+  max-width: 440px;
+  padding: 0;
+}
+.auth-layout-registration .auth-intro {
+  margin: 10px 0 20px;
+}
+.auth-layout-registration .eyebrow {
+  margin-bottom: 12px;
+}
+.auth-layout-registration .role-tabs {
+  margin-bottom: 16px;
+}
+.auth-layout-registration .role-tabs button {
+  padding-block: 12px;
+}
+.auth-layout-registration .field {
+  margin-bottom: 12px;
+}
+.auth-layout-registration .field-label {
+  gap: 6px;
+}
+.auth-layout-registration .auth-footer {
+  margin-top: 24px;
+}
+@media (min-width: 901px) and (min-height: 680px) {
+  .auth-layout-registration {
+    align-items: start;
+  }
+  .auth-layout-registration .auth-story {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+  .auth-layout-registration .auth-story-body {
+    padding-block: clamp(24px, 6dvh, 64px);
+  }
+}
 .password-input {
   position: relative;
   display: block;
@@ -580,6 +623,36 @@ fieldset {
 .registration-role-guidance {
   display: grid;
 }
+.registration-role-guidance .notice {
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sd-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.registration-email {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease,
+    visibility 240ms;
+}
+.registration-email[data-expanded="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+}
+.registration-email-inner {
+  min-height: 0;
+  overflow: hidden;
+  padding-inline: 6px;
+  margin-inline: -6px;
+}
 .registration-role-message {
   grid-area: 1 / 1;
   display: flow-root;
@@ -596,6 +669,7 @@ fieldset {
 }
 @media (prefers-reduced-motion: reduce) {
   .role-tabs button,
+  .registration-email,
   .registration-role-message {
     transition: none;
   }

@@ -622,6 +622,14 @@ try {
     async () => {
       await visit("/register");
       await page
+        .getByRole("button", { name: "Manager HTX", exact: true })
+        .click();
+      await page
+        .getByLabel("Email (bắt buộc xác minh)", { exact: true })
+        .fill("hidden-email@example.com");
+      await page.getByRole("button", { name: "Farmer", exact: true }).click();
+      await page.locator('input[type="email"]').waitFor({ state: "hidden" });
+      await page
         .getByLabel("Họ và tên", { exact: true })
         .fill("Farmer đăng ký kiểm thử");
       await page
@@ -643,6 +651,7 @@ try {
       );
       assert.equal(signed.user.status, "Active");
       assert.equal(signed.user.is_owner, false);
+      assert.equal(signed.user.gmail, null);
     },
   );
   await check(

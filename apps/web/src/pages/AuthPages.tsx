@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import {
   ArrowRight,
   Leaf,
@@ -20,15 +20,19 @@ function Phone({
   value,
   onChange,
   disabled = false,
+  fresh = false,
 }: {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  fresh?: boolean;
 }) {
   return (
     <Field
       label="Số điện thoại"
-      hint="Dùng đúng số đã đăng ký, kể cả tiền tố +84 hoặc 0."
+      hint={
+        fresh ? undefined : "Dùng đúng số đã đăng ký, kể cả tiền tố +84 hoặc 0."
+      }
     >
       <input
         name="phone_number"
@@ -98,11 +102,14 @@ function useCooldown() {
 }
 export function AuthLayout() {
   const auth = useAuth();
+  const { pathname } = useLocation();
   if (auth.loading)
     return <main className="data-state">Đang kiểm tra phiên đăng nhập…</main>;
   if (auth.session) return <Navigate to="/" replace />;
   return (
-    <main className="auth-layout">
+    <main
+      className={`auth-layout${pathname === "/register" ? " auth-layout-registration" : ""}`}
+    >
       <section className="auth-story">
         <Brand light />
         <div className="auth-story-body">
@@ -278,7 +285,7 @@ export function RegisterPage() {
           phone_number: phone.trim(),
           password,
           role,
-          ...(gmail.trim() ? { gmail: gmail.trim() } : {}),
+          ...(role === "Manager" ? { gmail: gmail.trim() } : {}),
           ...(role === "Manager" && proof
             ? { email_verification_token: proof.email_verification_token }
             : {}),
@@ -351,30 +358,35 @@ export function RegisterPage() {
             />
           </Field>
           <Phone
+            fresh
             value={phone}
             onChange={(value) => {
               setPhone(value);
               resetEmail();
             }}
           />
-          <Field
-            label={
-              role === "Manager"
-                ? "Email (bắt buộc xác minh)"
-                : "Email (không bắt buộc)"
-            }
+          <div
+            className="registration-email"
+            data-expanded={role === "Manager"}
+            aria-hidden={role !== "Manager"}
+            inert={role !== "Manager"}
           >
-            <input
-              type="email"
-              autoComplete="email"
-              required={role === "Manager"}
-              value={gmail}
-              onChange={(e) => {
-                setGmail(e.target.value);
-                resetEmail();
-              }}
-            />
-          </Field>
+            <div className="registration-email-inner">
+              <Field label="Email (bắt buộc xác minh)">
+                <input
+                  type="email"
+                  autoComplete="email"
+                  required={role === "Manager"}
+                  disabled={role !== "Manager"}
+                  value={gmail}
+                  onChange={(e) => {
+                    setGmail(e.target.value);
+                    resetEmail();
+                  }}
+                />
+              </Field>
+            </div>
+          </div>
           <Password fresh value={password} onChange={setPassword} />
           <div className="registration-role-guidance">
             <div
@@ -383,9 +395,8 @@ export function RegisterPage() {
               aria-hidden={role !== "Farmer"}
             >
               <Notice>
-                Tài khoản Farmer được kích hoạt ngay sau khi đăng ký thành công.
-                Bạn có thể đăng nhập để quản lý vườn và công việc được cấp
-                quyền.
+                Đăng ký Farmer để quản lý vườn và công việc được cấp quyền. Tài
+                khoản được kích hoạt ngay sau khi đăng ký.
               </Notice>
             </div>
             <div
@@ -394,8 +405,8 @@ export function RegisterPage() {
               aria-hidden={role !== "Manager"}
             >
               <Notice>
-                Xác minh email để gửi đăng ký Manager. Tài khoản được sử dụng
-                sau khi Admin duyệt và gắn hợp tác xã.
+                Manager cần xác minh email. Tài khoản được kích hoạt sau khi
+                Admin duyệt và gắn hợp tác xã.
               </Notice>
             </div>
           </div>
