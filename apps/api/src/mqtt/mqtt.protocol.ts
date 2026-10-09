@@ -7,7 +7,7 @@ export class MqttProtocolError extends Error {}
 export interface SensorReading { dataStreamId: string; value: number; receivedUnit: string; rawResult: string }
 export type IncomingMessage =
   | { kind: 'Telemetry'; stationId: string; readings: SensorReading[] }
-  | { kind: 'Ack'; stationId: string }
+  | { kind: 'Ack'; stationId: string; taskId: number; action: 0 | 1 }
   | { kind: 'Unknown'; stationId: string };
 
 export function stationFromTopic(topic: string): string {
@@ -52,7 +52,14 @@ export function parseIncoming(topic: string, payload: Buffer): IncomingMessage {
     });
     return { kind: 'Telemetry', stationId, readings };
   }
-  if (parsed.status === 'ACK') { return { kind: 'Ack', stationId }; }
+  if (parsed.status === 'ACK') {
+    // Contract v1.0: ACK xác nhận nhận lệnh, không phải đo trạng thái relay.
+    // Giữ ID/action để domain đối chiếu cùng Device; ACK cũ không thể xác nhận task.
+    if (!hardwareNumber(parsed.taskId) || (parsed.action !== 0 && parsed.action !== 1)) {
+      throw new MqttProtocolError('INVALID_ACK');
+    }
+    return { kind: 'Ack', stationId, taskId: parsed.taskId, action: parsed.action };
+  }
   return { kind: 'Unknown', stationId };
 }
 
@@ -60,7 +67,6 @@ export interface ControlTarget { taskId: number; taskingCapabilityId: number }
 export interface ControlCommand {
   targets: ControlTarget[];
   taskingParameters: { actionType: 'control'; action: 0 | 1 };
-  errorMessage: null;
 }
 export function buildControlPublication(stationId: string, targets: ControlTarget[], action: 0 | 1) {
   if (!stationPattern.test(stationId) || !Array.isArray(targets) || targets.length < 1 || targets.length > 100 || ![0, 1].includes(action)) {
@@ -75,6 +81,6 @@ export function buildControlPublication(stationId: string, targets: ControlTarge
   }
   // Copy only verified fields. IDs must come from future task service and configured Actuator metadata.
   const command: ControlCommand = { targets: targets.map(({ taskId, taskingCapabilityId }) => ({ taskId, taskingCapabilityId })),
-    taskingParameters: { actionType: 'control', action }, errorMessage: null };
+    taskingParameters: { actionType: 'control', action } };
   return { topic: `subscribe/station/${stationId}`, payload: JSON.stringify(command) };
 }

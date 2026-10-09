@@ -35,7 +35,7 @@ test('MQTT.js real loopback connection subscribes, routes telemetry/ACK and writ
           if (socket.destroyed) { return; }
           for (const payload of [
             { stationId: 'DEMO_LOCAL', sensorRecords: [{ dataStreamId: 301, result: '26.54 C' }] },
-            { stationId: 'DEMO_LOCAL', status: 'ACK' },
+            { stationId: 'DEMO_LOCAL', status: 'ACK', taskId: 99, action: 1 },
           ]) {
             socket.write(generate({ cmd: 'publish', topic: 'publish/station/DEMO_LOCAL', payload: JSON.stringify(payload), qos: 0, retain: false, dup: false }));
           }
@@ -119,7 +119,7 @@ test('Real MQTT.js broker packets reach the shared Telemetry store and read-only
     for (const payload of [
       { stationId: 'DEMO_LOCAL', sensorRecords: [{ dataStreamId: 301, result: '10 C' }] },
       { stationId: 'DEMO_LOCAL', sensorRecords: [{ dataStreamId: 301, result: '11 C' }] },
-      { stationId: 'DEMO_LOCAL', status: 'ACK' },
+      { stationId: 'DEMO_LOCAL', status: 'ACK', taskId: 99, action: 1 },
     ]) {
       stationSocket.write(generate({ cmd: 'publish', topic: 'publish/station/DEMO_LOCAL',
         payload: JSON.stringify(payload), qos: 0, retain: false, dup: false }));

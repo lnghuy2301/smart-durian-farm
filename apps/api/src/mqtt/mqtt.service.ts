@@ -21,6 +21,7 @@ export interface MessageDiagnostic {
   kind: 'Telemetry' | 'Ack' | 'Unknown' | 'Rejected';
   reason: string | null;
   readings: RoutedReading[];
+  ack?: { task_id: number; action: 0 | 1 };
 }
 @Injectable()
 export class MqttService implements OnModuleInit, OnModuleDestroy {
@@ -75,11 +76,12 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
         this.append({ received_at: receivedAt, device_id: deviceId, kind: 'Unknown', reason: 'UNSUPPORTED_MESSAGE', readings: [] });
         return;
       }
-      // A valid ACK proves receipt from a station but has no reliable task correlation, even for one pending command.
+      // v1.0 có taskId/action để domain correlate, chỉ xác nhận hardware nhận command.
       this.devices.recordSeen(deviceId, receivedAt);
       if (incoming.kind === 'Ack') {
         ++this.counts.ack;
-        this.append({ received_at: receivedAt, device_id: deviceId, kind: 'Ack', reason: 'ACK_WITHOUT_TASK_CORRELATION', readings: [] });
+        this.append({ received_at: receivedAt, device_id: deviceId, kind: 'Ack', reason: 'ACK_WITHOUT_TASK_HANDLER', readings: [],
+          ack: { task_id: incoming.taskId, action: incoming.action } });
         return;
       }
       const device = this.devices.getRecord(deviceId);

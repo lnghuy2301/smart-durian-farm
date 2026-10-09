@@ -90,7 +90,7 @@ test('MQTT configuration defaults to disabled, requires explicit runtime broker 
     MQTT_ENABLED: 'true', MQTT_BROKER_HOST: 'broker.invalid', MQTT_BROKER_PORT: '1883' }), /metadata/);
 });
 
-test('Verified telemetry parses numbers and original units, routes ACK on same station topic without task inference', () => {
+test('Verified telemetry parses numbers and original units, preserves v1.0 ACK correlation fields without claiming relay state', () => {
   const message = parseIncoming(topic, packet({ stationId: 'DEMO_STATION', sensorRecords: [
     { dataStreamId: 302, result: '77.80 %' }, { dataStreamId: 301, result: '26.54 C' }, { dataStreamId: 303, result: '0.00 %rH' },
   ] }));
@@ -99,16 +99,28 @@ test('Verified telemetry parses numbers and original units, routes ACK on same s
   assert.deepEqual(message.readings.map(({ value, receivedUnit }) => ({ value, receivedUnit })), [
     { value: 77.8, receivedUnit: '%' }, { value: 26.54, receivedUnit: 'C' }, { value: 0, receivedUnit: '%rH' },
   ]);
-  assert.deepEqual(parseIncoming(topic, packet({ stationId: 'DEMO_STATION', status: 'ACK', taskId: 99 })), { kind: 'Ack', stationId: 'DEMO_STATION' });
-  assert.equal(parseIncoming(topic, packet({ status: 'ACK' })).kind, 'Ack');
-  assert.equal(parseIncoming(topic, packet({ ...telemetry(), status: 'ACK' })).kind, 'Telemetry');
+  assert.deepEqual(parseIncoming(topic, packet({ stationId: 'DEMO_STATION', status: 'ACK', taskId: 99, action: 1 })), { kind: 'Ack', stationId: 'DEMO_STATION', taskId: 99, action: 1 });
+  assert.equal(parseIncoming(topic, packet({ status: 'ACK', taskId: 99, action: 1 })).kind, 'Ack');
+  assert.equal(parseIncoming(topic, packet({ ...telemetry(), status: 'ACK', taskId: 99, action: 1 })).kind, 'Telemetry');
   assert.equal(parseIncoming(topic, packet({ stationId: 'DEMO_STATION', status: 'OTHER' })).kind, 'Unknown');
+});
+
+test('ACK v1 rejects missing, unsafe, coerced IDs/actions and legacy ACK while retaining correlation fields', () => {
+  for (const action of [0, 1] as const) {
+    assert.deepEqual(parseIncoming(topic, packet({ taskId: 1001, status: 'ACK', action })),
+      { kind: 'Ack', stationId: 'DEMO_STATION', taskId: 1001, action });
+  }
+  for (const body of [
+    { status: 'ACK' }, { status: 'ACK', taskId: 1 }, { status: 'ACK', action: 0 },
+    ...[0, -1, 1.5, '1', null, Number.MAX_SAFE_INTEGER + 1].map((taskId) => ({ status: 'ACK', taskId, action: 1 })),
+    ...[-1, 2, '1', true, null].map((action) => ({ status: 'ACK', taskId: 1, action })),
+  ]) { assert.throws(() => parseIncoming(topic, packet(body)), /INVALID_ACK/); }
 });
 
 test('Malformed packets, identity mismatches, unsafe streams and duplicate streams reject atomically', () => {
   const invalid = [
-    null, [], {}, { stationId: 'OTHER', status: 'ACK' }, { stationId: null, status: 'ACK' },
-    { sensorRecords: [], status: 'ACK' }, { sensorRecords: null, status: 'ACK' },
+    null, [], {}, { stationId: 'OTHER', status: 'ACK', taskId: 99, action: 1 }, { stationId: null, status: 'ACK', taskId: 99, action: 1 },
+    { sensorRecords: [], status: 'ACK', taskId: 99, action: 1 }, { sensorRecords: null, status: 'ACK', taskId: 99, action: 1 },
     { sensorRecords: [{ dataStreamId: '301', result: '1 C' }] },
     { sensorRecords: [{ dataStreamId: Number.MAX_SAFE_INTEGER + 1, result: '1 C' }] },
     { sensorRecords: [{ dataStreamId: -1, result: '1 C' }] },
@@ -122,7 +134,7 @@ test('Malformed packets, identity mismatches, unsafe streams and duplicate strea
     assert.throws(() => parseIncoming(topic, payload));
   }
   for (const badTopic of ['observation/sensor/301', 'publish/station/+', 'publish/station/a/b', 'publish/station/', 'publish/station/' + 'x'.repeat(51)]) {
-    assert.throws(() => parseIncoming(badTopic, packet({ status: 'ACK' })));
+    assert.throws(() => parseIncoming(badTopic, packet({ status: 'ACK', taskId: 99, action: 1 })));
   }
 });
 
@@ -131,7 +143,7 @@ test('Control builder preserves verified ON/OFF numeric wire shape without hardc
     const output = buildControlPublication('DEMO_OTHER', [{ taskId: 1791308390924, taskingCapabilityId: 42 }], action);
     assert.equal(output.topic, 'subscribe/station/DEMO_OTHER');
     assert.deepEqual(JSON.parse(output.payload), { targets: [{ taskId: 1791308390924, taskingCapabilityId: 42 }],
-      taskingParameters: { actionType: 'control', action }, errorMessage: null });
+      taskingParameters: { actionType: 'control', action } });
   }
   assert.throws(() => buildControlPublication('a/b', [], 0));
   assert.throws(() => buildControlPublication('DEMO', [{ taskId: 1, taskingCapabilityId: 1 }, { taskId: 1, taskingCapabilityId: 2 }], 1));
@@ -152,7 +164,7 @@ test('MQTT adapter waits for SUBACK, resubscribes once per connection and ignore
     assert.equal(a.options?.queueQoSZero, false);
     assert.equal(a.options?.resubscribe, false);
     a.client.online();
-    a.client.emit('message', topic, packet({ status: 'ACK' }), { retain: false });
+    a.client.emit('message', topic, packet({ status: 'ACK', taskId: 99, action: 1 }), { retain: false });
     assert.equal(a.messages.length, 0);
     assert.equal(a.client.subscriptions[0].topic, MQTT_RETURN_TOPIC);
     a.client.disconnect();
@@ -161,7 +173,7 @@ test('MQTT adapter waits for SUBACK, resubscribes once per connection and ignore
     a.client.online(); a.client.grant(1);
     assert.equal(a.client.subscriptions.length, 2);
     assert.equal(a.states.at(-1)?.subscribed, true);
-    a.client.emit('message', topic, packet({ status: 'ACK' }), { retain: false });
+    a.client.emit('message', topic, packet({ status: 'ACK', taskId: 99, action: 1 }), { retain: false });
     assert.deepEqual(a.messages, [topic]);
   } finally { await a.transport.stop(); }
   assert.equal(a.client.ended, true);
@@ -255,16 +267,16 @@ test('Unknown, retained, mismatched, malformed or unregistered messages cannot r
   const f = await fixture();
   try {
     f.transport.emit({ status: 'OTHER' });
-    f.transport.emit({ status: 'ACK' }, topic, true);
-    f.transport.emit({ stationId: 'OTHER', status: 'ACK' });
+    f.transport.emit({ status: 'ACK', taskId: 99, action: 1 }, topic, true);
+    f.transport.emit({ stationId: 'OTHER', status: 'ACK', taskId: 99, action: 1 });
     f.transport.emit({ sensorRecords: [] });
-    f.transport.emit({ status: 'ACK' }, 'publish/station/UNREGISTERED');
+    f.transport.emit({ status: 'ACK', taskId: 99, action: 1 }, 'publish/station/UNREGISTERED');
     assert.equal(f.devices.getRecord(f.device.id).last_seen_at, null);
     const counts = f.mqtt.brokerStatus(f.admin.id);
     assert.equal(counts.unknown, 1); assert.equal(counts.rejected, 4);
-    f.transport.emit({ stationId: 'DEMO_STATION', status: 'ACK' });
+    f.transport.emit({ stationId: 'DEMO_STATION', status: 'ACK', taskId: 99, action: 1 });
     assert.notEqual(f.devices.getRecord(f.device.id).last_seen_at, null);
-    assert.equal(f.mqtt.messages(f.owner.id, f.device.id, page).items[0].reason, 'ACK_WITHOUT_TASK_CORRELATION');
+    assert.equal(f.mqtt.messages(f.owner.id, f.device.id, page).items[0].reason, 'ACK_WITHOUT_TASK_HANDLER');
     assert.equal(f.app.get(ActuatorsService).list(f.owner.id, page).total, 0);
   } finally { await f.app.close(); }
 });
@@ -273,7 +285,7 @@ test('Connectivity is derived from reception age, expires at threshold and never
   const f = await fixture();
   try {
     assert.equal(f.mqtt.deviceStatus(f.owner.id, f.device.id).connectivity, 'Unknown');
-    f.transport.emit({ status: 'ACK' });
+    f.transport.emit({ status: 'ACK', taskId: 99, action: 1 });
     const time = Date.parse(f.devices.getRecord(f.device.id).last_seen_at!);
     assert.equal(f.mqtt.deviceStatus(f.owner.id, f.device.id, time + config.offlineAfterMs - 1).connectivity, 'Online');
     assert.equal(f.mqtt.deviceStatus(f.owner.id, f.device.id, time + config.offlineAfterMs).connectivity, 'Offline');
@@ -317,7 +329,7 @@ test('MQTT HTTP diagnostics require JWT and current Device read scope, with Admi
 test('Transport diagnostics evict oldest events at fixed capacity while preserving aggregate counters', async () => {
   const f = await fixture();
   try {
-    for (let i = 0; i < MQTT_DIAGNOSTIC_LIMIT + 5; i++) { f.transport.emit({ status: 'ACK' }); }
+    for (let i = 0; i < MQTT_DIAGNOSTIC_LIMIT + 5; i++) { f.transport.emit({ status: 'ACK', taskId: 99, action: 1 }); }
     assert.equal(f.mqtt.messages(f.owner.id, f.device.id, page).total, MQTT_DIAGNOSTIC_LIMIT);
     assert.equal(f.mqtt.brokerStatus(f.admin.id).ack, MQTT_DIAGNOSTIC_LIMIT + 5);
   } finally { await f.app.close(); }

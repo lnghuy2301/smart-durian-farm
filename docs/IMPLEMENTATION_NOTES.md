@@ -1,5 +1,7 @@
 # Implementation notes
 
+2026-10-09 MQTT v1.0 overrides previous short-ACK assumptions: taskId/action required, correlated per Device, receipt acknowledgement only. Numeric safe IDs, no wire errorMessage; source DOCX remains user-owned. See MQTT_CONTRACT_V1_IMPLEMENTATION.md. User authorized implementation; next task branch inherits latest web/backend,10s per ACK step, pre-start OFF pump2/valve3/valve4 after unknown/reconnect, then valveON/pumpON. Do not assume received ACK reports physical state or automatically create Cultivation records. Sensor mapping confirmed301 temperature/C,302 air humidity/%,303 soil moisture/%, registered through existing metadata.
+
 Current web delivery 2026-10-08: `feat/web-manager-dashboard` contains the approved Manager dashboard and inherits all web modules. Farmer/Admin/Manager dashboards, auth/registration/reset, resource reads, Admin HTX create/edit, Manager approval and read-only IoT are connected to existing APIs. **22 browser scenarios + 8 unit tests**, web lint/typecheck/build/format checks passed. Backend **147/147 regression tests + lint/typecheck/build** were rerun during the IoT web module; no backend business source changed. Root `.env` and private ERD/MQTT/Postman edits remain outside commits. No push/merge/deployment. Read [reproduction](frontend/WEB_FOUNDATION_IMPLEMENTATION.md) and [Manager scope/pagination/date limitations](frontend/modules/MANAGER_DASHBOARD.md). Earlier wait-for-samples and placeholder-preservation notes below are historical.
 
 Local implementation commits, in dependency order:
