@@ -1,8 +1,34 @@
 # Smart Durian Farm
 
-All existing module branches are now integrated into **main locally** (2026-10-05). Start the next module branch from this main. Read [branch integration notes](docs/BRANCH_INTEGRATION.md) and [handoff](docs/MODULE_HANDOFF.md). Feature branches remain available; no remote push was performed. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
+Publication2026-10-09: **24 completed module/web/fix/documentation branches are now on GitHub**, verified against local commit IDs. The complete integration is **feat/actuator-tasks-v1**, tested source commit84536f5. [Create one PR into main](https://github.com/lnghuy2301/smart-durian-farm/compare/main...feat/actuator-tasks-v1?expand=1). Main remainsc71820d at verification; the user will merge it. Local .env and private uncommitted source/UI/Postman edits were excluded. Earlier local-only statements below record prior delivery status.
 
-Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees and Tree Harvests; clients follow later.
+Final verification2026-10-09: API **168/168 tests + lint/typecheck/build**; web **8/8 unit tests +22/22 browser scenarios + typecheck/build**. Postman24 literal requests valid. ESP32 deployed hardware/persistence/control UI remain outside this delivery. Details: [ACTUATOR_TASKS guide](docs/ACTUATOR_TASKS_IMPLEMENTATION.md).
+
+Backend control delivered 2026-10-09 on **feat/actuator-tasks-v1**, from **feat/mqtt-contract-v1 @ f20ea20**: HTTP202 + GET progress/state, per-Device locks, reset before Start when Unknown, sequential valve/pump commands, correlated receipt ACKs with10s per step, Stop preemption and separate recovery records. **168/168 API tests** passed including real MQTT.js TCP control/ACK/HTTP integration. `Confirmed` means command receipt; physical state remains Unknown. [API/setup/reproduction](docs/ACTUATOR_TASKS_IMPLEMENTATION.md), [workflow](docs/ACTUATOR_TASKS_WORKFLOW_DESIGN.md), [manual Postman](docs/postman/Actuator-Tasks-Local-Test.postman_collection.json). `ACTUATOR_ACK_TIMEOUT_MS=10000` added to example and appended to local .env while preserving existing content. No business persistence, frontend control UI or live hardware test. Both branches local; private source/docs/UI edits preserved. Earlier statements that tasks are unimplemented record previous deliveries.
+
+MQTT contract update 2026-10-09: ACK now requires numeric `taskId` plus `action:0|1`, preserving Device/task/action correlation; legacy short ACK is rejected. Commands omit the old wire `errorMessage` field. ACK means hardware receipt, not relay execution. See [v1.0 contract guide](docs/MQTT_CONTRACT_V1_IMPLEMENTATION.md). Branch feat/mqtt-contract-v1 inherits the current web/backend chain; task/control implementation follows separately. The new DOCX supersedes older short-ACK descriptions below.
+
+Latest UI fix 2026-10-09: local branch `fix/web-registration-spacing` inherits the complete Manager/web delivery and previous role-transition fix. Registration now has balanced bottom spacing and a compact Farmer form without email; Manager email opens/collapses smoothly with reduced-motion support. All22 browser scenarios, web lint/build (including TypeScript) and formatting checks passed. See [Auth UI and verification](docs/frontend/modules/AUTH.md).
+
+Current delivery 2026-10-08: **React + TypeScript + Vite web for Farmer, Admin and Manager** is implemented on the local branch `feat/web-manager-dashboard`, which inherits all frontend module branches. Approved Stitch screens use the official brand kit and existing APIs: authentication, resource list/detail, Admin cooperative create/edit, Manager approval/rejection, three dashboards and read-only IoT latest/history/presence. **22 browser scenarios + 8 unit tests + web lint/typecheck/build/format checks passed**; backend regression remains **147/147 tests**, rechecked during the IoT web module. No backend business changes or persistence migrations were added.
+
+At the repository root, run `npm ci`, then `npm run dev:api` and `npm run dev:web` in separate terminals. Web: http://127.0.0.1:5173. Read the [complete setup, configuration and reproduction guide](docs/frontend/WEB_FOUNDATION_IMPLEMENTATION.md), [Manager dashboard guide](docs/frontend/modules/MANAGER_DASHBOARD.md) and [handoff](docs/MODULE_HANDOFF.md). Backend business/telemetry data remain RAM and reset when the process restarts. React Native, resource write workflows and actuator control are separate future deliveries. Branches and commits are local; no push/merge/deployment. Private ERD/MQTT/Postman edits and root `.env` are preserved.
+
+Brand selection 2026-10-08: **Smart Durian / Durian Connect v1.0**, supplied and selected by the user for web, mobile and project documents. Shared source: [assets/brand](assets/brand/README.md); frontend references: [docs/frontend](docs/frontend/README.md). The kit has 46 files after removing one identical 180px icon; platforms share the remaining source. Web imports shared assets and serves Be Vietnam Pro fonts locally with their OFL license.
+
+The review and module summaries below record earlier backend deliveries. Their proposed next steps and test counts are historical; the current frontend status is above.
+
+Project review 2026-10-07: code f20f6c1 rechecked with **147/147 tests + lint/typecheck/build**. Read the [readiness review](docs/PROJECT_READINESS_REVIEW_20261007.md), [current system diagrams](docs/CURRENT_SYSTEM_DIAGRAMS.md) and [next delivery plan](docs/NEXT_DELIVERY_PLAN.md). Recommended next: web foundation for stable APIs, then read-only IoT monitoring; design persistence separately before migrations/repository conversion. No frontend or business persistence yet. ACTUATOR_TASKS discussion is temporarily paused; its branch contains no control implementation. ACK10 seconds per step is an agreed future setting, not a running timer/configuration.
+
+Latest implemented branch: **feat/iot-telemetries**, from a656773 (inherits e1ad1a0/MQTT d10ebd2). MQTT now writes accepted readings into one shared RAM FIFO of **10,000 readings**. Read-only latest/history APIs enforce current Device/HTX/assignment scope; expired Farmers cannot read IoT history. measured_at is backend packet arrival, received_at is RAM write time; firmware is unchanged. **147/147 tests, lint/typecheck/build passed**, including real MQTT.js TCP -> App -> Telemetry -> HTTP. Read the [Telemetry guide](docs/IOT_TELEMETRIES_IMPLEMENTATION.md), [final design](docs/IOT_TELEMETRIES_WORKFLOW_DESIGN.md) and [project inventory](docs/PROJECT_REVIEW_20261007.md). Thirteen PostgreSQL business tables and one MongoDB-shaped Telemetry module have RAM logic; four collections and QR remain unimplemented. Business persistence is still pending. New IoT branches remain local.
+
+MQTT connection/parser/routing, shared-store mapping, presence, read-only diagnostics and Telemetry latest/history are implemented. See [MQTT setup, API and reproduction](docs/MQTT_COMMUNICATION_IMPLEMENTATION.md) and [metadata rules](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md). Device installation date/cost are required; types/purposes are lowercase and Sensor unit is varchar(16). Business persistence and actuator task/control workflows remain outstanding.
+
+GitHub **main** now contains all existing branches through **PR #5**, merge commit **c71820d** (verified 2026-10-05). Its tree matches the integrated code that passed 89 tests, lint, typecheck and build. Feature branches remain available. User ERD/MQTT/Postman edits and local .env are preserved outside the integration commits. Branch descriptions below record the original module batches.
+
+The Devices base branch is **feat/devices-management**, based on merged main c71820d. Devices metadata, owner writes/Admin proposals, immutable UUID/ESP32 station_id and Active/Inactive installation status are implemented. Trees are related through the shared Zone; no TREES.device_id, fixed tree list or device auth_token. **98/98 tests, lint/typecheck/build passed.** MQTT hardware integration follows separately. Read [Devices implementation](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md), [final workflow](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md) and [handoff](docs/MODULE_HANDOFF.md). This new branch is committed locally and has not been pushed.
+
+Monorepo for a NestJS backend, React web and React Native Android application. The API includes database connectivity and local in-memory Auth/Users, catalogs, Cooperatives, Farm approvals, Zones, Farmer assignments, Trees, Tree Harvests, Devices, Sensors and Actuators; clients follow later.
 
 ## Local API setup
 
@@ -43,9 +69,15 @@ npm run start --workspace @smart-durian/api
 
 Business-module Postman collections use literal URLs/JSON: paste JWT/UUID/OTP manually, with no scripts or environment. The older Foundation collection has an optional Local environment. Only implemented endpoints are included. Do not export real credentials or tokens to Git.
 
+## MQTT communication
+
+MQTT defaults to disabled; fill broker settings in your local .env before enabling it. Missing MQTT keys were appended locally at the user's request on 2026-10-07, preserving existing values. DEMO_DEVICE_STATION_ID is an operator reference to copy into Device registration, not a routing/authentication setting. See the [demo configuration and UUID authorization guide](docs/MQTT_DEMO_AND_API_IDENTIFIERS.md). Backend subscribes to publish/station/+ and resolves each station through Devices metadata. Telemetry retains hardware units, and short ACKs do not confirm any task or relay state. Global diagnostics require Admin; Device diagnostics use current Farm/HTX/assignment read scope.
+
+Import [MQTT manual Postman collection](docs/postman/MQTT-Communication-Local-Test.postman_collection.json) (12 requests) and [Telemetry collection](docs/postman/IOT-Telemetries-Local-Test.postman_collection.json) (20 requests); see the [MQTT guide](docs/MQTT_COMMUNICATION_IMPLEMENTATION.md) for setup and packet examples. Telemetry latest/history are in RAM, not MongoDB persistence. The outgoing builder/publisher remains internal; HTTP control, automation and actuator tasks are pending.
+
 ## Structure
 
-- apps/api: REST API and future database/MQTT modules.
+- apps/api: REST API, MQTT communication and future database persistence.
 - apps/web: future React/Vite web.
 - apps/mobile: future React Native Android app.
 - ai: future AI/RAG work.
@@ -127,4 +159,24 @@ One harvest per Tree/day prevents conflicting entries. Multiple Trees share a ba
 
 Read [docs/TREE_HARVESTS_IMPLEMENTATION.md](docs/TREE_HARVESTS_IMPLEMENTATION.md) and [final workflow design](docs/TREE_HARVESTS_WORKFLOW_DESIGN.md). Import **docs/postman/Tree-Harvests-Local-Test.postman_collection.json** (24 manual requests); replace dates, JWT and UUID manually. No new .env settings/dependencies or persistence. Latest integrated local branch: **feat/tree-harvests-management**, based on Trees d39c5ce; no push/merge.
 
-Integrated validation: **89/89 tests**, lint/typecheck/build passed. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the Harvests guide.
+Harvests batch validation: **89/89 tests**, lint/typecheck/build passed. The Devices batch passed **98/98 tests**; the Sensors batch passed **107/107 tests** and the latest Actuators branch passes **116/116 tests**. If the Windows npm wrapper hits installation-path EPERM, use the equivalent local commands in the module guides.
+
+## Actuators metadata
+
+Owners create/update names and Active/Inactive metadata directly; Admin proposes for owner approval. Current reads follow Device → Zone → Farm. UUID actuator/device IDs remain distinct from numeric firmware capability_id. The unique pair is (device_id, capability_id); Device/capability/purpose are immutable, including while Inactive.
+
+Purpose enum watering / spraying / shared represents a shared pump with its own capability plus separate watering/spraying valves. Future dedicated pumps and valves may share the same purpose. The user updated both private ERD files during this session to include Shared; code and diagrams now agree, and those user edits remain outside this module commit. Active/Inactive does not toggle relays, and this batch does not send MQTT commands.
+
+Read [Actuators API and reproduction guide](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md); import **docs/postman/Actuators-Local-Test.postman_collection.json** (24 manual requests). Enter actual firmware capability IDs, copy JWT/UUID by hand. All data remains in RAM; no new .env settings/dependencies/migrations/seed. Next: discuss and implement MQTT core separately.
+
+## Sensors metadata
+
+Owners create/update Sensors directly; Admin proposes for owner approval. Reads follow Device → Zone scope. UUID device_id and data_stream_id form the unique stream pair; identical stream IDs on different Devices are allowed. Type/identity stay fixed; unit is an editable expected-unit string of 1–16 characters. Thresholds are both null or both numeric with min < max; unit edits do not convert values.
+
+Read [Sensors API and reproduction guide](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md); import **docs/postman/Sensors-Local-Test.postman_collection.json** (24 manual requests). Copy JWT/Device UUID/Sensor UUID/Request UUID by hand. Metadata/history remain in backend RAM. No new .env settings, dependencies, MQTT/telemetry/control, migrations or seed.
+
+## Devices metadata
+
+Owners register hardware stations and edit installation dates/cost/status directly; Admin proposals require the correct owner's approval. Manager/current assigned-Farmer reads reuse the existing Farm/Zone/assignment scope. UUID id and immutable unique station_id remain distinct; Active/Inactive records are retained without moving Zone or deleting the station. Trees in the Device's Zone are read directly from the shared Trees store. Metadata does not establish MQTT connectivity or send control commands.
+
+Read [Devices API and reproduction guide](docs/IOT_METADATA_UPDATE_IMPLEMENTATION.md); import **docs/postman/Devices-Local-Test.postman_collection.json** (24 manual requests). Copy JWT/UUID/station_id by hand. No new .env settings/dependencies, auth_token, TREES.device_id, migrations or seed. All data stays in backend RAM and disappears on restart.

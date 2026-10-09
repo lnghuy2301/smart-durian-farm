@@ -1,0 +1,675 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Actuators - Nhap JSON",
+    "description": "24 request JSON/URL literal, không scripts/environment/variables. Đọc ACTUATORS_IMPLEMENTATION.md và tạo Farm/Zone/Device trước. watering/spraying/shared immutable; bơm riêng capability, 6/7/8 chỉ minh họa thay đúng firmware. UUID Device/Actuator/Request khác capability số. Metadata RAM, chưa MQTT. Login fixture mẫu, không secret thật. Cập nhật 2026-10-07 theo ERD_DIAGRAM/IOT_CORE_TABLES_SPEC; các mã chỉ ví dụ cấu hình, không hằng số hệ thống.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Login Chủ Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng AUTH_TEST_PHONE/PASSWORD của mình khi gửi, copy JWT cho OWNER; không export thông tin thật.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay bằng AUTH_TEST_ADMIN_PHONE/PASSWORD, copy JWT cho ADMIN.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Chủ tạo bơm chung shared",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "201. Thay Device UUID 1111... và capability 8 bằng mã bơm firmware thật. Bơm có capability riêng, không tự chạy theo van. Copy Actuator id thay 2222...",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 8\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "04 Chủ tạo van tưới",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "201. Mã 6 minh họa; thay bằng capability firmware van tưới, khác mã bơm/van phun. Không phát lệnh.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Van tưới\",\n  \"purpose\": \"watering\",\n  \"capability_id\": 6\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "05 Chủ tạo van phun",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "201. Mã 7 minh họa, thay đúng firmware.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Van phun\",\n  \"purpose\": \"spraying\",\n  \"capability_id\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "06 Danh sách Actuators",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators?limit=20&offset=0",
+        "description": "200 đúng scope; thêm device_id/purpose/status/q khi cần. purpose shared không unique."
+      }
+    },
+    {
+      "name": "07 Đọc Actuator",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "200. Device UUID, Actuator UUID và capability số là ba identifier khác nhau."
+      }
+    },
+    {
+      "name": "08 Lookup Device + capability",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/by-capability/11111111-1111-4111-8111-111111111111/8",
+        "description": "200 nếu đã có mã đó; đổi 8 theo firmware, dùng DEVICES.id UUID, không station_id. Scope vẫn được kiểm tra."
+      }
+    },
+    {
+      "name": "09 Chủ sửa tên",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "200, tăng version/audit; không đổi status/purpose/capability và không MQTT.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bơm chung khu A\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 Chủ ngưng dùng metadata",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "200. Không tắt relay thực tế, không cascade van/Device; Inactive giữ cặp unique.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 Lịch sử metadata",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222/history?limit=20&offset=0",
+        "description": "200 snapshots/version/actor/proposer/request. Cần quyền hiện tại."
+      }
+    },
+    {
+      "name": "12 Admin đề xuất tạo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_ADMIN_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/requests",
+        "description": "201 Pending/actuator_id=null, chưa đăng ký/reserve. ID 9 minh họa; copy request.id để owner duyệt. Nhiều actuator cùng watering được phép.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm tưới riêng thử nghiệm\",\n  \"purpose\": \"watering\",\n  \"capability_id\": 9\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "13 Admin đề xuất sửa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_ADMIN_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222/update-requests",
+        "description": "201 Pending, Actuator chính chưa đổi. Copy request.id. Một Pending Update/Actuator; chỉ name/status.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bơm chung được kiểm tra\",\n  \"status\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "14 Danh sách đề xuất",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuator-requests?status=Pending&limit=20&offset=0",
+        "description": "200 chủ thấy đúng Farm mình; Admin thấy tất cả."
+      }
+    },
+    {
+      "name": "15 Đọc đề xuất",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuator-requests/33333333-3333-4333-8333-333333333333",
+        "description": "Thay UUID 3333... bằng request.id lấy từ 12 hoặc 13, kiểm tra action/changes/snapshot."
+      }
+    },
+    {
+      "name": "16 Chủ duyệt đề xuất",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuator-requests/33333333-3333-4333-8333-333333333333/approve",
+        "description": "200 Accepted sau commit; recheck quyền/version/unique/capacity. Request đã xử lý/stale/trùng 409. Create trả actuator_id mới.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "17 Chủ từ chối đề xuất",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuator-requests/33333333-3333-4333-8333-333333333333/reject",
+        "description": "Chọn request còn Pending khác request đã Accepted; 200 Rejected, không sửa Actuator. Có thể gửi {}.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Cần kiểm tra lại cấu hình\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "18 Chặn sửa purpose",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "400 purpose bất biến, kể cả gửi giá trị cũ/qua proposal. Enum chỉ chọn khi tạo.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"purpose\": \"watering\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "19 Chặn đổi capability",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "400, tương tự device_id/id không được sửa.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"capability_id\": 10\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "20 Chặn đăng ký trùng",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "409 cùng Device/capability, kể cả Actuator Inactive. Không tạo bơm 2 lần dưới 2 purpose.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 8\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "21 Cùng capability Device khác",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_OWNER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "201 nếu Device khác tồn tại thuộc Farm chủ. Thay 4444... bằng Device UUID thật; capability 8 dùng được ở ESP32 khác.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"44444444-4444-4444-8444-444444444444\",\n  \"name\": \"Bơm chung tưới và phun\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 8\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "22 Farmer phụ trách đọc",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_WORKER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "Paste JWT Farmer đã accept assignment đang hiệu lực [start,end) của Zone Device. 200 đúng scope; chưa nhận/hết hạn/ngoài phạm vi 404."
+      }
+    },
+    {
+      "name": "23 Manager HTX đọc",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_MANAGER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "Paste JWT Manager đã USERS approve, Farm đã join HTX qua counterpart và Manager approval. 200 đúng HTX, ngoài scope 404."
+      }
+    },
+    {
+      "name": "24 Chặn Farmer phụ trách sửa",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "PASTE_WORKER_JWT_HERE",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "http://localhost:3000/api/actuators/22222222-2222-4222-8222-222222222222",
+        "description": "403. Manager/Admin ghi trực tiếp cũng 403; Admin dùng proposal. Active/Inactive không On/Off.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

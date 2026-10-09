@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src test integration",
-    "test": "tsc --outDir .test-dist && node --test .test-dist/test",
+    "test": "tsc --outDir .test-dist && node --test --test-concurrency=2 .test-dist/test",
     "test:integration": "tsc --outDir .integration-dist && node --test .integration-dist/integration/database.integration.js"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "class-validator": "^0.14.2",
     "dotenv": "^16.6.0",
     "mongodb": "^6.21.0",
+    "mqtt": "5.16.0",
     "nodemailer": "^10.0.13",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
@@ -34,6 +35,7 @@
     "@types/pg": "^8.23.1",
     "concurrently": "^9.0.0",
     "eslint": "^9.0.0",
+    "mqtt-packet": "9.0.2",
     "typescript": "~5.8.0",
     "typescript-eslint": "^8.0.0"
   }

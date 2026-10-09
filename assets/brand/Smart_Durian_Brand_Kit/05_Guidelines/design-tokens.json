@@ -1,0 +1,28 @@
+{
+  "brand": "Smart Durian",
+  "fonts": {
+    "primary": "Be Vietnam Pro",
+    "fallback": "Inter"
+  },
+  "colors": {
+    "brand": "#166534",
+    "action": "#15803D",
+    "accent": "#EAB308",
+    "soft_green": "#F0FDF4",
+    "app_background": "#F8FAFC",
+    "surface": "#FFFFFF",
+    "text": "#0F172A",
+    "muted": "#64748B",
+    "border": "#E2E8F0",
+    "success": "#15803D",
+    "warning": "#B45309",
+    "error": "#DC2626",
+    "info": "#2563EB"
+  },
+  "weights": {
+    "brand": 700,
+    "heading": 600,
+    "body": 400,
+    "label": 500
+  }
+}

@@ -1,5 +1,17 @@
 # SMART FARM DURIAN --- PROJECT BUILD SPECIFICATION
 
+**Ưu tiên hiện hành2026-10-09:** DOCX MQTT_Configuration_Smart_Farm_Durian_v1.0 và quyết định trực tiếp thay các thiết kế IoT cũ. ACK có taskId/status/action, chỉ xác nhận **nhận command**. ACTUATOR_TASKS RAM đã triển khai feat/actuator-tasks-v1 từ f20ea20;168 API tests đạt. POST202/GET progress/state, reset trước Start khi Unknown, bơm2/van3tưới/van4phun, per-step ACK10s/Stop preemption/recovery riêng. Xem [implementation](ACTUATOR_TASKS_IMPLEMENTATION.md). DEVICES/SENSORS/ACTUATORS schemas không đổi; Sensors mapping301/C,302/%,303/% đã chốt. Không created_by/confirmed_by hoặc physical execution claim cho tasks, không DB migration/seed. Web read-only đã có; control UI/hardware thật chưa nghiệm thu. Các ghi chú chờ module phía dưới là lịch sử.
+
+Telemetry hoàn tất 2026-10-07 trên **feat/iot-telemetries** từ a656773 (kế thừa e1ad1a0/MQTT d10ebd2). Shared RAM store FIFO10.000 readings, nhận mọi packet hợp lệ theo chu kỳ hardware15 giây; GET latest/history có filter stream/received_at [from,to) và pagination. Farmer phải có assignment Accepted đang hiệu lực, hết phân công mất cả latest/history; chỉ xem readings trong khoảng assignment hiện tại. measured_at lúc backend nhận/đọc MQTT, received_at lúc ghi RAM, raw unit tối đa16; không sửa firmware/protocol/.env hoặc persistence. **147/147 tests + lint/typecheck/build đạt**, gồm10 domain/HTTP/fake tests và1 MQTT.js TCP -> App -> Telemetry -> HTTP mới; npm test giới hạn2 files đồng thời. Postman20 requests literal, đọc [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md) và [thiết kế cuối](IOT_TELEMETRIES_WORKFLOW_DESIGN.md). Còn4 collections chưa có module + QR không có bảng; tiếp theo thảo luận ACTUATOR_TASKS/safety, persistence riêng. Các ghi chú chờ Telemetry/136 tests phía dưới là lịch sử. Nhánh chỉ local, không push/merge; giữ file riêng.
+
+Rà soát 2026-10-07: 13 bảng đã có nghiệp vụ RAM, 5 collections chưa triển khai; QR là tính năng không có bảng. 136/136 tests + lint/typecheck/build sau sửa registration proof boundary. Thứ tự và câu hỏi cần chốt theo [PROJECT_REVIEW_20261007.md](PROJECT_REVIEW_20261007.md); telemetry/task/control dưới đây chưa phải quyết định đã duyệt.
+
+MQTT communication hoàn tất 2026-10-07 trên **feat/mqtt-communication**, base metadata **939c350** (feat/iot-core-metadata-update, 119 tests). Kết nối MQTT.js/reconnect/SUBACK/shutdown, parser station-topic, shared Device/Sensor mapping, presence và diagnostics API chỉ đọc đã có. **134/134 tests**, gồm 14 fake/unit/HTTP +1 MQTT.js broker TCP localhost; lint/typecheck/build đạt. ACK ngắn không xác nhận task/relay; publisher/builder chỉ adapter nội bộ, không HTTP control/automation. Diagnostic FIFO200 RAM, chưa IOT_TELEMETRIES/ACTUATOR_TASKS/persistence. .env.example thêm MQTT keys mặc định disabled; .env thật và file riêng giữ nguyên. Đọc [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md), Postman MQTT 12 request không scripts/env. Hai nhánh mới chỉ local, chưa push/merge. Các ghi chú module cũ phía dưới là lịch sử, enum/next-step hiện tại theo hai guide IoT mới.
+
+Các phần IoT/control/collections thiết kế dự kiến bên dưới chưa được chốt lại theo hardware mới; contract communication hiện hành là topic publish/station/{stationId}, không observation/sensor, ACK không taskId, không suy ra Executed. Không triển khai các domain dự kiến đó chỉ từ mô tả cũ.
+
+Cập nhật ưu tiên 2026-10-07: ba tài liệu ERD_DIAGRAM.xml, IOT_CORE_TABLES_SPEC.md, MQTT_HARDWARE_PROTOCOL_VERIFIED.md thay thế các mô tả IoT cũ bên dưới. Device Maintenance/last_seen_at; installed_at/cost vẫn NOT NULL theo câu trả lời trực tiếp. Sensor lowercase type, unit varchar(16); Actuator lowercase purpose. Topic telemetry theo station, numeric streams, short ACK không taskId; không xác nhận tasks/relay từ ACK. Xem IOT_METADATA_UPDATE_IMPLEMENTATION.md. Persistence và hai collections IoT chưa được chốt.
+
 > Tài liệu này được dùng làm **context/instruction chính cho Codex** để
 > bắt đầu xây dựng dự án. Khi chạy Codex, đặt file này cùng với file
 > **`Sơ đồ ERD.xml`** (diagrams.net/draw.io).
@@ -425,175 +437,66 @@ Mục đích:
 
 ## 11. IoT relational metadata
 
+Trạng thái triển khai hiện hành 2026-10-07 theo [IOT_METADATA_UPDATE_IMPLEMENTATION.md](IOT_METADATA_UPDATE_IMPLEMENTATION.md). Các guide Devices/Sensors/Actuators cũ đã được người dùng xóa; không phục hồi. Store dùng RAM, chưa tạo business schema/migrations/seed.
+
 ### DEVICES
 
-Một Device thuộc đúng một Zone.
-
-Một Zone có thể có nhiều Device.
-
-`station_id` là identifier dùng trong MQTT topic.
-
-Không nhầm:
-
-``` text
-DEVICES.id       = internal UUID
-DEVICES.station_id = third-party/hardware station identifier
-```
+- DEVICES.id là UUID nội bộ; station_id là mã ESP32 UNIQUE NOT NULL, bất biến, không phải secret/auth token.
+- Device thuộc một Zone, một Zone có thể có nhiều Device; không chuyển Zone. Cây chịu ảnh hưởng qua Zone, không có TREES.device_id/hạn mức cố định.
+- Chỉ đăng ký khi đã lắp: installed_at và cost bắt buộc NOT NULL theo quyết định trực tiếp; không đăng ký trước lắp.
+- Status metadata Active/Inactive/Maintenance, khác connectivity MQTT. last_seen_at nullable chỉ receiver cập nhật, không tăng version/audit metadata mỗi message.
+- Chủ Farm tạo/sửa trực tiếp; Admin đề xuất cần chủ duyệt; Manager HTX/Farmer assignment Accepted hiệu lực chỉ đọc đúng scope. Dùng chung module/store Farm/Zone/Assignment.
 
 ### SENSORS
 
-Sensor metadata nằm PostgreSQL.
-
-`data_stream_id` là identifier từ IoT/hardware side.
-
-Không dùng internal `sensor_id` để nhận MQTT telemetry.
+- sensor_type air_temperature/air_humidity/soil_moisture bất biến.
+- Composite unique (device_id UUID, data_stream_id), kể cả Inactive; id/Device/stream không đổi. Numeric hardware stream chuyển thành chuỗi metadata, không dùng sensor_id làm telemetry FK.
+- Unit cấu hình varchar(16), được sửa, thay enum %/oC cũ; không tự convert ngưỡng/đơn vị dữ liệu đo. Threshold cùng null hoặc đủ hai min < max.
+- Quyền, proposals, snapshot/version và shared stores như Devices. Không suy ra nghĩa stream302/303.
+- Telemetry unit trong ERD hiện varchar(8): cần chốt thống nhất trước collection, không cắt chuỗi ngầm.
 
 ### ACTUATORS
 
-Actuator metadata nằm PostgreSQL.
-
-`capability_id` tương ứng `taskingCapabilityId` của IoT protocol.
-
-Actuator có `purpose`:
-
-``` text
-Watering
-Spraying
-```
-
-Không thêm `actuator_type` nếu ERD không có.
-
-Hardware có thể điều khiển pump + valve như một bundle. Backend chỉ cần
-chọn các actuator phù hợp theo `purpose` và tạo command.
+- ACTUATORS.id UUID, device_id UUID tham chiếu DEVICES.id; capability_id là numeric taskingCapabilityId riêng của phần cứng.
+- Unique (device_id, capability_id), kể cả Inactive. id/Device/capability/purpose bất biến, không chuyển Device/hard delete.
+- Purpose lowercase watering/spraying/shared. Bơm chung có capability riêng, mỗi van có capability riêng và cần lệnh riêng; không đoán mapping IDs. Khi dùng bơm riêng, bơm và van có thể cùng purpose; purpose không unique.
+- Chỉ sửa name/status; status Active/Inactive là metadata khả dụng, không phải On/Off/online.
+- Chủ tạo/sửa trực tiếp, Admin proposal cần chủ duyệt, Manager/Farmer đọc đúng scope. Approval recheck uniqueness/context/version/capacity.
+- Metadata không tự điều khiển bơm/van hoặc chốt recipe/fail-safe/đồng thời tưới–phun.
 
 ------------------------------------------------------------------------
 
 ## 12. MQTT protocol
 
-Đây là behavior đã được kiểm chứng bằng prototype giao tiếp thành công
-với hardware.
+Contract hiện hành theo DOCX MQTT_Configuration_Smart_Farm_Durian_v1.0 và [MQTT_CONTRACT_V1_IMPLEMENTATION.md](MQTT_CONTRACT_V1_IMPLEMENTATION.md). Không tự thay firmware, topics hoặc thêm auth_token.
 
-### Publish control command
+### Nhận và ánh xạ
 
-Topic:
+Backend subscribe publish/station/+; firmware trả sensorRecords hoặc ACK taskId/status/action trên publish/station/{stationId}. Topic quyết định station, lookup DEVICES.station_id lấy Device UUID; domain dùng device_id làm FK. Sensor metadata bộ demo301 air_temperature/C,302 air_humidity/%,303 soil_moisture/% do người dùng chốt, không hardcode router.
 
-``` text
-subscribe/station/{stationId}
-```
+Parser kiểm tra topic/payload/identity và metadata đăng ký, từ chối retained packet, unknown station và dữ liệu sai định dạng. Telemetry giữ nguyên raw unit; mismatch là diagnostics, không đổi unit lịch sử. Device/Sensor phải Active để nhận reading; không suy status metadata từ presence.
 
-Publish JSON payload với:
+Receiver cập nhật last_seen_at theo thời gian server; connectivity Unknown/Online/Offline theo tuổi message hợp lệ, mặc định stale30 phút, khác broker readiness. Diagnostics FIFO200 và Telemetry FIFO10.000/latest/history RAM đã có; chưa MongoDB persistence.
 
-``` text
-targets[]
-taskingParameters
-errorMessage
-```
+### Gửi
 
-Mỗi target chứa:
+Adapter nội bộ gửi subscribe/station/{stationId}; builder giữ cấu trúc targets[].taskId/taskingCapabilityId và taskingParameters theo protocol. Lệnh numeric 0=OFF, 1=ON; bơm và van có capability/lệnh riêng. Publisher hiện QoS0, non-retained, không xếp offline queue để replay điều khiển cũ.
 
-``` text
-taskId
-taskingCapabilityId
-```
+TransportAccepted chỉ là adapter gửi thành công, không phải hardware confirmation. HTTP control/task orchestration đã triển khai; mỗi bước publish một target, chờ ACK10s, không offline queue/ON replay. Chưa automation hoặc feedback physical state.
 
-MQTT publish dùng QoS 1.
+### ACK và feedback
 
-**Broker publish callback thành công không có nghĩa hardware đã thực thi
-command.**
+ACK `{taskId:number,status:"ACK",action:0|1}` phát ngay khi nhận command. Backend correlate Device + taskId + action, không suy từ thứ tự/count ACK. Legacy/retained/malformed/sai/trễ không làm Confirmed. Confirmed chỉ CommandReceipt, physical_state Unknown; chưa physical-button/relay/flow feedback.
 
-Hardware confirmation là bước riêng.
-
-### Station response
-
-Topic:
-
-``` text
-publish/station/{stationId}
-```
-
-Hardware thực tế có thể trả về hai dạng.
-
-#### Short ACK
-
-Ví dụ:
-
-``` json
-{
-  "status": "ACK"
-}
-```
-
-Prototype hiện tại từng xác nhận latest pending task của station khi
-nhận short ACK.
-
-Điều này có nguy cơ ambiguity nếu nhiều command pending cùng lúc.
-
-Vì vậy implementation ban đầu phải tránh gửi nhiều command đồng thời tới
-cùng một station nếu ACK không chứa taskId, hoặc phải serialize commands
-theo station.
-
-Không giả định short ACK có task correlation mà protocol không cung cấp.
-
-#### Full response
-
-Có thể chứa:
-
-``` text
-targets[]
-taskingParameters
-errorMessage
-```
-
-`targets[].taskId` dùng để correlate command/task.
-
-### Physical hardware button
-
-Hardware có thể gửi state từ nút bấm vật lý mà không có pending task
-tương ứng.
-
-Khi nhận full station payload nhưng không match pending task và không có
-error:
-
--   coi đây là hardware state synchronization;
--   cập nhật state cần thiết;
--   không tạo fake pending task.
-
-### Sensor telemetry
-
-Sensor message có:
-
-``` text
-sensorRecords[]
-resultTime
-```
-
-`resultTime` có thể thiếu. Khi thiếu, backend dùng thời điểm server nhận
-message làm fallback.
-
-Topic có thể là:
-
-``` text
-observation/sensor/{dataStreamId}
-```
-
-Ngoài ra `publish/station/{stationId}` trong hardware thực tế cũng có
-thể mang sensor telemetry.
-
-Do đó router phải kiểm tra **payload structure**, không chỉ topic.
-
-Nếu payload có:
-
-``` text
-sensorRecords
-```
-
-→ route vào sensor telemetry handler.
+ACTUATOR_TASKS đã triển khai theo workflow người dùng chốt; constraints RAM, restart/disconnect và giới hạn receipt xem guide. Các index/persistence dự kiến bên dưới chưa được tạo.
 
 ------------------------------------------------------------------------
 
 ## 13. IoT telemetry storage
 
-MongoDB collection:
+Triển khai 2026-10-07 trên feat/iot-telemetries: RAM FIFO10.000 readings, GET /api/telemetry/devices/:id/latest và /history; filter stream/received_at [from,to), max100/trang. measured_at là lúc backend nhận/đọc packet, received_at là lúc ghi store; không đổi firmware hoặc coi RAM là database. Farmer phải Accepted/đang hiệu lực và chỉ đọc khoảng assignment hiện tại, hết phân công không xem history. Chủ/Admin/Manager đúng scope; unit raw16 thay8 cũ. 147 tests + lint/typecheck/build; Postman20 requests. Quyết định hiện hành theo IOT_TELEMETRIES_IMPLEMENTATION.md/IOT_TELEMETRIES_WORKFLOW_DESIGN.md, thay các đề xuất mở quyền Farmer cũ. Chưa thresholds/realtime/control hoặc persistence.
+
+Logical collection (shape dùng trong RAM hiện tại; MongoDB persistence chưa triển khai):
 
 ``` text
 IOT_TELEMETRIES
@@ -650,7 +553,7 @@ Recommended index:
 
 ## 14. Actuator task storage
 
-MongoDB collection:
+Logical MongoDB-shaped model dùng trong RAM, chưa tạo collection/persistence:
 
 ``` text
 ACTUATOR_TASKS
@@ -669,16 +572,15 @@ Ví dụ concept:
   "_id": "...",
   "device_id": "...",
   "targets": [
-    {
-      "task_id": "...",
-      "tasking_capability_id": "..."
-    }
+    { "task_id": 1001, "tasking_capability_id": 3 },
+    { "task_id": 1002, "tasking_capability_id": 2 }
   ],
-  "tasking_parameters": {},
-  "status": "pending",
+  "command_id": 1003,
+  "tasking_parameters": {"actionType":"control","action":1},
+  "status": "Pending",
   "created_at": "...",
-  "sent_at": "...",
-  "confirmed_at": "...",
+  "sent_at": null,
+  "confirmed_at": null,
   "error_message": null,
   "response_payload": {}
 }
@@ -687,7 +589,7 @@ Ví dụ concept:
 Không tạo một top-level MQTT `task_id` duy nhất nếu một command có nhiều
 targets.
 
-`response_payload` nên giữ raw/full response hữu ích cho debugging.
+`response_payload` giữ operation/CommandReceipt, links Reset/Recovery và steps/ACK tối thiểu đã chuẩn hóa; không lưu payload tùy ý. Không created_by/confirmed_by. API task `_id` ObjectId khác Device UUID, command_id và numeric MQTT taskId.
 
 Trạng thái implementation phải phản ánh tối thiểu sự khác nhau giữa:
 
@@ -719,17 +621,17 @@ Build MQTT payload
    ↓
 Publish subscribe/station/{stationId}
    ↓
-Hardware executes
+Hardware receives command and sends receipt ACK
    ↓
 publish/station/{stationId}
    ↓
 MQTT router
    ↓
-Correlate ACK/full response
+Correlate Device + taskId + action; wait per-step ACK10s
    ↓
 Update ACTUATOR_TASKS
    ↓
-Push/return latest state to client
+Client polls GET task/state after POST202; no realtime push yet
 ```
 
 Không cho client publish MQTT trực tiếp.
@@ -1008,12 +910,12 @@ public trace endpoint does not expose secrets
 
 ``` text
 sensorRecords routed correctly
-missing resultTime gets fallback
+measurement timestamp policy must be agreed before telemetry storage
 publish/station sensor payload routed as telemetry
-short ACK handled safely
-full ACK correlated using taskId
+short ACK never confirms task or relay without correlation
+retained/unknown station/identity mismatch packets rejected
 broker publish != hardware confirmed
-physical-button payload does not become fake command
+future full feedback/physical-button behavior requires verified protocol and separate tests
 ```
 
 ------------------------------------------------------------------------

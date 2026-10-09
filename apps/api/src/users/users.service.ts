@@ -31,9 +31,8 @@ export class UsersService {
     this.store.assertAvailable(input.phone_number, gmail);
     if (token && gmail) { this.emailVerification.requireProof(input.phone_number, gmail, token); }
     const passwordHash = await hashPassword(input.password);
-    // Sau await phải kiểm tra lại hạn dùng/tính duy nhất; commit và consume không có await ở giữa.
-    if (token && gmail) { this.emailVerification.requireProof(input.phone_number, gmail, token); }
-    const user = this.store.add({
+    // Sau await, proof và uniqueness được kiểm tra trong cùng khối commit đồng bộ.
+    const createAccount = () => this.store.add({
       user_name: input.user_name,
       phone_number: input.phone_number,
       password: passwordHash,
@@ -43,7 +42,9 @@ export class UsersService {
       status: input.role === 'Manager' ? 'Pending' : 'Active',
       is_owner: false,
     });
-    if (token && gmail) { this.emailVerification.consume(input.phone_number, gmail, token); }
+    const user = token && gmail
+      ? this.emailVerification.consumeForRegistration(input.phone_number, gmail, token, createAccount)
+      : createAccount();
     return {
       message: user.status === 'Pending' ? 'Tài khoản đang chờ Admin duyệt' : 'Đăng ký thành công',
       user: this.store.publicUser(user),

@@ -9,12 +9,19 @@ import { FarmsService } from '../../src/farms/farms.service';
 import { MockCooperativeStore } from '../../src/users/mock-cooperative.store';
 import { StandardsService } from '../../src/standards/standards.service';
 import { ZonesService } from '../../src/zones/zones.service';
+import { MqttConfig } from '../../src/mqtt/mqtt.config';
+import { MqttTransport } from '../../src/mqtt/mqtt.transport';
+import { ActuatorTasksConfig } from '../../src/actuator-tasks/actuator-tasks.config';
 
-export async function zoneFixture() {
+export async function zoneFixture(options: { mqtt?: MqttConfig; transport?: MqttTransport; actuatorTasks?: ActuatorTasksConfig } = {}) {
   const config = readEnvironment({ DATABASE_URL: 'postgresql://test:test@127.0.0.1:1/test', MONGODB_URI: 'mongodb://127.0.0.1:1/test',
     NODE_ENV: 'test', AUTH_MODE: 'mock', AUTH_TEST_PHONE: '0900000000', AUTH_TEST_PASSWORD: 'LocalTestOnly123!',
     JWT_SECRET: 'test-only-secret-with-at-least-32-bytes', AUTH_TEST_ADMIN_PHONE: '0900000001', AUTH_TEST_ADMIN_PASSWORD: 'LocalAdminOnly123!' });
-  const module = await Test.createTestingModule({ imports: [AppModule.register(config)] }).compile();
+  if (options.mqtt) { config.mqtt = options.mqtt; }
+  if (options.actuatorTasks) { config.actuatorTasks = options.actuatorTasks; }
+  const builder = Test.createTestingModule({ imports: [AppModule.register(config)] });
+  if (options.transport) { builder.overrideProvider(MqttTransport).useValue(options.transport); }
+  const module = await builder.compile();
   const app = module.createNestApplication({ logger: false });
   configureApplication(app, config);
   await app.listen(0, '127.0.0.1');

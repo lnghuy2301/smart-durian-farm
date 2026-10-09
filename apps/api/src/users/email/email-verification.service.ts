@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { createHash, randomBytes, randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
-import { MockUserStore, normalizeEmail } from '../../auth/mock-user.store';
+import { MockUserStore, normalizeEmail, TestUser } from '../../auth/mock-user.store';
 import { WindowRateLimiter } from '../../auth/rate-limiter';
 import { EmailSender } from './email.sender';
 import { VerifyRegistrationEmailDto } from '../users.dto';
@@ -98,6 +98,16 @@ export class EmailVerificationService {
 
   consume(phone: string, gmail: string, token: string): void {
     this.requireProof(phone, gmail, token).state = 'consumed';
+  }
+
+  consumeForRegistration(phone: string, gmail: string, token: string, createAccount: () => TestUser): TestUser {
+    const challenge = this.requireProof(phone, gmail, token);
+    // Chốt proof còn hạn trước khi ghi. Cả khối phải đồng bộ, không await hoặc kiểm tra hạn lần nữa
+    // sau khi đã tạo user: tránh trả 400 nhưng tài khoản vẫn tồn tại khi clock vượt deadline.
+    // Nếu createAccount bị từ chối (trùng email/phone hoặc đầy store), proof vẫn chưa bị dùng.
+    const user = createAccount();
+    challenge.state = 'consumed';
+    return user;
   }
 
   private digest(value: string): Buffer {

@@ -1,0 +1,540 @@
+{
+  "info": {
+    "name": "Smart Durian Farm — Actuator Tasks v1 (manual JWT/UUID/ObjectId)",
+    "description": "Literal JSON requests, no scripts or variables/environments. Import directly; replace PASTE_* manually. Setup and receipt limits: docs/ACTUATOR_TASKS_IMPLEMENTATION.md. ACK is hardware receipt, not physical state.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Owner login — copy access_token manually",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"PASTE_OWNER_PASSWORD\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Điền phone/password local của Owner, không commit mật khẩu thật. Copy access_token vào PASTE_OWNER_JWT."
+      }
+    },
+    {
+      "name": "02 Admin login — copy access_token manually",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"PASTE_ADMIN_PASSWORD\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Admin để xem broker/Task, không điều khiển."
+      }
+    },
+    {
+      "name": "03 Broker status (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/mqtt/status",
+        "description": "Phải connected/subscribed=true. Admin only; không trả secrets."
+      }
+    },
+    {
+      "name": "04 Install Device — Owner",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_id\": \"PASTE_ZONE_UUID\",\n  \"station_id\": \"PASTE_STATION_ID\",\n  \"installed_at\": \"2026-10-09T00:00:00+07:00\",\n  \"cost\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/devices",
+        "description": "Farm/Zone đã tạo bằng các collection hiện có; station đúng firmware. Copy DEVICES.id UUID; station_id không là FK."
+      }
+    },
+    {
+      "name": "05 Register Shared pump",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"PASTE_DEVICE_UUID\",\n  \"name\": \"Shared pump\",\n  \"purpose\": \"shared\",\n  \"capability_id\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "Tạo một lần/Device; composite unique device_id+capability_id, immutable purpose/ID."
+      }
+    },
+    {
+      "name": "06 Register Watering valve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"PASTE_DEVICE_UUID\",\n  \"name\": \"Watering valve\",\n  \"purpose\": \"watering\",\n  \"capability_id\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "Tạo một lần/Device; composite unique device_id+capability_id, immutable purpose/ID."
+      }
+    },
+    {
+      "name": "07 Register Spraying valve",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"device_id\": \"PASTE_DEVICE_UUID\",\n  \"name\": \"Spraying valve\",\n  \"purpose\": \"spraying\",\n  \"capability_id\": 4\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuators",
+        "description": "Tạo một lần/Device; composite unique device_id+capability_id, immutable purpose/ID."
+      }
+    },
+    {
+      "name": "08 State before Start",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/state",
+        "description": "Initial Unknown. physical_state luôn Unknown; acknowledged_mode chỉ receipt. Timeout mặc định10000ms/bước."
+      }
+    },
+    {
+      "name": "09 Start watering (202)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Watering\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands",
+        "description": "Copy task._id + response_payload.reset_task_id. Lần đầu OFF2,OFF3,OFF4 rồi ON3,ON2; mỗi bước ACK10s. Chỉ dùng trạm demo cô lập."
+      }
+    },
+    {
+      "name": "10 Read Start progress — copy ObjectId",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/PASTE_TASK_OBJECT_ID",
+        "description": "GET lại đến Confirmed/Failed. Confirmed = hardware nhận đủ command, không là relay state."
+      }
+    },
+    {
+      "name": "11 Read automatic Reset progress",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/PASTE_RESET_OBJECT_ID",
+        "description": "Reset task riêng. Lỗi Reset thì Start Failed/RESET_FAILED, không phát ON."
+      }
+    },
+    {
+      "name": "12 Read automatic RecoveryStop when present",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/PASTE_RECOVERY_OBJECT_ID",
+        "description": "Sau Failed Start lấy recovery_task_id. Dừng riêng OFF2/OFF3/OFF4; pumpOFF thiếu ACK không đóng van tiếp."
+      }
+    },
+    {
+      "name": "13 Stop — preempts Pending Start (202)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Stop\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands",
+        "description": "Copy _id mới để GET. Known Watering OFF2/OFF3; Known Spraying OFF2/OFF4; Unknown/partial OFF2/OFF3/OFF4. Stop đang chạy409."
+      }
+    },
+    {
+      "name": "14 Read latest state",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/state",
+        "description": "Failed Start có thể còn busy vì recovery đang chạy. Không tự suy physical Off."
+      }
+    },
+    {
+      "name": "15 Start spraying after Stop succeeds (202)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Spraying\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands",
+        "description": "Chỉ sau mode Off và busy=false; valve4ON rồi pump2ON, chờ từng ACK. Chưa Dừng thì409."
+      }
+    },
+    {
+      "name": "16 Task history pagination",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID?limit=20&offset=0",
+        "description": "Tasks/Reset/Recovery chung journal5000, eviction terminal cũ nhất. RAM mất sau restart."
+      }
+    },
+    {
+      "name": "17 Failed tasks only",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID?status=Failed&limit=20&offset=0"
+      }
+    },
+    {
+      "name": "18 Admin read-only history",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID"
+      }
+    },
+    {
+      "name": "19 Manager read-only history in own HTX",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_MANAGER_JWT"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID",
+        "description": "Dùng JWT Manager có Farm trong HTX mình, ngoài scope404."
+      }
+    },
+    {
+      "name": "20 Accepted current Farmer starts watering",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_FARMER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Watering\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands",
+        "description": "Chỉ Accepted [start,end), Farm owner vẫn có quyền. Chuỗi trước phải Dừng xong; expired Farmer404."
+      }
+    },
+    {
+      "name": "21 Negative — Admin cannot control (403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_ADMIN_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Stop\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands"
+      }
+    },
+    {
+      "name": "22 Negative — cannot inject confirmation (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Watering\",\n  \"confirmed_at\": \"2026-10-09T00:00:00Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands"
+      }
+    },
+    {
+      "name": "23 Negative — client cannot request internal Reset (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer PASTE_OWNER_JWT"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operation\": \"Reset\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/commands"
+      }
+    },
+    {
+      "name": "24 Negative — no JWT (401)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/actuator-tasks/devices/PASTE_DEVICE_UUID/state"
+      }
+    }
+  ]
+}

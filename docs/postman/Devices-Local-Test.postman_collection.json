@@ -1,0 +1,551 @@
+{
+  "info": {
+    "name": "Smart Durian Farm - Devices - Nhap JSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "24 request thủ công. Chuẩn bị Farm Accepted/Zone bằng Farms/Zones; cây cùng Zone bằng Trees. Chỉ Active/Inactive, không MQTT hoặc auth_token/TREES.device_id. Thay UUID mẫu/JWT_OWNER/JWT_ADMIN/JWT_WORKER/JWT_MANAGER/mã ESP32 bằng tay. Không scripts, variables/environment. Số/mật khẩu ví dụ là fixture test, không phải secret thật. Restart mất dữ liệu RAM. Cập nhật 2026-10-07 theo ERD_DIAGRAM/IOT_CORE_TABLES_SPEC; các mã chỉ ví dụ cấu hình, không hằng số hệ thống."
+  },
+  "item": [
+    {
+      "name": "01 Login Owner Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay tài khoản chủ Farm đã có; copy access_token vào JWT_OWNER từng header.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000000\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "02 Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Thay Admin fixture local; copy access_token vào JWT_ADMIN.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000001\",\n  \"password\": \"LocalAdminOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Owner Create Device",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices",
+        "description": "Farm Accepted và Zone đã tạo. Thay zone_id thật, station_id đúng mã ESP32. Copy id UUID Device; khác station_id. Mặc định Active.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"DEMO_STATION\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "04 Owner List Devices",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices?limit=20&offset=0",
+        "description": "Danh sách trong phạm vi; Active và Inactive vẫn giữ bản ghi."
+      }
+    },
+    {
+      "name": "05 Owner Get Device",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Thay UUID Device vào URL, không dùng station_id."
+      }
+    },
+    {
+      "name": "06 Owner Lookup Station",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/by-station/DEMO_STATION",
+        "description": "Thay mã ESP32 chính xác hoa/thường; route vẫn cần JWT và scope."
+      }
+    },
+    {
+      "name": "07 Trees In Device Zone",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222/trees?limit=20&offset=0",
+        "description": "Cây hiện tại trong Zone chung; không TREES.device_id/danh sách cố định. Inactive vẫn đọc được metadata; không có điều khiển."
+      }
+    },
+    {
+      "name": "08 Owner Mark Inactive",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Inactive = rút điện/tháo chưa kết nối lại. Không xóa mã/index/Zone/cây.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "09 Owner Edit Cost",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Chỉ cost thay đổi; Device vẫn Inactive. PATCH chỉ installed_at/cost/status.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cost\": 1600000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 Owner Restore Active",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Đã lắp/đang sử dụng lại trong cùng Zone; không phải kiểm tra MQTT online.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 Device Metadata History",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222/history?limit=20&offset=0",
+        "description": "Snapshots trước/sau, phiên bản, actor, proposal liên quan trong RAM."
+      }
+    },
+    {
+      "name": "12 Admin Propose Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/requests",
+        "description": "Chỉ tạo đề xuất. Thay Zone thật và mã trạm khác chưa đăng ký. Copy UUID request, chưa có Device cho tới chủ duyệt.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"E08CFE41DCAD\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "13 Owner List Pending Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/device-requests?status=Pending&limit=20&offset=0",
+        "description": "Chỉ chủ đúng Farm hoặc Admin thấy đề xuất."
+      }
+    },
+    {
+      "name": "14 Owner Get Request",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/device-requests/33333333-3333-4333-8333-333333333333",
+        "description": "Thay UUID request từ 12/16, khác UUID Device."
+      }
+    },
+    {
+      "name": "15 Owner Approve Request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/device-requests/33333333-3333-4333-8333-333333333333/approve",
+        "description": "Thay request id; Create trả device_id sau duyệt. Nếu trạm đã đăng ký hoặc version lỗi thời thì 409, cần từ chối.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "16 Admin Propose Update",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_ADMIN"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222/update-requests",
+        "description": "Thay UUID Device. Copy UUID request để 15 duyệt hoặc 17 từ chối. Một Pending Update/Device.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cost\": 1700000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "17 Owner Reject Request",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/device-requests/33333333-3333-4333-8333-333333333333/reject",
+        "description": "Thay UUID Pending request. Từ chối không thay dữ liệu Device.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Không cần thay đổi\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "18 Filter Devices By Zone Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices?zone_id=11111111-1111-4111-8111-111111111111&status=Active&q=E08C&limit=20&offset=0",
+        "description": "Thay Zone thật. Search không phân biệt hoa/thường; lookup station thì giữ nguyên mã."
+      }
+    },
+    {
+      "name": "19 Login Assigned Farmer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Tạo Farmer bằng Users và chấp nhận phân công bằng Assignments trước; copy JWT_WORKER.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000002\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "20 Assigned Farmer Read Device",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_WORKER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Thay UUID Device trong Zone đang phụ trách. Chưa Accepted/hết hạn/Zone khác trả 404; Farmer này không được sửa."
+      }
+    },
+    {
+      "name": "21 Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:3000/api/auth/login",
+        "description": "Dùng Manager đã xác minh email/được duyệt và gắn HTX. Copy JWT_MANAGER.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone_number\": \"0900000003\",\n  \"password\": \"LocalTestOnly123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "22 Manager Read Device",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_MANAGER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Farm cần đã gia nhập HTX của Manager; ngoài phạm vi trả 404."
+      }
+    },
+    {
+      "name": "23 Duplicate Station Check",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices",
+        "description": "Thay Zone thật, giữ station_id đã đăng ký ở 03. Kỳ vọng 409 kể cả Device Inactive; không ghi thêm Device/audit.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"zone_id\": \"11111111-1111-4111-8111-111111111111\",\n  \"station_id\": \"DEMO_STATION\",\n  \"installed_at\": \"2026-10-06T08:00:00+07:00\",\n  \"cost\": 1500000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "24 Immutable Station Check",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer JWT_OWNER"
+          }
+        ],
+        "url": "http://localhost:3000/api/devices/22222222-2222-4222-8222-222222222222",
+        "description": "Thay UUID Device. Kỳ vọng 400; station_id bất biến. zone_id/id/auth_token/tree_ids cũng không được nhận.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"station_id\": \"OTHER_STATION\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

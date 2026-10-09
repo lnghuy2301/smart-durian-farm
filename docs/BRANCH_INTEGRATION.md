@@ -1,5 +1,11 @@
 # Tích hợp tất cả branch vào main local
 
+## Kết quả merge trên GitHub đã kiểm chứng
+
+Ngày 2026-10-05 người dùng đã merge PR #5 vào main: `c71820d74543cd7c67e447bc939b936fc8283f53`, parents `7594c9d` và `fb93617`. Đã fetch origin và kiểm tra mọi branch local là ancestor origin/main. Diff integration/all-modules-20261005 → origin/main rỗng; cả hai có tree `c965f1ac5338d1d2b0b5efaafb1a83b3558b57ea`, đúng bản tích hợp đã kiểm thử (commit cuối chỉ bổ sung tài liệu quyền push). Vì vậy không cần merge các feature/chore/docs cũ thêm lần nữa. PR: https://github.com/lnghuy2301/smart-durian-farm/pull/5
+
+Main local đã fast-forward tới c71820d, giữ nguyên file riêng đang sửa; branch module kế tiếp feat/devices-management tạo từ main này. Đợt trước đã xuất bản 19 nhánh ngoài main (10 đã có, 9 mới); main remote được người dùng cập nhật bằng PR. Branch Devices hiện chỉ chuẩn bị tài liệu, chưa được push. Nội dung bên dưới mô tả quá trình tích hợp/xuất bản trước merge, không phải trạng thái remote hiện tại.
+
 ## Xuất bản để người dùng merge trên GitHub
 
 Yêu cầu mới ngày 2026-10-05 đã cho phép push tất cả branch cũ/mới lên `https://github.com/lnghuy2301/smart-durian-farm.git`. Bản tích hợp main local được xuất bản qua `integration/all-modules-20261005`; tất cả branch module/docs/chore và `backup/main-before-integration-20261005` được giữ tên và tip hiện có. Không push trực tiếp `main`, không force push, không xóa branch hoặc tự merge trên GitHub. Người dùng có thể mở PR từ integration branch vào main để đưa toàn bộ module vào cùng một lần review/merge. Các ghi chú chưa được phép push ở phần lịch sử bên dưới được thay thế bởi yêu cầu này cho đợt xuất bản hiện tại.
