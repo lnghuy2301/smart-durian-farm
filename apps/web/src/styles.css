@@ -613,6 +613,11 @@ fieldset {
   .auth-layout-registration {
     align-items: start;
   }
+  .auth-layout-registration .auth-form-side {
+    padding-block: calc(
+      (clamp(40px, 6dvh, 64px) + clamp(64px, 8dvh, 88px)) / 2
+    );
+  }
   .auth-layout-registration .auth-story {
     position: sticky;
     top: 0;
