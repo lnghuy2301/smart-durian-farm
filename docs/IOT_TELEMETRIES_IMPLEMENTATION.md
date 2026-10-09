@@ -1,5 +1,7 @@
 # IOT_TELEMETRIES — API, quy trình và tái lập
 
+Nhánh kế thừa2026-10-09 đã có [ACTUATOR_TASKS](ACTUATOR_TASKS_IMPLEMENTATION.md) và [DOCX MQTT v1 ACK](MQTT_CONTRACT_V1_IMPLEMENTATION.md). ACK taskId/status/action chỉ receipt, do task handler xử lý, không ghi Telemetry; telemetry payload/quyền/FIFO10.000 không thay đổi. Backend168 tests đạt. Các giới hạn chưa có control/short ACK phía dưới ghi phạm vi delivery Telemetry ban đầu.
+
 Ngày triển khai: 2026-10-07. Nhánh feat/iot-telemetries từ a656773 (kế thừa e1ad1a0 và MQTT d10ebd2). Module chỉ dùng RAM, chưa ghi MongoDB, chưa tạo collection/index/migration/seed. Không thay firmware, MQTT topics hoặc .env thật.
 
 ## Quyết định cuối và dữ liệu

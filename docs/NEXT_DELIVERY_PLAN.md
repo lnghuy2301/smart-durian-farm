@@ -1,5 +1,7 @@
 # Kế hoạch giữ tiến độ từ nền tảng đã kiểm thử
 
+**Cập nhật2026-10-09:** ACTUATOR_TASKS/control backend đã triển khai theo MQTT DOCX v1,168 API tests đạt; [tái lập/API](ACTUATOR_TASKS_IMPLEMENTATION.md). Bước tiếp: nghiệm thu ESP32 v1 trên trạm demo cô lập, chứng minh taskId/action round-trip và receipt ordering; sau đó nối control frontend bằng GET progress/state và wording “đã nhận lệnh”. Không suy physical state từ ACK; control UI chưa code. Song song có thể thiết kế persistence riêng trước repositories/migration/seed, bảo toàn quyền/approval/unique hiện có. Cultivation/leaf AI/chatbot cần chốt business specs riêng. Các đoạn chưa có task/control dưới đây mô tả đợt trước.
+
 **Cập nhật 2026-10-08:** đợt web nền tảng và IoT chỉ đọc bên dưới đã hoàn thành theo mẫu được cung cấp, gồm dashboard Farmer/Admin và mẫu Manager riêng được chốt sau. Branch `feat/web-manager-dashboard` chứa toàn bộ frontend, **22 browser scenarios + 8 unit tests**, lint/typecheck/build/format đạt. Hướng dẫn chạy, API mapping, scope và nghiệm thu ở [WEB_FOUNDATION_IMPLEMENTATION](frontend/WEB_FOUNDATION_IMPLEMENTATION.md). Backend147 regression tests đã chạy lại ở module IoT; business/telemetry vẫn RAM. Nội dung đề xuất ngày 2026-10-07 bên dưới là lịch sử, không phải trạng thái chưa code hiện tại.
 
 Đợt tiếp theo có thể chọn một workflow ghi tài nguyên theo form/mẫu được xác nhận, thiết kế persistence, hoặc React Native; sửa HTX Manager email→SMS chưa có form trong mẫu dashboard. ACTUATOR_TASKS/control vẫn cần specification riêng. Chưa bắt đầu các đợt đó, chưa push/merge/deploy.

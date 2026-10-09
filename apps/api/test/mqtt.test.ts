@@ -276,7 +276,7 @@ test('Unknown, retained, mismatched, malformed or unregistered messages cannot r
     assert.equal(counts.unknown, 1); assert.equal(counts.rejected, 4);
     f.transport.emit({ stationId: 'DEMO_STATION', status: 'ACK', taskId: 99, action: 1 });
     assert.notEqual(f.devices.getRecord(f.device.id).last_seen_at, null);
-    assert.equal(f.mqtt.messages(f.owner.id, f.device.id, page).items[0].reason, 'ACK_WITHOUT_TASK_HANDLER');
+    assert.equal(f.mqtt.messages(f.owner.id, f.device.id, page).items[0].reason, 'ACK_NOT_WAITING');
     assert.equal(f.app.get(ActuatorsService).list(f.owner.id, page).total, 0);
   } finally { await f.app.close(); }
 });

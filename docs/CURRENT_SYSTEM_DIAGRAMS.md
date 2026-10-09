@@ -1,5 +1,7 @@
 # Sơ đồ nền tảng đã triển khai — 2026-10-07
 
+**Bổ sung2026-10-09:** web đã có; ACTUATOR_TASKS mới đã triển khai,168 API tests đạt. Sơ đồ control theo hiện trạng ở [workflow](ACTUATOR_TASKS_WORKFLOW_DESIGN.md); chi tiết phạm vi/test/receipt ở [guide](ACTUATOR_TASKS_IMPLEMENTATION.md). ACK v1 có taskId/status/action, chỉ nhận command. Các sơ đồ cũ phía dưới ghi mốc f20f6c1; không là danh sách module chưa làm hiện tại. PostgreSQL/MongoDB vẫn chỉ readiness, RAM không business persistence.
+
 Mốc code **f20f6c1**, **147/147 tests** cùng lint/typecheck/build đạt trong lượt rà soát. Mermaid source nằm trực tiếp trong Markdown để session sau chỉnh/tái sử dụng. Đây là sơ đồ hiện trạng theo code và test, không khẳng định đã kiểm thử mọi tình huống hoặc ESP32 thật. Xem [bằng chứng/giới hạn](PROJECT_READINESS_REVIEW_20261007.md).
 
 Các sơ đồ không thay ERD_DIAGRAM.xml của người dùng. PostgreSQL/MongoDB bên dưới chưa có business persistence; React web/mobile, ACTUATOR_TASKS và Cultivation chưa triển khai.

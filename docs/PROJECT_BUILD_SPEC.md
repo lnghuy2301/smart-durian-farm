@@ -1,5 +1,7 @@
 # SMART FARM DURIAN --- PROJECT BUILD SPECIFICATION
 
+**Ưu tiên hiện hành2026-10-09:** DOCX MQTT_Configuration_Smart_Farm_Durian_v1.0 và quyết định trực tiếp thay các thiết kế IoT cũ. ACK có taskId/status/action, chỉ xác nhận **nhận command**. ACTUATOR_TASKS RAM đã triển khai feat/actuator-tasks-v1 từ f20ea20;168 API tests đạt. POST202/GET progress/state, reset trước Start khi Unknown, bơm2/van3tưới/van4phun, per-step ACK10s/Stop preemption/recovery riêng. Xem [implementation](ACTUATOR_TASKS_IMPLEMENTATION.md). DEVICES/SENSORS/ACTUATORS schemas không đổi; Sensors mapping301/C,302/%,303/% đã chốt. Không created_by/confirmed_by hoặc physical execution claim cho tasks, không DB migration/seed. Web read-only đã có; control UI/hardware thật chưa nghiệm thu. Các ghi chú chờ module phía dưới là lịch sử.
+
 Telemetry hoàn tất 2026-10-07 trên **feat/iot-telemetries** từ a656773 (kế thừa e1ad1a0/MQTT d10ebd2). Shared RAM store FIFO10.000 readings, nhận mọi packet hợp lệ theo chu kỳ hardware15 giây; GET latest/history có filter stream/received_at [from,to) và pagination. Farmer phải có assignment Accepted đang hiệu lực, hết phân công mất cả latest/history; chỉ xem readings trong khoảng assignment hiện tại. measured_at lúc backend nhận/đọc MQTT, received_at lúc ghi RAM, raw unit tối đa16; không sửa firmware/protocol/.env hoặc persistence. **147/147 tests + lint/typecheck/build đạt**, gồm10 domain/HTTP/fake tests và1 MQTT.js TCP -> App -> Telemetry -> HTTP mới; npm test giới hạn2 files đồng thời. Postman20 requests literal, đọc [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md) và [thiết kế cuối](IOT_TELEMETRIES_WORKFLOW_DESIGN.md). Còn4 collections chưa có module + QR không có bảng; tiếp theo thảo luận ACTUATOR_TASKS/safety, persistence riêng. Các ghi chú chờ Telemetry/136 tests phía dưới là lịch sử. Nhánh chỉ local, không push/merge; giữ file riêng.
 
 Rà soát 2026-10-07: 13 bảng đã có nghiệp vụ RAM, 5 collections chưa triển khai; QR là tính năng không có bảng. 136/136 tests + lint/typecheck/build sau sửa registration proof boundary. Thứ tự và câu hỏi cần chốt theo [PROJECT_REVIEW_20261007.md](PROJECT_REVIEW_20261007.md); telemetry/task/control dưới đây chưa phải quyết định đã duyệt.
@@ -466,27 +468,27 @@ Trạng thái triển khai hiện hành 2026-10-07 theo [IOT_METADATA_UPDATE_IMP
 
 ## 12. MQTT protocol
 
-Contract hiện hành theo tài liệu người dùng MQTT_HARDWARE_PROTOCOL_VERIFIED.md và [MQTT_COMMUNICATION_IMPLEMENTATION.md](MQTT_COMMUNICATION_IMPLEMENTATION.md). Không tự thay firmware, topics hoặc thêm auth_token.
+Contract hiện hành theo DOCX MQTT_Configuration_Smart_Farm_Durian_v1.0 và [MQTT_CONTRACT_V1_IMPLEMENTATION.md](MQTT_CONTRACT_V1_IMPLEMENTATION.md). Không tự thay firmware, topics hoặc thêm auth_token.
 
 ### Nhận và ánh xạ
 
-Backend subscribe publish/station/+; firmware trả sensorRecords hoặc short ACK trên publish/station/{stationId}. Topic quyết định station, rồi lookup DEVICES.station_id để lấy Device UUID; tham chiếu domain dùng device_id, không dùng station_id làm FK. Không subscribe observation/sensor hoặc đoán ý nghĩa stream302/303.
+Backend subscribe publish/station/+; firmware trả sensorRecords hoặc ACK taskId/status/action trên publish/station/{stationId}. Topic quyết định station, lookup DEVICES.station_id lấy Device UUID; domain dùng device_id làm FK. Sensor metadata bộ demo301 air_temperature/C,302 air_humidity/%,303 soil_moisture/% do người dùng chốt, không hardcode router.
 
 Parser kiểm tra topic/payload/identity và metadata đăng ký, từ chối retained packet, unknown station và dữ liệu sai định dạng. Telemetry giữ nguyên raw unit; mismatch là diagnostics, không đổi unit lịch sử. Device/Sensor phải Active để nhận reading; không suy status metadata từ presence.
 
-Receiver cập nhật last_seen_at theo thời gian server; connectivity Unknown/Online/Offline tính theo tuổi message hợp lệ, mặc định stale30 phút, khác trạng thái kết nối broker. Diagnostics FIFO200 RAM và API chỉ đọc đã có; chưa có telemetry history/MongoDB collection.
+Receiver cập nhật last_seen_at theo thời gian server; connectivity Unknown/Online/Offline theo tuổi message hợp lệ, mặc định stale30 phút, khác broker readiness. Diagnostics FIFO200 và Telemetry FIFO10.000/latest/history RAM đã có; chưa MongoDB persistence.
 
 ### Gửi
 
 Adapter nội bộ gửi subscribe/station/{stationId}; builder giữ cấu trúc targets[].taskId/taskingCapabilityId và taskingParameters theo protocol. Lệnh numeric 0=OFF, 1=ON; bơm và van có capability/lệnh riêng. Publisher hiện QoS0, non-retained, không xếp offline queue để replay điều khiển cũ.
 
-TransportAccepted chỉ là kết quả chấp nhận gửi của adapter, không phải broker/hardware execution confirmation. Chưa có HTTP control, task workflow, automation hoặc phối hợp an toàn bơm–van.
+TransportAccepted chỉ là adapter gửi thành công, không phải hardware confirmation. HTTP control/task orchestration đã triển khai; mỗi bước publish một target, chờ ACK10s, không offline queue/ON replay. Chưa automation hoặc feedback physical state.
 
 ### ACK và feedback
 
-Short ACK không có taskId; không correlate/xác nhận task hoặc relay, ngay cả khi chỉ một task pending hoặc gửi tuần tự. Full ACK có taskId và phản hồi physical-button/state chưa được tài liệu protocol mới kiểm chứng, không coi là capability hiện có.
+ACK `{taskId:number,status:"ACK",action:0|1}` phát ngay khi nhận command. Backend correlate Device + taskId + action, không suy từ thứ tự/count ACK. Legacy/retained/malformed/sai/trễ không làm Confirmed. Confirmed chỉ CommandReceipt, physical_state Unknown; chưa physical-button/relay/flow feedback.
 
-ACTUATOR_TASKS status/timeout/confirmation và fail-safe cần thảo luận trước triển khai. Phần thiết kế collection/control phía dưới là dự kiến, không được dùng để vượt hạn chế feedback phần cứng hiện tại.
+ACTUATOR_TASKS đã triển khai theo workflow người dùng chốt; constraints RAM, restart/disconnect và giới hạn receipt xem guide. Các index/persistence dự kiến bên dưới chưa được tạo.
 
 ------------------------------------------------------------------------
 
@@ -551,7 +553,7 @@ Recommended index:
 
 ## 14. Actuator task storage
 
-MongoDB collection:
+Logical MongoDB-shaped model dùng trong RAM, chưa tạo collection/persistence:
 
 ``` text
 ACTUATOR_TASKS
@@ -570,16 +572,15 @@ Ví dụ concept:
   "_id": "...",
   "device_id": "...",
   "targets": [
-    {
-      "task_id": "...",
-      "tasking_capability_id": "..."
-    }
+    { "task_id": 1001, "tasking_capability_id": 3 },
+    { "task_id": 1002, "tasking_capability_id": 2 }
   ],
-  "tasking_parameters": {},
-  "status": "pending",
+  "command_id": 1003,
+  "tasking_parameters": {"actionType":"control","action":1},
+  "status": "Pending",
   "created_at": "...",
-  "sent_at": "...",
-  "confirmed_at": "...",
+  "sent_at": null,
+  "confirmed_at": null,
   "error_message": null,
   "response_payload": {}
 }
@@ -588,7 +589,7 @@ Ví dụ concept:
 Không tạo một top-level MQTT `task_id` duy nhất nếu một command có nhiều
 targets.
 
-`response_payload` nên giữ raw/full response hữu ích cho debugging.
+`response_payload` giữ operation/CommandReceipt, links Reset/Recovery và steps/ACK tối thiểu đã chuẩn hóa; không lưu payload tùy ý. Không created_by/confirmed_by. API task `_id` ObjectId khác Device UUID, command_id và numeric MQTT taskId.
 
 Trạng thái implementation phải phản ánh tối thiểu sự khác nhau giữa:
 
@@ -620,17 +621,17 @@ Build MQTT payload
    ↓
 Publish subscribe/station/{stationId}
    ↓
-Hardware executes
+Hardware receives command and sends receipt ACK
    ↓
 publish/station/{stationId}
    ↓
 MQTT router
    ↓
-Correlate ACK/full response
+Correlate Device + taskId + action; wait per-step ACK10s
    ↓
 Update ACTUATOR_TASKS
    ↓
-Push/return latest state to client
+Client polls GET task/state after POST202; no realtime push yet
 ```
 
 Không cho client publish MQTT trực tiếp.

@@ -1,5 +1,7 @@
 # MQTT communication — triển khai và tái lập
 
+**Cập nhật2026-10-09:** contract hiện hành là DOCX MQTT_Configuration_Smart_Farm_Durian_v1.0 và [guide](MQTT_CONTRACT_V1_IMPLEMENTATION.md), thay short ACK phía dưới: `{taskId:number,status:"ACK",action:0|1}`, ACK ngay khi nhận command. ACTUATOR_TASKS/API control đã triển khai trên feat/actuator-tasks-v1, [setup/API/limits](ACTUATOR_TASKS_IMPLEMENTATION.md); Confirmed chỉ receipt, không execution. Telemetry đã có RAM/history. Transport/config duy nhất được chia sẻ qua MqttTransportModule. Đợt mới append .env ACK timeout10000ms, không thay broker settings;168 tests backend đạt. Các ghi chú chưa control/ACK không taskId bên dưới là lịch sử MQTT gốc.
+
 Cập nhật nhánh kế thừa feat/iot-telemetries 2026-10-07: receiver đã nối Telemetry RAM FIFO10.000 readings và API latest/history,147 tests đạt. .env/protocol/firmware giữ nguyên. Xem [IOT_TELEMETRIES_IMPLEMENTATION.md](IOT_TELEMETRIES_IMPLEMENTATION.md); các đoạn134 tests/chưa history phía dưới ghi phạm vi commit MQTT gốc d10ebd2, không phải phần cần viết lại.
 
 Nhánh **feat/mqtt-communication**, base metadata **939c350** trên feat/iot-core-metadata-update, kế thừa Actuators95c15fc/Sensorsc9d0940/Devices09cb1da/mainc71820d. Chỉ commit local, chưa push/merge. Đọc cùng [metadata](IOT_METADATA_UPDATE_IMPLEMENTATION.md) và [handoff](MODULE_HANDOFF.md).

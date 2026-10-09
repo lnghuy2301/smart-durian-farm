@@ -3,6 +3,7 @@ import { normalizeTwilioPhone, TwilioVerifyConfig } from '../auth/sms/twilio-ver
 import { isEmail } from 'class-validator';
 import { SmtpConfig } from '../users/email/email.sender';
 import { MqttConfig, readMqttConfig } from '../mqtt/mqtt.config';
+import { ActuatorTasksConfig, readActuatorTasksConfig } from '../actuator-tasks/actuator-tasks.config';
 
 export interface MockAuthConfig {
   mode: 'mock';
@@ -21,6 +22,7 @@ export interface Environment {
   database: { postgresUrl: string; mongoUri: string; timeoutMs: number };
   auth?: MockAuthConfig;
   mqtt?: MqttConfig;
+  actuatorTasks?: ActuatorTasksConfig;
 }
 
 export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
@@ -147,5 +149,5 @@ export function readEnvironment(env: NodeJS.ProcessEnv): Environment {
   }
   const mqtt = readMqttConfig(env);
   if (mqtt.enabled && !auth) { throw new Error('MQTT_ENABLED requires the current application metadata modules (AUTH_MODE=mock)'); }
-  return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth, mqtt };
+  return { port, corsOrigins, database: { postgresUrl, mongoUri, timeoutMs }, auth, mqtt, actuatorTasks: readActuatorTasksConfig(env) };
 }

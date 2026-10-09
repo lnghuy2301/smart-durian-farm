@@ -3,6 +3,7 @@ import { MockUserStore } from '../auth/mock-user.store';
 import { DevicesService } from '../devices/devices.service';
 import { SensorsService } from '../sensors/sensors.service';
 import { TelemetryService } from '../telemetry/telemetry.service';
+import { ActuatorTasksService } from '../actuator-tasks/actuator-tasks.service';
 import { FarmPageDto } from '../farms/farms.dto';
 import { MqttConfig, MQTT_CONFIG } from './mqtt.config';
 import { BrokerState, MqttTransport } from './mqtt.transport';
@@ -34,11 +35,12 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
     @Inject(DevicesService) private readonly devices: DevicesService,
     @Inject(SensorsService) private readonly sensors: SensorsService,
     @Inject(TelemetryService) private readonly telemetry: TelemetryService,
-    @Inject(MockUserStore) private readonly users: MockUserStore) {
+    @Inject(MockUserStore) private readonly users: MockUserStore,
+    @Inject(ActuatorTasksService) private readonly tasks: ActuatorTasksService) {
     this.state = { enabled: config.enabled, connected: false, subscribed: false, last_error: null };
   }
   onModuleInit(): void {
-    this.transport.start({ state: (state) => { this.state = { ...state }; },
+    this.transport.start({ state: (state) => { this.state = { ...state }; this.tasks.brokerChanged(state); },
       message: (topic, payload, retained) => this.receive(topic, payload, retained) });
   }
   async onModuleDestroy(): Promise<void> { await this.transport.stop(); }
@@ -80,7 +82,8 @@ export class MqttService implements OnModuleInit, OnModuleDestroy {
       this.devices.recordSeen(deviceId, receivedAt);
       if (incoming.kind === 'Ack') {
         ++this.counts.ack;
-        this.append({ received_at: receivedAt, device_id: deviceId, kind: 'Ack', reason: 'ACK_WITHOUT_TASK_HANDLER', readings: [],
+        const reason = this.tasks.receiveAck(deviceId, incoming.taskId, incoming.action);
+        this.append({ received_at: receivedAt, device_id: deviceId, kind: 'Ack', reason, readings: [],
           ack: { task_id: incoming.taskId, action: incoming.action } });
         return;
       }

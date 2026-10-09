@@ -1,5 +1,7 @@
 # MQTT contract v1.0 — cập nhật 2026-10-09
 
+Nhánh kế thừa **feat/actuator-tasks-v1** đã nối ACK domain handler và control API: xem [ACTUATOR_TASKS](ACTUATOR_TASKS_IMPLEMENTATION.md). Diagnostic ACK đúng đang chờ reason:null; không có wait `ACK_NOT_WAITING`, sai Device/action có mã mismatch.168/168 tests gồm TCP control/ACK đạt. Các đoạn “chưa handler/không HTTP control” dưới đây mô tả riêng commit contract **f20ea20**, không là hiện trạng nhánh tasks.
+
 Nhánh `feat/mqtt-contract-v1` kế thừa `ab478fc`, gồm frontend hiện có và backend Telemetry f20f6c1. Nguồn mới: **MQTT_Configuration_Smart_Farm_Durian_v1.0.docx** của người dùng, thay các mô tả ACK cũ trong MQTT_HARDWARE_PROTOCOL_VERIFIED/IOT_CORE_TABLES_SPEC/build spec. Không chỉnh các file nguồn riêng hoặc firmware.
 
 ## Contract hiện hành
@@ -19,7 +21,7 @@ Updated MQTT unit fixtures và TCP loopback dùng ACK v1; thêm test từ chối
 
 ## Tái lập
 
-Từ root, sau `npm ci`, giữ .env local: `npm run lint`, `npm run typecheck`, `npm run build:api` (hoặc API workspace build) và `npm test --workspace @smart-durian/api`. Tập trung MQTT: compile API tests rồi chạy `node --test --test-concurrency=2 .test-dist/test/mqtt.test.js .test-dist/test/mqtt-loopback.test.js` từ apps/api. Test tương quan malformed/legacy/mismatch/retained và wire shape được kiểm tra cùng TCP broker riêng.
+Từ root, sau `npm ci`, giữ .env local: `npm run lint`, `npm run typecheck`, `npm run build` và `npm test --workspace @smart-durian/api`. Tập trung MQTT: compile API tests rồi chạy `node --test --test-concurrency=2 .test-dist/test/mqtt.test.js .test-dist/test/mqtt-loopback.test.js` từ apps/api. Test tương quan malformed/legacy/mismatch/retained và wire shape được kiểm tra cùng TCP broker riêng.
 
 Kết quả: **17/17 MQTT/parser/transport/loopback tests**; full API suite và lint/typecheck/build ghi ở handoff khi hoàn tất. Không thay runtime broker settings, không kết nối broker thật hoặc publish tới station thật để test.
 
